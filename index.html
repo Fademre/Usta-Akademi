@@ -17,7 +17,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="fonts/fonts.css">
 <script>try{var _s=JSON.parse(localStorage.getItem('usta-akademi-v1'));if(_s&&_s.skin&&_s.skin!=='classic')document.documentElement.setAttribute('data-skin',_s.skin);}catch(e){}</script>
-<script>window.APP_VERSION='1.6';</script>
+<script>window.APP_VERSION='1.7';</script>
 <style>
 /* standalone shell: what the artifact host used to provide */
 html{background:var(--bg,#EDF1EC);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;-webkit-text-size-adjust:100%}
@@ -580,6 +580,52 @@ button.ogroup:active{border-color:var(--acc)}
 .lv-tab.locked b{color:var(--muted)}
 .lv-tab.on{background:var(--acc);border-color:var(--acc);color:var(--on-acc);box-shadow:0 3px 0 var(--acc-2)}
 .lv-tab.on b{color:var(--on-acc)}
+/* v1.7: tournaments */
+.tour{display:flex;flex-direction:column;gap:12px;background:linear-gradient(135deg,var(--sun-soft),var(--surface) 70%)}
+.tour .cup{width:44px;height:44px;border-radius:14px;background:var(--sun);color:var(--on-acc);display:grid;place-items:center;box-shadow:0 3px 0 var(--sun-2);flex:none}
+.tour .cup .ic{width:26px;height:26px}
+.tour-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tr{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:16px;background:var(--surface);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);text-align:center;min-width:0}
+.tr-n{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.tr-av{font-size:30px;line-height:1.1}
+.tr b{font-size:14px}
+.tr-d{font-size:12px;color:var(--muted);font-weight:600}
+.tr-s{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--surface-2);color:var(--muted);margin-top:3px}
+.tr-s .ic{width:13px;height:13px}
+.tr.open{border-color:var(--acc);box-shadow:0 3px 0 var(--acc);animation:pulse 2s ease-in-out infinite}
+.tr.open .tr-s{background:var(--acc);color:var(--on-acc)}
+.tr.won .tr-s{background:var(--good-soft);color:var(--good)}
+.tr.locked{opacity:.6}
+.mh{display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px}
+.mh-av{font-size:24px;line-height:1}
+.mh-vs{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;background:var(--sun-soft);color:var(--ink)}
+.mh-status{text-align:center;font-weight:700;min-height:1.4em;color:var(--muted);margin-top:-8px}
+.ld{display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(11,1fr);width:min(100%,360px);aspect-ratio:1;margin:0 auto;gap:2px;padding:6px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.ldc{border-radius:50%;border:2px solid var(--line);background:var(--surface)}
+.ldc.s0{background:color-mix(in srgb,var(--sun) 40%,var(--surface));border-color:var(--sun)}
+.ldc.s1{background:color-mix(in srgb,var(--game) 40%,var(--surface));border-color:var(--game)}
+.ldc.s2{background:color-mix(in srgb,var(--bad) 40%,var(--surface));border-color:var(--bad)}
+.ldc.s3{background:color-mix(in srgb,var(--lang) 40%,var(--surface));border-color:var(--lang)}
+.ldc.yd{opacity:.55}
+.ldp{width:80%;height:80%;border-radius:50%;place-self:center;z-index:2;box-shadow:0 3px 0 rgba(0,0,0,.35),inset 0 0 0 3px rgba(255,255,255,.4)}
+.ldp.can{animation:bob 1s ease-in-out infinite;outline:3px solid var(--ink);outline-offset:1px}
+.ldp.hop{animation:hop .14s ease-out}
+.ld-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.ld-legend .lg{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 8px;border-radius:99px;background:var(--surface);border:1.5px solid var(--line)}
+.ld-legend .lg.on{border-color:var(--ink)}
+.ld-legend i{width:10px;height:10px;border-radius:50%}
+.ok-opps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ok-opp{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;border-radius:14px;background:var(--surface);border:1.5px solid var(--line);font-size:12px;text-align:center;min-width:0}
+.ok-opp.on{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-soft)}
+.ok-opp b{font-size:13px}
+.ok-empty{width:30px;height:42px;border-radius:6px;border:1.5px dashed var(--line)}
+.ok-mid{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:14px}
+.ok-rack{gap:5px}
+.ok-rack .otile{width:34px;height:48px;font-size:18px}
+.otile.okeytile{outline:2px dashed var(--sun);outline-offset:1px}
+.ok-acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.score span.on{color:var(--acc)}
+.toff b.oo{background:var(--ck-b);color:var(--ck-w);margin-bottom:auto}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
@@ -625,15 +671,15 @@ const iconEl=(n,c)=>h('span',{style:'display:contents',html:icon(n,c)});
 
 /* ---------- i18n ---------- */
 const I18N={
-tr:{home:"Ana sayfa",langs:"Diller",games:"Oyunlar",profile:"Profil",hi:"Merhaba!",homeSub:"Bugün biraz dil, biraz zekâ. Küçük adımlarla ilerle.",streak:"gün seri",dailyGoal:"Günlük hedef",dailyOf:"{n} / {g} XP bugün",dailyHint:"Her antrenman 10–15 XP kazandırır.",contLang:"Kaldığın yerden devam et",start:"Başla",puzzle:"Günün bulmacası",puzzleSub:"Beyaz oynar, tek hamlede mat eder.",solve:"Çöz",yourGames:"Zekâ oyunları",seeAll:"Tümü",langsTitle:"Dil öğren",langsSub:"Her seviye bölümlerden, her bölüm 5 antrenmandan oluşur. Zorluk adım adım artar.",pickLang:"Öğrenmek istediğin dil",level:"Seviye",unit:"Bölüm",trn:["Tanış","Eşleştir","Cümle kur","Yaz","Ustalık"],trainingsOf:"{d}/5 antrenman",exam:"Seviye sınavı",examSub:"Bütün bölümleri bitirince açılır · 12 karışık soru",examPassed:"Sınavı geçtin, bu seviye tamamlandı!",soonAI:"Yakında · içerik yapay zekâ ile üretilecek",locked:"Kilitli",lockedHint:"Önce bir önceki adımı tamamla.",gamesTitle:"Zekâ oyunları",gamesSub:"Kuralları öğren, bulmacaları çöz, pratik zekânı geliştir.",lessons:"{n} ders",steps:"{n} adım",soon:"Yakında",lv:["Başlangıç","Orta","İleri"],check:"Kontrol et",cont:"Devam",good:["Harika!","Doğru!","Süper!","Aynen böyle!"],wrong:"Olmadı",answer:"Doğru cevap:",accent:"Doğru, ama yazımına dikkat:",newWord:"Yeni kelime",whichIs:"Hangisi “{w}”?",howSay:"“{w}” nasıl denir?",listenPick:"Duyduğunu seç",noAudio:"Ses gelmiyor mu? Kelimeyi göster",matchPairs:"Eşleri bul",fillBlank:"Boşluğu doldur",build:"Cümleyi kur",writeIn:"{lang} yaz",typeHere:"Buraya yaz…",boardHint:"Taşa dokun, sonra gideceği kareye dokun.",illegal:"Bu hamle kurala uygun değil.",notSolution:"Bu doğru hamle değil. Tekrar dene.",mustCapture:"Alma zorunlu! Rakip taşı alabilen taşla oyna.",promoted:"Taşın dama oldu!",roll:"Zar at",need6:"6 gelmedi. Tekrar at!",got6:"6 geldi! Taşın oyuna girdi.",dice:"Zar",tapPiece:"Oynatacağın taşa dokun.",captured:"Kızdırdın! Rakip taş başlangıca döndü.",overshoot:"Zar bu taş için fazla. Eve tam sayıyla girmelisin.",ludoWrong:"Bu hamle hedefe ulaşmıyor. Diğer taşı dene.",done:"Antrenman tamamlandı!",lessonDone:"Ders tamamlandı!",xpEarned:"XP kazandın",accuracy:"Doğruluk",outHearts:"Canların bitti",outText:"Sorun değil. Tekrar ederek öğreniyoruz.",retry:"Tekrar dene",quit:"Çık",uiLang:"Uygulama dili",stats:"İstatistikler",totalXp:"Toplam XP",trDone:"Antrenman",lsDone:"Oyun dersi",streakDays:"Gün serisi",reset:"İlerlemeyi sıfırla",resetQ:"Bütün ilerlemen bu cihazdan silinecek. Emin misin?",resetYes:"Evet, sıfırla",cancel:"Vazgeç",learner:"Öğrenci",profileSub:"İlerlemen bu cihazda saklanır",back:"Geri",allDone:"Bu dilde C2'ye kadar bütün seviyeleri bitirdin. Tebrikler!",nextUp:"Sıradaki",lessonN:"Ders {n}",levelsTitle:"Seviyeler",mate:"Mat!",chooseUi:"Uygulama dilini seç",maxCapOk:"{n} taş aldın!",maxCapLow:"{n} taş aldın ama {need} taş alınabilirdi. Tekrar dene.",chainBroke:"Zincir koptu, kalan taşlar alınamıyor. Tekrar dene.",gLvLocked:"Bu seviye “{lv}” seviyesini bitirince açılır.",lvLocked:"Bu seviye {lv} sınavını geçince açılır.",theme:"Tema",themeSub:"Uygulamanın renklerini ve arka planını seç.",tvHint:"Bir pula dokun, sonra gideceği haneye dokun.",tvBarFirst:"Önce kırık pulunu oyuna sokmalısın!",tvBlocked:"Bu hane kapalı: orada rakibin 2 ya da daha fazla pulu var.",tvNoDie:"Zarlarınla bu haneye gidemezsin.",tvNotHome:"Pul toplamak için bütün pulların iç bölgende (1–6) olmalı.",tvNoMove:"Bu pul kalan zarlarla oynayamaz.",tvHit:"Kırdın! Rakip pul bara çıktı.",tvRetry:"Hedefe ulaşmadın. Baştan dene.",tvStuck:"Oynanacak hamle kalmadı. Baştan dene.",okInd:"Gösterge:",okHint:"Taşlara dokunarak seç, sonra ‘Grup yap’a bas.",okPickHint:"Doğru taşa dokun.",okMake:"Grup yap",okReset:"Baştan",okBad:"Bu taşlar per ya da seri oluşturmuyor.",okPer:"Per",okSeri:"Seri",okTotal:"Toplam {n} / {g}",okNot:"Bu değil. Tekrar dene.",okLeft:"Kalan taşlar grup oluşturamıyor. Baştan dene.",okAttachHint:"Önce elindeki taşa, sonra masadaki gruba dokun.",okAttachBad:"Bu taş o gruba işlenemez.",mmHint:"Kartları çevir, eşlerini bul.",mmMoves:"{n} hamle",mmDone:"Bütün eşleri {n} hamlede buldun!",smWatch:"İzle…",smYour:"Sıra sende: aynı sırayla dokun.",smWrong:"Yanlış sıra! Bu turu tekrar izle.",smDone:"{n} adımlık diziyi hatırladın!",spWatch:"Sayıyı aklında tut…",spType:"Gördüğün sayıyı yaz.",spOk:"Doğru! Bir basamak daha.",spWrong:"Doğrusu {n} idi. Yeni bir sayı geliyor.",spDone:"Harika sayı hafızası!",msWatch:"Nesneleri aklında tut…",msPick:"Hangisi kayboldu?",msOk:"Doğru! Sıradaki tur.",msWrong:"Olmadı. Yeni tur geliyor.",msDone:"Dikkatin çok iyi!",soundFx:"Ses efektleri",speed:"Konuşma hızı",speeds:["Yavaş","Normal","Hızlı"],voice:"Ses",voiceAuto:"Otomatik (en net ses)",test:"Dinle",slow:"Yavaş",voiceNone:"Bu cihazda bu dil için yüklü ses yok; tarayıcının varsayılan sesi kullanılır.",voiceTip:"Daha doğal bir ses için telefonunun ayarlarından bu dilin “gelişmiş” ya da “premium” sesini indirebilirsin.",settings:"Ses ve konuşma",swipeTip:"İpucu: Menüler arasında ekranı sağa sola kaydırarak geçebilirsin.",writeInRo:"{lang} yaz (Latin harfleriyle de olur)",rvIllegal:"Buraya oynayamazsın: en az bir rakip taşı çevirmelisin.",rvFlipped:"{n} taş çevirdin!",rvPass:"Oynayacak yerin yok, sıra rakibe geçti.",rvAiPass:"Rakibin oynayacak yeri yok, sıra yine sende.",rvWin:"Kazandın! {a} – {b}",rvLose:"Bu sefer rakip kazandı ({a} – {b}), ama ders tamam!",rvDraw:"Berabere!",sdPick:"Boş bir kareye dokun, sonra alttan sayı seç.",sdConflict:"Bu sayı satırda, sütunda ya da kutuda zaten var.",sdWrong:"Kurala uyuyor ama buraya başka bir sayı gelmeli.",sdDone:"Bulmaca çözüldü!",mgPick:"Alt sıradaki kendi kuyularından birine dokun.",mgYou:"Sen",mgThem:"Rakip",mgExtra:"Son taş hazinende: bir hamle daha!",mgEven:"Çift yaptın, taşlar senin!",mgEmpty:"Boş kuyu! İki kuyunun taşları senin.",mgEmptyPit:"Bu kuyu boş.",mgOpp:"Rakip oynuyor…",mgYourTurn:"Sıra sende.",mgLost:"Rakip taş aldı!",goHint:"Bir kesişim noktasına dokun.",goTaken:"Bu nokta dolu.",goIllegal:"Buraya taş koyamazsın: hiç özgürlüğü olmaz.",goWrong:"Bu hamle hedefi tutturmadı. Tekrar dene.",goCaptured:"{n} taş yakaladın!",rvHint:"Noktalı karelerden birine taş koy.",voiceBuiltIn:"Uygulamaya gömülü yüksek kaliteli ses",updated:"Yeni sürüm hazır. Uygulamayı kapatıp açınca gelecek.",updatedLater:"Yeni sürüm hazır, ders bitince yüklenecek.",version:"Sürüm",notif:"Bildirimler",notifAllow:"Bildirimlere izin ver",notifTest:"Deneme bildirimi gönder",notifNeedInstall:"Bildirimler için uygulamayı ana ekrana ekleyip oradan açmalısın (iOS 16.4 ve üstü).",notifDenied:"Bildirimler kapalı. Açmak için: iPhone Ayarlar → Bildirimler → Usta.",notifTitle:"Usta Akademi",notifBody:"Bugünkü antrenmanın seni bekliyor! Serini koru 🔥",notifSent:"Bildirim gönderildi.",notifFail:"Bildirim gönderilemedi."},
-en:{home:"Home",langs:"Languages",games:"Games",profile:"Profile",hi:"Hello!",homeSub:"A little language, a little logic. Small steps every day.",streak:"day streak",dailyGoal:"Daily goal",dailyOf:"{n} / {g} XP today",dailyHint:"Each training earns 10–15 XP.",contLang:"Pick up where you left off",start:"Start",puzzle:"Puzzle of the day",puzzleSub:"White to play and mate in one.",solve:"Solve",yourGames:"Mind games",seeAll:"All",langsTitle:"Learn a language",langsSub:"Each level has units, each unit has 5 trainings. Difficulty grows step by step.",pickLang:"Language you want to learn",level:"Level",unit:"Unit",trn:["Discover","Match","Build","Write","Mastery"],trainingsOf:"{d}/5 trainings",exam:"Level exam",examSub:"Unlocks after all units · 12 mixed questions",examPassed:"Exam passed, level complete!",soonAI:"Coming soon · content generated with AI",locked:"Locked",lockedHint:"Finish the previous step first.",gamesTitle:"Mind games",gamesSub:"Learn the rules, solve puzzles, sharpen your thinking.",lessons:"{n} lessons",steps:"{n} steps",soon:"Soon",lv:["Beginner","Intermediate","Advanced"],check:"Check",cont:"Continue",good:["Great!","Correct!","Nice!","Exactly!"],wrong:"Not quite",answer:"Correct answer:",accent:"Correct, but mind the spelling:",newWord:"New word",whichIs:"Which one is “{w}”?",howSay:"How do you say “{w}”?",listenPick:"Pick what you hear",noAudio:"No sound? Show the word",matchPairs:"Match the pairs",fillBlank:"Fill in the blank",build:"Build the sentence",writeIn:"Write it in {lang}",typeHere:"Type here…",boardHint:"Tap a piece, then the square to move to.",illegal:"That move isn't allowed.",notSolution:"That's not the right move. Try again.",mustCapture:"Capturing is mandatory! Move a piece that can capture.",promoted:"Your piece is crowned!",roll:"Roll",need6:"No 6. Roll again!",got6:"A 6! Your piece is in play.",dice:"Dice",tapPiece:"Tap the piece you want to move.",captured:"Gotcha! The opponent goes back to start.",overshoot:"Too high for this piece. You need the exact number to get home.",ludoWrong:"That move doesn't reach the goal. Try the other piece.",done:"Training complete!",lessonDone:"Lesson complete!",xpEarned:"XP earned",accuracy:"Accuracy",outHearts:"Out of hearts",outText:"No problem. We learn by trying again.",retry:"Try again",quit:"Quit",uiLang:"App language",stats:"Stats",totalXp:"Total XP",trDone:"Trainings",lsDone:"Game lessons",streakDays:"Day streak",reset:"Reset progress",resetQ:"All progress on this device will be deleted. Are you sure?",resetYes:"Yes, reset",cancel:"Cancel",learner:"Learner",profileSub:"Your progress is saved on this device",back:"Back",allDone:"You finished every level up to C2 in this language. Congratulations!",nextUp:"Up next",lessonN:"Lesson {n}",levelsTitle:"Levels",mate:"Checkmate!",chooseUi:"Choose the app language",maxCapOk:"You captured {n}!",maxCapLow:"You captured {n}, but {need} was possible. Try again.",chainBroke:"The chain broke and the rest can't be captured. Try again.",gLvLocked:"Opens after you finish “{lv}”.",lvLocked:"This level opens when you pass the {lv} exam.",theme:"Theme",themeSub:"Pick the colours and background of the app.",updatedLater:"A new version is ready and will load when this lesson ends.",version:"Version",tvHint:"Tap a checker, then the point to move to.",tvBarFirst:"Enter your checker from the bar first!",tvBlocked:"That point is blocked: your opponent has 2 or more checkers there.",tvNoDie:"Your dice can't take you there.",tvNotHome:"To bear off, all your checkers must be in your home board (1–6).",tvNoMove:"This checker can't move with the dice left.",tvHit:"Hit! The opponent's checker goes to the bar.",tvRetry:"You didn't reach the goal. Try again.",tvStuck:"No moves left. Try again.",okInd:"Indicator:",okHint:"Tap tiles to select them, then press ‘Make group’.",okPickHint:"Tap the right tile.",okMake:"Make group",okReset:"Start over",okBad:"These tiles don't form a set or a run.",okPer:"Set",okSeri:"Run",okTotal:"Total {n} / {g}",okNot:"Not that one. Try again.",okLeft:"The remaining tiles can't form a group. Start over.",okAttachHint:"Tap a tile in your rack, then a group on the table.",okAttachBad:"That tile doesn't fit that group.",mmHint:"Flip the cards and find the pairs.",mmMoves:"{n} moves",mmDone:"You found all pairs in {n} moves!",smWatch:"Watch…",smYour:"Your turn: tap in the same order.",smWrong:"Wrong order! Watch this round again.",smDone:"You remembered a sequence of {n}!",spWatch:"Remember the number…",spType:"Type the number you saw.",spOk:"Correct! One more digit.",spWrong:"It was {n}. Here comes a new number.",spDone:"Great number memory!",msWatch:"Remember the objects…",msPick:"Which one disappeared?",msOk:"Correct! Next round.",msWrong:"Not quite. New round coming.",msDone:"Sharp attention!",soundFx:"Sound effects",speed:"Speech speed",speeds:["Slow","Normal","Fast"],voice:"Voice",voiceAuto:"Automatic (clearest voice)",test:"Listen",slow:"Slow",voiceNone:"No voice for this language is installed on this device; the browser default will be used.",voiceTip:"For a more natural voice, download the “enhanced” or “premium” voice for this language in your phone's settings.",settings:"Sound and speech",swipeTip:"Tip: swipe left or right to move between menus.",writeInRo:"Write it in {lang} (Latin letters are fine)",rvIllegal:"You can't play here: you must flip at least one disc.",rvFlipped:"You flipped {n} discs!",rvPass:"You have no move, so your turn passes.",rvAiPass:"Your opponent has no move. Your turn again.",rvWin:"You won! {a} – {b}",rvLose:"Your opponent won this time ({a} – {b}), but the lesson is done!",rvDraw:"It's a draw!",sdPick:"Tap an empty square, then pick a number below.",sdConflict:"That number is already in this row, column or box.",sdWrong:"It fits the rules, but another number belongs here.",sdDone:"Puzzle solved!",mgPick:"Tap one of your pits on the bottom row.",mgYou:"You",mgThem:"Opponent",mgExtra:"Last stone in your treasury: play again!",mgEven:"Even! Those stones are yours.",mgEmpty:"Empty pit! You take both pits.",mgEmptyPit:"That pit is empty.",mgOpp:"Opponent is playing…",mgYourTurn:"Your turn.",mgLost:"Your opponent captured stones!",goHint:"Tap an intersection.",goTaken:"That point is taken.",goIllegal:"You can't play here: the stone would have no liberties.",goWrong:"That move didn't reach the goal. Try again.",goCaptured:"You captured {n} stones!",rvHint:"Place a disc on one of the dotted squares.",voiceBuiltIn:"High-quality voice built into the app",updated:"A new version is ready. Close and reopen the app to get it.",notif:"Notifications",notifAllow:"Allow notifications",notifTest:"Send a test notification",notifNeedInstall:"To get notifications, add the app to your home screen and open it from there (iOS 16.4 or later).",notifDenied:"Notifications are off. Turn them on in iPhone Settings → Notifications → Usta.",notifTitle:"Usta Akademi",notifBody:"Today's training is waiting for you! Keep your streak 🔥",notifSent:"Notification sent.",notifFail:"Couldn't send the notification."},
-de:{home:"Start",langs:"Sprachen",games:"Spiele",profile:"Profil",hi:"Hallo!",homeSub:"Ein bisschen Sprache, ein bisschen Denken. Jeden Tag kleine Schritte.",streak:"Tage in Folge",dailyGoal:"Tagesziel",dailyOf:"{n} / {g} XP heute",dailyHint:"Jedes Training bringt 10–15 XP.",contLang:"Mach weiter, wo du warst",start:"Los",puzzle:"Rätsel des Tages",puzzleSub:"Weiß zieht und setzt in einem Zug matt.",solve:"Lösen",yourGames:"Denkspiele",seeAll:"Alle",langsTitle:"Sprache lernen",langsSub:"Jede Stufe hat Lektionen, jede Lektion 5 Trainings. Es wird Schritt für Schritt schwerer.",pickLang:"Sprache, die du lernen willst",level:"Stufe",unit:"Lektion",trn:["Entdecken","Zuordnen","Sätze bauen","Schreiben","Meister"],trainingsOf:"{d}/5 Trainings",exam:"Stufentest",examSub:"Nach allen Lektionen frei · 12 gemischte Fragen",examPassed:"Test bestanden, Stufe geschafft!",soonAI:"Bald · Inhalte werden mit KI erstellt",locked:"Gesperrt",lockedHint:"Schließe zuerst den vorherigen Schritt ab.",gamesTitle:"Denkspiele",gamesSub:"Lerne die Regeln, löse Rätsel, trainiere dein Denken.",lessons:"{n} Lektionen",steps:"{n} Schritte",soon:"Bald",lv:["Anfänger","Fortgeschritten","Experte"],check:"Prüfen",cont:"Weiter",good:["Super!","Richtig!","Toll!","Genau!"],wrong:"Leider falsch",answer:"Richtige Antwort:",accent:"Richtig, aber achte auf die Schreibung:",newWord:"Neues Wort",whichIs:"Was ist „{w}“?",howSay:"Wie sagt man „{w}“?",listenPick:"Wähle, was du hörst",noAudio:"Kein Ton? Wort anzeigen",matchPairs:"Finde die Paare",fillBlank:"Fülle die Lücke",build:"Bilde den Satz",writeIn:"Auf {lang} schreiben",typeHere:"Hier schreiben…",boardHint:"Tippe eine Figur an, dann das Zielfeld.",illegal:"Dieser Zug ist nicht erlaubt.",notSolution:"Das ist nicht der richtige Zug. Versuch es nochmal.",mustCapture:"Schlagzwang! Zieh mit einem Stein, der schlagen kann.",promoted:"Dein Stein ist jetzt eine Dame!",roll:"Würfeln",need6:"Keine 6. Nochmal würfeln!",got6:"Eine 6! Deine Figur ist im Spiel.",dice:"Würfel",tapPiece:"Tippe die Figur an, die du ziehen willst.",captured:"Rausgeworfen! Der Gegner muss zurück zum Start.",overshoot:"Zu viel für diese Figur. Ins Haus geht es nur mit der genauen Zahl.",ludoWrong:"Dieser Zug erreicht das Ziel nicht. Versuch die andere Figur.",done:"Training geschafft!",lessonDone:"Lektion geschafft!",xpEarned:"XP verdient",accuracy:"Genauigkeit",outHearts:"Keine Herzen mehr",outText:"Kein Problem. Wir lernen durch Wiederholen.",retry:"Nochmal",quit:"Beenden",uiLang:"App-Sprache",stats:"Statistik",totalXp:"XP gesamt",trDone:"Trainings",lsDone:"Spiellektionen",streakDays:"Tage in Folge",reset:"Fortschritt zurücksetzen",resetQ:"Dein ganzer Fortschritt auf diesem Gerät wird gelöscht. Sicher?",resetYes:"Ja, zurücksetzen",cancel:"Abbrechen",learner:"Lernende Person",profileSub:"Dein Fortschritt wird auf diesem Gerät gespeichert",back:"Zurück",allDone:"Du hast alle Stufen bis C2 in dieser Sprache geschafft. Glückwunsch!",nextUp:"Als Nächstes",lessonN:"Lektion {n}",levelsTitle:"Stufen",mate:"Schachmatt!",chooseUi:"App-Sprache wählen",maxCapOk:"{n} Steine geschlagen!",maxCapLow:"{n} geschlagen, aber {need} waren möglich. Versuch es nochmal.",chainBroke:"Die Kette ist gerissen, der Rest ist nicht mehr zu schlagen. Nochmal.",gLvLocked:"Wird nach „{lv}“ freigeschaltet.",lvLocked:"Diese Stufe wird nach dem {lv}-Test freigeschaltet.",theme:"Design",themeSub:"Wähle Farben und Hintergrund der App.",updatedLater:"Neue Version bereit, sie wird nach dieser Lektion geladen.",version:"Version",tvHint:"Tippe einen Stein an, dann das Zielfeld.",tvBarFirst:"Bring zuerst deinen Stein von der Bar ins Spiel!",tvBlocked:"Dieses Feld ist blockiert: Dort stehen 2 oder mehr gegnerische Steine.",tvNoDie:"Mit deinen Würfeln kommst du da nicht hin.",tvNotHome:"Zum Auswürfeln müssen alle Steine im Heimfeld (1–6) sein.",tvNoMove:"Dieser Stein kann mit den übrigen Würfeln nicht ziehen.",tvHit:"Geschlagen! Der gegnerische Stein muss auf die Bar.",tvRetry:"Ziel nicht erreicht. Versuch es nochmal.",tvStuck:"Keine Züge mehr. Versuch es nochmal.",okInd:"Anzeiger:",okHint:"Tippe Steine an und drücke dann „Gruppe bilden“.",okPickHint:"Tippe den richtigen Stein an.",okMake:"Gruppe bilden",okReset:"Neu anfangen",okBad:"Diese Steine bilden weder Satz noch Reihe.",okPer:"Satz",okSeri:"Reihe",okTotal:"Summe {n} / {g}",okNot:"Nicht der. Versuch es nochmal.",okLeft:"Die übrigen Steine bilden keine Gruppe. Fang neu an.",okAttachHint:"Tippe einen Stein auf deiner Bank an, dann eine Gruppe auf dem Tisch.",okAttachBad:"Der Stein passt nicht zu dieser Gruppe.",mmHint:"Dreh die Karten um und finde die Paare.",mmMoves:"{n} Züge",mmDone:"Alle Paare in {n} Zügen gefunden!",smWatch:"Schau zu …",smYour:"Du bist dran: in derselben Reihenfolge tippen.",smWrong:"Falsche Reihenfolge! Schau die Runde nochmal an.",smDone:"Du hast dir eine Folge von {n} gemerkt!",spWatch:"Merk dir die Zahl …",spType:"Gib die Zahl ein, die du gesehen hast.",spOk:"Richtig! Eine Ziffer mehr.",spWrong:"Es war {n}. Gleich kommt eine neue Zahl.",spDone:"Tolles Zahlengedächtnis!",msWatch:"Merk dir die Dinge …",msPick:"Was ist verschwunden?",msOk:"Richtig! Nächste Runde.",msWrong:"Leider nicht. Neue Runde.",msDone:"Super aufgepasst!",soundFx:"Soundeffekte",speed:"Sprechtempo",speeds:["Langsam","Normal","Schnell"],voice:"Stimme",voiceAuto:"Automatisch (klarste Stimme)",test:"Anhören",slow:"Langsam",voiceNone:"Auf diesem Gerät ist keine Stimme für diese Sprache installiert; der Browser nutzt seine Standardstimme.",voiceTip:"Für eine natürlichere Stimme lade in den Telefoneinstellungen die „erweiterte“ oder „Premium“-Stimme dieser Sprache herunter.",settings:"Ton und Sprache",swipeTip:"Tipp: Wische nach links oder rechts, um zwischen den Menüs zu wechseln.",writeInRo:"Auf {lang} schreiben (lateinische Buchstaben gehen auch)",rvIllegal:"Hier geht nicht: Du musst mindestens einen Stein umdrehen.",rvFlipped:"Du hast {n} Steine umgedreht!",rvPass:"Du hast keinen Zug und musst passen.",rvAiPass:"Der Gegner hat keinen Zug. Du bist wieder dran.",rvWin:"Gewonnen! {a} – {b}",rvLose:"Diesmal hat der Gegner gewonnen ({a} – {b}), aber die Lektion ist geschafft!",rvDraw:"Unentschieden!",sdPick:"Tippe ein leeres Feld an und wähle unten eine Zahl.",sdConflict:"Diese Zahl steht schon in der Zeile, Spalte oder im Kasten.",sdWrong:"Passt zu den Regeln, aber hier gehört eine andere Zahl hin.",sdDone:"Rätsel gelöst!",mgPick:"Tippe eine deiner Mulden in der unteren Reihe an.",mgYou:"Du",mgThem:"Gegner",mgExtra:"Letzter Stein in deiner Schatzkammer: nochmal!",mgEven:"Gerade! Die Steine gehören dir.",mgEmpty:"Leere Mulde! Du nimmst beide Mulden.",mgEmptyPit:"Diese Mulde ist leer.",mgOpp:"Der Gegner zieht …",mgYourTurn:"Du bist dran.",mgLost:"Der Gegner hat Steine genommen!",goHint:"Tippe auf einen Kreuzungspunkt.",goTaken:"Dieser Punkt ist besetzt.",goIllegal:"Hier geht nicht: Der Stein hätte keine Freiheiten.",goWrong:"Dieser Zug erreicht das Ziel nicht. Versuch es nochmal.",goCaptured:"Du hast {n} Steine gefangen!",rvHint:"Setz einen Stein auf ein Feld mit Punkt.",voiceBuiltIn:"Hochwertige Stimme in der App enthalten",updated:"Neue Version bereit. App schließen und neu öffnen.",notif:"Mitteilungen",notifAllow:"Mitteilungen erlauben",notifTest:"Testmitteilung senden",notifNeedInstall:"Für Mitteilungen füge die App zum Home-Bildschirm hinzu und öffne sie von dort (ab iOS 16.4).",notifDenied:"Mitteilungen sind aus. Einschalten unter iPhone-Einstellungen → Mitteilungen → Usta.",notifTitle:"Usta Akademi",notifBody:"Dein heutiges Training wartet! Halte deine Serie 🔥",notifSent:"Mitteilung gesendet.",notifFail:"Mitteilung konnte nicht gesendet werden."}
+tr:{home:"Ana sayfa",langs:"Diller",games:"Oyunlar",profile:"Profil",hi:"Merhaba!",homeSub:"Bugün biraz dil, biraz zekâ. Küçük adımlarla ilerle.",streak:"gün seri",dailyGoal:"Günlük hedef",dailyOf:"{n} / {g} XP bugün",dailyHint:"Her antrenman 10–15 XP kazandırır.",contLang:"Kaldığın yerden devam et",start:"Başla",puzzle:"Günün bulmacası",puzzleSub:"Beyaz oynar, tek hamlede mat eder.",solve:"Çöz",yourGames:"Zekâ oyunları",seeAll:"Tümü",langsTitle:"Dil öğren",langsSub:"Her seviye bölümlerden, her bölüm 5 antrenmandan oluşur. Zorluk adım adım artar.",pickLang:"Öğrenmek istediğin dil",level:"Seviye",unit:"Bölüm",trn:["Tanış","Eşleştir","Cümle kur","Yaz","Ustalık"],trainingsOf:"{d}/5 antrenman",exam:"Seviye sınavı",examSub:"Bütün bölümleri bitirince açılır · 12 karışık soru",examPassed:"Sınavı geçtin, bu seviye tamamlandı!",soonAI:"Yakında · içerik yapay zekâ ile üretilecek",locked:"Kilitli",lockedHint:"Önce bir önceki adımı tamamla.",gamesTitle:"Zekâ oyunları",gamesSub:"Kuralları öğren, bulmacaları çöz, pratik zekânı geliştir.",lessons:"{n} ders",steps:"{n} adım",soon:"Yakında",lv:["Başlangıç","Orta","İleri"],check:"Kontrol et",cont:"Devam",good:["Harika!","Doğru!","Süper!","Aynen böyle!"],wrong:"Olmadı",answer:"Doğru cevap:",accent:"Doğru, ama yazımına dikkat:",newWord:"Yeni kelime",whichIs:"Hangisi “{w}”?",howSay:"“{w}” nasıl denir?",listenPick:"Duyduğunu seç",noAudio:"Ses gelmiyor mu? Kelimeyi göster",matchPairs:"Eşleri bul",fillBlank:"Boşluğu doldur",build:"Cümleyi kur",writeIn:"{lang} yaz",typeHere:"Buraya yaz…",boardHint:"Taşa dokun, sonra gideceği kareye dokun.",illegal:"Bu hamle kurala uygun değil.",notSolution:"Bu doğru hamle değil. Tekrar dene.",mustCapture:"Alma zorunlu! Rakip taşı alabilen taşla oyna.",promoted:"Taşın dama oldu!",roll:"Zar at",need6:"6 gelmedi. Tekrar at!",got6:"6 geldi! Taşın oyuna girdi.",dice:"Zar",tapPiece:"Oynatacağın taşa dokun.",captured:"Kızdırdın! Rakip taş başlangıca döndü.",overshoot:"Zar bu taş için fazla. Eve tam sayıyla girmelisin.",ludoWrong:"Bu hamle hedefe ulaşmıyor. Diğer taşı dene.",done:"Antrenman tamamlandı!",lessonDone:"Ders tamamlandı!",xpEarned:"XP kazandın",accuracy:"Doğruluk",outHearts:"Canların bitti",outText:"Sorun değil. Tekrar ederek öğreniyoruz.",retry:"Tekrar dene",quit:"Çık",uiLang:"Uygulama dili",stats:"İstatistikler",totalXp:"Toplam XP",trDone:"Antrenman",lsDone:"Oyun dersi",streakDays:"Gün serisi",reset:"İlerlemeyi sıfırla",resetQ:"Bütün ilerlemen bu cihazdan silinecek. Emin misin?",resetYes:"Evet, sıfırla",cancel:"Vazgeç",learner:"Öğrenci",profileSub:"İlerlemen bu cihazda saklanır",back:"Geri",allDone:"Bu dilde C2'ye kadar bütün seviyeleri bitirdin. Tebrikler!",nextUp:"Sıradaki",lessonN:"Ders {n}",levelsTitle:"Seviyeler",mate:"Mat!",chooseUi:"Uygulama dilini seç",tTitle:"Turnuva",tHead:"Bilgisayara karşı 3 tur",tSub:"Her tur, bu oyunun bir seviyesini bitirince açılır. Finali kazanırsan kupa senin!",tRound:["1. Tur","Yarı final","Final"],tDiff:["Kolay","Orta","Zor"],tPlay:"Oyna",tWin:"Kazandın",tLockLv:"Önce “{lv}” seviyesini bitir.",tLockPrev:"Önce bir önceki turu kazan.",tChampion:"Şampiyonsun!",tWonRound:"Turu kazandın!",tChampTitle:"Şampiyon oldun!",tThinking:"Rakip düşünüyor…",tCheck:"Şah! Şahını kurtar.",tMate:"Mat! Kazandın!",tMated:"Mat oldun. Tekrar dene!",tDraw:"Berabere bitti. Kazanmak için tekrar dene!",tYouWonGame:"Kazandın!",tLostGame:"Bu sefer rakip kazandı. Tekrar dene!",tRoll:"Zar at",tNoMove:"Oynayabileceğin hamle yok.",tAiNoMove:"Rakibin oynayacak hamlesi yok.",tYouHit:"Rakip senin taşını kırdı!",tHitOther:"Bir taş kızdırıldı!",tAiTurn:"oynuyor…",tMovePiece:"Bu taşı oynat",tOppWon:"{n} bütün taşlarını eve soktu. Tekrar dene!",tPass:"Pas",tPassed:"{who} pas geçti.",tScore:"Siyah {b} – Beyaz {w}",tKomi:"beyaza komi {k}",tKo:"Ko kuralı: hemen geri yakalayamazsın.",tStonesLost:"{n} taşın yakalandı!",tGoWin:"Kazandın! Siyah {b} – Beyaz {w}",tGoLose:"Beyaz kazandı: Siyah {b} – Beyaz {w}. Tekrar dene!",tTiles:"{n} taş",tOpenedShort:"Açtı",tCenter:"Ortada {n} taş",tDrawTile:"Ortadan çek",tTakeSide:"Yandan al",tDiscard:"At",tFinish:"Bitir",tSort:"Diz",tOpenN:"Aç ({n})",tLay:"İşle",tOpenedPts:"{n} puanla açtın!",tDrawFirst:"Ortadan çek ya da yandaki taşı al.",tPickDiscard:"Atacağın taşı seç.",tDeckEmpty:"Ortada taş kalmadı, el berabere. Tekrar dene!",tYouFinished:"Elini bitirdin, kazandın!",tOppFinished:"{n} elini bitirdi. Tekrar dene!",tYourPick:"Sıra sende: iki kart çevir.",tMemWin:"Kazandın! {a} – {b}",tMemLose:"Rakip kazandı: {a} – {b}. Tekrar dene!",tTimeUp:"Süre doldu! Tekrar dene.",tTooMany:"3'ten fazla hata yaptın. Tekrar dene.",tMistakes:"Hata {n}/{m}",tCups:"Kupa",tRoundsWon:"Kazanılan tur",maxCapOk:"{n} taş aldın!",maxCapLow:"{n} taş aldın ama {need} taş alınabilirdi. Tekrar dene.",chainBroke:"Zincir koptu, kalan taşlar alınamıyor. Tekrar dene.",gLvLocked:"Bu seviye “{lv}” seviyesini bitirince açılır.",lvLocked:"Bu seviye {lv} sınavını geçince açılır.",theme:"Tema",themeSub:"Uygulamanın renklerini ve arka planını seç.",tvHint:"Bir pula dokun, sonra gideceği haneye dokun.",tvBarFirst:"Önce kırık pulunu oyuna sokmalısın!",tvBlocked:"Bu hane kapalı: orada rakibin 2 ya da daha fazla pulu var.",tvNoDie:"Zarlarınla bu haneye gidemezsin.",tvNotHome:"Pul toplamak için bütün pulların iç bölgende (1–6) olmalı.",tvNoMove:"Bu pul kalan zarlarla oynayamaz.",tvHit:"Kırdın! Rakip pul bara çıktı.",tvRetry:"Hedefe ulaşmadın. Baştan dene.",tvStuck:"Oynanacak hamle kalmadı. Baştan dene.",okInd:"Gösterge:",okHint:"Taşlara dokunarak seç, sonra ‘Grup yap’a bas.",okPickHint:"Doğru taşa dokun.",okMake:"Grup yap",okReset:"Baştan",okBad:"Bu taşlar per ya da seri oluşturmuyor.",okPer:"Per",okSeri:"Seri",okTotal:"Toplam {n} / {g}",okNot:"Bu değil. Tekrar dene.",okLeft:"Kalan taşlar grup oluşturamıyor. Baştan dene.",okAttachHint:"Önce elindeki taşa, sonra masadaki gruba dokun.",okAttachBad:"Bu taş o gruba işlenemez.",mmHint:"Kartları çevir, eşlerini bul.",mmMoves:"{n} hamle",mmDone:"Bütün eşleri {n} hamlede buldun!",smWatch:"İzle…",smYour:"Sıra sende: aynı sırayla dokun.",smWrong:"Yanlış sıra! Bu turu tekrar izle.",smDone:"{n} adımlık diziyi hatırladın!",spWatch:"Sayıyı aklında tut…",spType:"Gördüğün sayıyı yaz.",spOk:"Doğru! Bir basamak daha.",spWrong:"Doğrusu {n} idi. Yeni bir sayı geliyor.",spDone:"Harika sayı hafızası!",msWatch:"Nesneleri aklında tut…",msPick:"Hangisi kayboldu?",msOk:"Doğru! Sıradaki tur.",msWrong:"Olmadı. Yeni tur geliyor.",msDone:"Dikkatin çok iyi!",soundFx:"Ses efektleri",speed:"Konuşma hızı",speeds:["Yavaş","Normal","Hızlı"],voice:"Ses",voiceAuto:"Otomatik (en net ses)",test:"Dinle",slow:"Yavaş",voiceNone:"Bu cihazda bu dil için yüklü ses yok; tarayıcının varsayılan sesi kullanılır.",voiceTip:"Daha doğal bir ses için telefonunun ayarlarından bu dilin “gelişmiş” ya da “premium” sesini indirebilirsin.",settings:"Ses ve konuşma",swipeTip:"İpucu: Menüler arasında ekranı sağa sola kaydırarak geçebilirsin.",writeInRo:"{lang} yaz (Latin harfleriyle de olur)",rvIllegal:"Buraya oynayamazsın: en az bir rakip taşı çevirmelisin.",rvFlipped:"{n} taş çevirdin!",rvPass:"Oynayacak yerin yok, sıra rakibe geçti.",rvAiPass:"Rakibin oynayacak yeri yok, sıra yine sende.",rvWin:"Kazandın! {a} – {b}",rvLose:"Bu sefer rakip kazandı ({a} – {b}), ama ders tamam!",rvDraw:"Berabere!",sdPick:"Boş bir kareye dokun, sonra alttan sayı seç.",sdConflict:"Bu sayı satırda, sütunda ya da kutuda zaten var.",sdWrong:"Kurala uyuyor ama buraya başka bir sayı gelmeli.",sdDone:"Bulmaca çözüldü!",mgPick:"Alt sıradaki kendi kuyularından birine dokun.",mgYou:"Sen",mgThem:"Rakip",mgExtra:"Son taş hazinende: bir hamle daha!",mgEven:"Çift yaptın, taşlar senin!",mgEmpty:"Boş kuyu! İki kuyunun taşları senin.",mgEmptyPit:"Bu kuyu boş.",mgOpp:"Rakip oynuyor…",mgYourTurn:"Sıra sende.",mgLost:"Rakip taş aldı!",goHint:"Bir kesişim noktasına dokun.",goTaken:"Bu nokta dolu.",goIllegal:"Buraya taş koyamazsın: hiç özgürlüğü olmaz.",goWrong:"Bu hamle hedefi tutturmadı. Tekrar dene.",goCaptured:"{n} taş yakaladın!",rvHint:"Noktalı karelerden birine taş koy.",voiceBuiltIn:"Uygulamaya gömülü yüksek kaliteli ses",updated:"Yeni sürüm hazır. Uygulamayı kapatıp açınca gelecek.",updatedLater:"Yeni sürüm hazır, ders bitince yüklenecek.",version:"Sürüm",notif:"Bildirimler",notifAllow:"Bildirimlere izin ver",notifTest:"Deneme bildirimi gönder",notifNeedInstall:"Bildirimler için uygulamayı ana ekrana ekleyip oradan açmalısın (iOS 16.4 ve üstü).",notifDenied:"Bildirimler kapalı. Açmak için: iPhone Ayarlar → Bildirimler → Usta.",notifTitle:"Usta Akademi",notifBody:"Bugünkü antrenmanın seni bekliyor! Serini koru 🔥",notifSent:"Bildirim gönderildi.",notifFail:"Bildirim gönderilemedi."},
+en:{home:"Home",langs:"Languages",games:"Games",profile:"Profile",hi:"Hello!",homeSub:"A little language, a little logic. Small steps every day.",streak:"day streak",dailyGoal:"Daily goal",dailyOf:"{n} / {g} XP today",dailyHint:"Each training earns 10–15 XP.",contLang:"Pick up where you left off",start:"Start",puzzle:"Puzzle of the day",puzzleSub:"White to play and mate in one.",solve:"Solve",yourGames:"Mind games",seeAll:"All",langsTitle:"Learn a language",langsSub:"Each level has units, each unit has 5 trainings. Difficulty grows step by step.",pickLang:"Language you want to learn",level:"Level",unit:"Unit",trn:["Discover","Match","Build","Write","Mastery"],trainingsOf:"{d}/5 trainings",exam:"Level exam",examSub:"Unlocks after all units · 12 mixed questions",examPassed:"Exam passed, level complete!",soonAI:"Coming soon · content generated with AI",locked:"Locked",lockedHint:"Finish the previous step first.",gamesTitle:"Mind games",gamesSub:"Learn the rules, solve puzzles, sharpen your thinking.",lessons:"{n} lessons",steps:"{n} steps",soon:"Soon",lv:["Beginner","Intermediate","Advanced"],check:"Check",cont:"Continue",good:["Great!","Correct!","Nice!","Exactly!"],wrong:"Not quite",answer:"Correct answer:",accent:"Correct, but mind the spelling:",newWord:"New word",whichIs:"Which one is “{w}”?",howSay:"How do you say “{w}”?",listenPick:"Pick what you hear",noAudio:"No sound? Show the word",matchPairs:"Match the pairs",fillBlank:"Fill in the blank",build:"Build the sentence",writeIn:"Write it in {lang}",typeHere:"Type here…",boardHint:"Tap a piece, then the square to move to.",illegal:"That move isn't allowed.",notSolution:"That's not the right move. Try again.",mustCapture:"Capturing is mandatory! Move a piece that can capture.",promoted:"Your piece is crowned!",roll:"Roll",need6:"No 6. Roll again!",got6:"A 6! Your piece is in play.",dice:"Dice",tapPiece:"Tap the piece you want to move.",captured:"Gotcha! The opponent goes back to start.",overshoot:"Too high for this piece. You need the exact number to get home.",ludoWrong:"That move doesn't reach the goal. Try the other piece.",done:"Training complete!",lessonDone:"Lesson complete!",xpEarned:"XP earned",accuracy:"Accuracy",outHearts:"Out of hearts",outText:"No problem. We learn by trying again.",retry:"Try again",quit:"Quit",uiLang:"App language",stats:"Stats",totalXp:"Total XP",trDone:"Trainings",lsDone:"Game lessons",streakDays:"Day streak",reset:"Reset progress",resetQ:"All progress on this device will be deleted. Are you sure?",resetYes:"Yes, reset",cancel:"Cancel",learner:"Learner",profileSub:"Your progress is saved on this device",back:"Back",allDone:"You finished every level up to C2 in this language. Congratulations!",nextUp:"Up next",lessonN:"Lesson {n}",levelsTitle:"Levels",mate:"Checkmate!",chooseUi:"Choose the app language",tTitle:"Tournament",tHead:"3 rounds against the computer",tSub:"Each round opens when you finish a level of this game. Win the final to take the trophy!",tRound:["Round 1","Semi-final","Final"],tDiff:["Easy","Medium","Hard"],tPlay:"Play",tWin:"Won",tLockLv:"Finish “{lv}” first.",tLockPrev:"Win the previous round first.",tChampion:"You're the champion!",tWonRound:"Round won!",tChampTitle:"You're the champion!",tThinking:"Your opponent is thinking…",tCheck:"Check! Save your king.",tMate:"Checkmate! You win!",tMated:"You've been mated. Try again!",tDraw:"It's a draw. Try again to win!",tYouWonGame:"You won!",tLostGame:"Your opponent won this time. Try again!",tRoll:"Roll",tNoMove:"You have no legal move.",tAiNoMove:"Your opponent can't move.",tYouHit:"Your piece was hit!",tHitOther:"A piece was knocked out!",tAiTurn:"is playing…",tMovePiece:"Move this piece",tOppWon:"{n} brought all pieces home. Try again!",tPass:"Pass",tPassed:"{who} passed.",tScore:"Black {b} – White {w}",tKomi:"komi {k} for White",tKo:"Ko rule: you can't recapture immediately.",tStonesLost:"{n} of your stones were captured!",tGoWin:"You won! Black {b} – White {w}",tGoLose:"White won: Black {b} – White {w}. Try again!",tTiles:"{n} tiles",tOpenedShort:"Opened",tCenter:"{n} in the middle",tDrawTile:"Draw",tTakeSide:"Take discard",tDiscard:"Discard",tFinish:"Finish",tSort:"Sort",tOpenN:"Open ({n})",tLay:"Add tiles",tOpenedPts:"You opened with {n} points!",tDrawFirst:"Draw from the middle or take the discard.",tPickDiscard:"Pick a tile to discard.",tDeckEmpty:"The middle is empty; it's a draw. Try again!",tYouFinished:"You finished your hand and won!",tOppFinished:"{n} finished first. Try again!",tYourPick:"Your turn: flip two cards.",tMemWin:"You won! {a} – {b}",tMemLose:"Your opponent won: {a} – {b}. Try again!",tTimeUp:"Time's up! Try again.",tTooMany:"More than 3 mistakes. Try again.",tMistakes:"Mistakes {n}/{m}",tCups:"Trophies",tRoundsWon:"Rounds won",maxCapOk:"You captured {n}!",maxCapLow:"You captured {n}, but {need} was possible. Try again.",chainBroke:"The chain broke and the rest can't be captured. Try again.",gLvLocked:"Opens after you finish “{lv}”.",lvLocked:"This level opens when you pass the {lv} exam.",theme:"Theme",themeSub:"Pick the colours and background of the app.",updatedLater:"A new version is ready and will load when this lesson ends.",version:"Version",tvHint:"Tap a checker, then the point to move to.",tvBarFirst:"Enter your checker from the bar first!",tvBlocked:"That point is blocked: your opponent has 2 or more checkers there.",tvNoDie:"Your dice can't take you there.",tvNotHome:"To bear off, all your checkers must be in your home board (1–6).",tvNoMove:"This checker can't move with the dice left.",tvHit:"Hit! The opponent's checker goes to the bar.",tvRetry:"You didn't reach the goal. Try again.",tvStuck:"No moves left. Try again.",okInd:"Indicator:",okHint:"Tap tiles to select them, then press ‘Make group’.",okPickHint:"Tap the right tile.",okMake:"Make group",okReset:"Start over",okBad:"These tiles don't form a set or a run.",okPer:"Set",okSeri:"Run",okTotal:"Total {n} / {g}",okNot:"Not that one. Try again.",okLeft:"The remaining tiles can't form a group. Start over.",okAttachHint:"Tap a tile in your rack, then a group on the table.",okAttachBad:"That tile doesn't fit that group.",mmHint:"Flip the cards and find the pairs.",mmMoves:"{n} moves",mmDone:"You found all pairs in {n} moves!",smWatch:"Watch…",smYour:"Your turn: tap in the same order.",smWrong:"Wrong order! Watch this round again.",smDone:"You remembered a sequence of {n}!",spWatch:"Remember the number…",spType:"Type the number you saw.",spOk:"Correct! One more digit.",spWrong:"It was {n}. Here comes a new number.",spDone:"Great number memory!",msWatch:"Remember the objects…",msPick:"Which one disappeared?",msOk:"Correct! Next round.",msWrong:"Not quite. New round coming.",msDone:"Sharp attention!",soundFx:"Sound effects",speed:"Speech speed",speeds:["Slow","Normal","Fast"],voice:"Voice",voiceAuto:"Automatic (clearest voice)",test:"Listen",slow:"Slow",voiceNone:"No voice for this language is installed on this device; the browser default will be used.",voiceTip:"For a more natural voice, download the “enhanced” or “premium” voice for this language in your phone's settings.",settings:"Sound and speech",swipeTip:"Tip: swipe left or right to move between menus.",writeInRo:"Write it in {lang} (Latin letters are fine)",rvIllegal:"You can't play here: you must flip at least one disc.",rvFlipped:"You flipped {n} discs!",rvPass:"You have no move, so your turn passes.",rvAiPass:"Your opponent has no move. Your turn again.",rvWin:"You won! {a} – {b}",rvLose:"Your opponent won this time ({a} – {b}), but the lesson is done!",rvDraw:"It's a draw!",sdPick:"Tap an empty square, then pick a number below.",sdConflict:"That number is already in this row, column or box.",sdWrong:"It fits the rules, but another number belongs here.",sdDone:"Puzzle solved!",mgPick:"Tap one of your pits on the bottom row.",mgYou:"You",mgThem:"Opponent",mgExtra:"Last stone in your treasury: play again!",mgEven:"Even! Those stones are yours.",mgEmpty:"Empty pit! You take both pits.",mgEmptyPit:"That pit is empty.",mgOpp:"Opponent is playing…",mgYourTurn:"Your turn.",mgLost:"Your opponent captured stones!",goHint:"Tap an intersection.",goTaken:"That point is taken.",goIllegal:"You can't play here: the stone would have no liberties.",goWrong:"That move didn't reach the goal. Try again.",goCaptured:"You captured {n} stones!",rvHint:"Place a disc on one of the dotted squares.",voiceBuiltIn:"High-quality voice built into the app",updated:"A new version is ready. Close and reopen the app to get it.",notif:"Notifications",notifAllow:"Allow notifications",notifTest:"Send a test notification",notifNeedInstall:"To get notifications, add the app to your home screen and open it from there (iOS 16.4 or later).",notifDenied:"Notifications are off. Turn them on in iPhone Settings → Notifications → Usta.",notifTitle:"Usta Akademi",notifBody:"Today's training is waiting for you! Keep your streak 🔥",notifSent:"Notification sent.",notifFail:"Couldn't send the notification."},
+de:{home:"Start",langs:"Sprachen",games:"Spiele",profile:"Profil",hi:"Hallo!",homeSub:"Ein bisschen Sprache, ein bisschen Denken. Jeden Tag kleine Schritte.",streak:"Tage in Folge",dailyGoal:"Tagesziel",dailyOf:"{n} / {g} XP heute",dailyHint:"Jedes Training bringt 10–15 XP.",contLang:"Mach weiter, wo du warst",start:"Los",puzzle:"Rätsel des Tages",puzzleSub:"Weiß zieht und setzt in einem Zug matt.",solve:"Lösen",yourGames:"Denkspiele",seeAll:"Alle",langsTitle:"Sprache lernen",langsSub:"Jede Stufe hat Lektionen, jede Lektion 5 Trainings. Es wird Schritt für Schritt schwerer.",pickLang:"Sprache, die du lernen willst",level:"Stufe",unit:"Lektion",trn:["Entdecken","Zuordnen","Sätze bauen","Schreiben","Meister"],trainingsOf:"{d}/5 Trainings",exam:"Stufentest",examSub:"Nach allen Lektionen frei · 12 gemischte Fragen",examPassed:"Test bestanden, Stufe geschafft!",soonAI:"Bald · Inhalte werden mit KI erstellt",locked:"Gesperrt",lockedHint:"Schließe zuerst den vorherigen Schritt ab.",gamesTitle:"Denkspiele",gamesSub:"Lerne die Regeln, löse Rätsel, trainiere dein Denken.",lessons:"{n} Lektionen",steps:"{n} Schritte",soon:"Bald",lv:["Anfänger","Fortgeschritten","Experte"],check:"Prüfen",cont:"Weiter",good:["Super!","Richtig!","Toll!","Genau!"],wrong:"Leider falsch",answer:"Richtige Antwort:",accent:"Richtig, aber achte auf die Schreibung:",newWord:"Neues Wort",whichIs:"Was ist „{w}“?",howSay:"Wie sagt man „{w}“?",listenPick:"Wähle, was du hörst",noAudio:"Kein Ton? Wort anzeigen",matchPairs:"Finde die Paare",fillBlank:"Fülle die Lücke",build:"Bilde den Satz",writeIn:"Auf {lang} schreiben",typeHere:"Hier schreiben…",boardHint:"Tippe eine Figur an, dann das Zielfeld.",illegal:"Dieser Zug ist nicht erlaubt.",notSolution:"Das ist nicht der richtige Zug. Versuch es nochmal.",mustCapture:"Schlagzwang! Zieh mit einem Stein, der schlagen kann.",promoted:"Dein Stein ist jetzt eine Dame!",roll:"Würfeln",need6:"Keine 6. Nochmal würfeln!",got6:"Eine 6! Deine Figur ist im Spiel.",dice:"Würfel",tapPiece:"Tippe die Figur an, die du ziehen willst.",captured:"Rausgeworfen! Der Gegner muss zurück zum Start.",overshoot:"Zu viel für diese Figur. Ins Haus geht es nur mit der genauen Zahl.",ludoWrong:"Dieser Zug erreicht das Ziel nicht. Versuch die andere Figur.",done:"Training geschafft!",lessonDone:"Lektion geschafft!",xpEarned:"XP verdient",accuracy:"Genauigkeit",outHearts:"Keine Herzen mehr",outText:"Kein Problem. Wir lernen durch Wiederholen.",retry:"Nochmal",quit:"Beenden",uiLang:"App-Sprache",stats:"Statistik",totalXp:"XP gesamt",trDone:"Trainings",lsDone:"Spiellektionen",streakDays:"Tage in Folge",reset:"Fortschritt zurücksetzen",resetQ:"Dein ganzer Fortschritt auf diesem Gerät wird gelöscht. Sicher?",resetYes:"Ja, zurücksetzen",cancel:"Abbrechen",learner:"Lernende Person",profileSub:"Dein Fortschritt wird auf diesem Gerät gespeichert",back:"Zurück",allDone:"Du hast alle Stufen bis C2 in dieser Sprache geschafft. Glückwunsch!",nextUp:"Als Nächstes",lessonN:"Lektion {n}",levelsTitle:"Stufen",mate:"Schachmatt!",chooseUi:"App-Sprache wählen",tTitle:"Turnier",tHead:"3 Runden gegen den Computer",tSub:"Jede Runde öffnet sich nach einer Stufe dieses Spiels. Gewinne das Finale und hol den Pokal!",tRound:["Runde 1","Halbfinale","Finale"],tDiff:["Leicht","Mittel","Schwer"],tPlay:"Spielen",tWin:"Gewonnen",tLockLv:"Schließe zuerst „{lv}“ ab.",tLockPrev:"Gewinne zuerst die vorige Runde.",tChampion:"Du bist Champion!",tWonRound:"Runde gewonnen!",tChampTitle:"Du bist Champion!",tThinking:"Der Gegner überlegt …",tCheck:"Schach! Rette deinen König.",tMate:"Schachmatt! Du gewinnst!",tMated:"Du bist matt. Versuch es nochmal!",tDraw:"Unentschieden. Versuch es nochmal!",tYouWonGame:"Gewonnen!",tLostGame:"Diesmal hat der Gegner gewonnen. Nochmal!",tRoll:"Würfeln",tNoMove:"Du hast keinen Zug.",tAiNoMove:"Der Gegner kann nicht ziehen.",tYouHit:"Deine Figur wurde geschlagen!",tHitOther:"Eine Figur wurde rausgeworfen!",tAiTurn:"ist am Zug …",tMovePiece:"Diese Figur ziehen",tOppWon:"{n} hat alle Figuren im Haus. Nochmal!",tPass:"Passen",tPassed:"{who} hat gepasst.",tScore:"Schwarz {b} – Weiß {w}",tKomi:"Komi {k} für Weiß",tKo:"Ko-Regel: Du darfst nicht sofort zurückschlagen.",tStonesLost:"{n} deiner Steine wurden gefangen!",tGoWin:"Gewonnen! Schwarz {b} – Weiß {w}",tGoLose:"Weiß gewinnt: Schwarz {b} – Weiß {w}. Nochmal!",tTiles:"{n} Steine",tOpenedShort:"Ausgelegt",tCenter:"{n} in der Mitte",tDrawTile:"Ziehen",tTakeSide:"Abwurf nehmen",tDiscard:"Ablegen",tFinish:"Beenden",tSort:"Sortieren",tOpenN:"Auslegen ({n})",tLay:"Anlegen",tOpenedPts:"Mit {n} Punkten ausgelegt!",tDrawFirst:"Zieh aus der Mitte oder nimm den Abwurf.",tPickDiscard:"Wähle einen Stein zum Ablegen.",tDeckEmpty:"Die Mitte ist leer, unentschieden. Nochmal!",tYouFinished:"Hand beendet, gewonnen!",tOppFinished:"{n} war zuerst fertig. Nochmal!",tYourPick:"Du bist dran: Dreh zwei Karten um.",tMemWin:"Gewonnen! {a} – {b}",tMemLose:"Der Gegner gewinnt: {a} – {b}. Nochmal!",tTimeUp:"Die Zeit ist um! Nochmal.",tTooMany:"Mehr als 3 Fehler. Nochmal.",tMistakes:"Fehler {n}/{m}",tCups:"Pokale",tRoundsWon:"Gewonnene Runden",maxCapOk:"{n} Steine geschlagen!",maxCapLow:"{n} geschlagen, aber {need} waren möglich. Versuch es nochmal.",chainBroke:"Die Kette ist gerissen, der Rest ist nicht mehr zu schlagen. Nochmal.",gLvLocked:"Wird nach „{lv}“ freigeschaltet.",lvLocked:"Diese Stufe wird nach dem {lv}-Test freigeschaltet.",theme:"Design",themeSub:"Wähle Farben und Hintergrund der App.",updatedLater:"Neue Version bereit, sie wird nach dieser Lektion geladen.",version:"Version",tvHint:"Tippe einen Stein an, dann das Zielfeld.",tvBarFirst:"Bring zuerst deinen Stein von der Bar ins Spiel!",tvBlocked:"Dieses Feld ist blockiert: Dort stehen 2 oder mehr gegnerische Steine.",tvNoDie:"Mit deinen Würfeln kommst du da nicht hin.",tvNotHome:"Zum Auswürfeln müssen alle Steine im Heimfeld (1–6) sein.",tvNoMove:"Dieser Stein kann mit den übrigen Würfeln nicht ziehen.",tvHit:"Geschlagen! Der gegnerische Stein muss auf die Bar.",tvRetry:"Ziel nicht erreicht. Versuch es nochmal.",tvStuck:"Keine Züge mehr. Versuch es nochmal.",okInd:"Anzeiger:",okHint:"Tippe Steine an und drücke dann „Gruppe bilden“.",okPickHint:"Tippe den richtigen Stein an.",okMake:"Gruppe bilden",okReset:"Neu anfangen",okBad:"Diese Steine bilden weder Satz noch Reihe.",okPer:"Satz",okSeri:"Reihe",okTotal:"Summe {n} / {g}",okNot:"Nicht der. Versuch es nochmal.",okLeft:"Die übrigen Steine bilden keine Gruppe. Fang neu an.",okAttachHint:"Tippe einen Stein auf deiner Bank an, dann eine Gruppe auf dem Tisch.",okAttachBad:"Der Stein passt nicht zu dieser Gruppe.",mmHint:"Dreh die Karten um und finde die Paare.",mmMoves:"{n} Züge",mmDone:"Alle Paare in {n} Zügen gefunden!",smWatch:"Schau zu …",smYour:"Du bist dran: in derselben Reihenfolge tippen.",smWrong:"Falsche Reihenfolge! Schau die Runde nochmal an.",smDone:"Du hast dir eine Folge von {n} gemerkt!",spWatch:"Merk dir die Zahl …",spType:"Gib die Zahl ein, die du gesehen hast.",spOk:"Richtig! Eine Ziffer mehr.",spWrong:"Es war {n}. Gleich kommt eine neue Zahl.",spDone:"Tolles Zahlengedächtnis!",msWatch:"Merk dir die Dinge …",msPick:"Was ist verschwunden?",msOk:"Richtig! Nächste Runde.",msWrong:"Leider nicht. Neue Runde.",msDone:"Super aufgepasst!",soundFx:"Soundeffekte",speed:"Sprechtempo",speeds:["Langsam","Normal","Schnell"],voice:"Stimme",voiceAuto:"Automatisch (klarste Stimme)",test:"Anhören",slow:"Langsam",voiceNone:"Auf diesem Gerät ist keine Stimme für diese Sprache installiert; der Browser nutzt seine Standardstimme.",voiceTip:"Für eine natürlichere Stimme lade in den Telefoneinstellungen die „erweiterte“ oder „Premium“-Stimme dieser Sprache herunter.",settings:"Ton und Sprache",swipeTip:"Tipp: Wische nach links oder rechts, um zwischen den Menüs zu wechseln.",writeInRo:"Auf {lang} schreiben (lateinische Buchstaben gehen auch)",rvIllegal:"Hier geht nicht: Du musst mindestens einen Stein umdrehen.",rvFlipped:"Du hast {n} Steine umgedreht!",rvPass:"Du hast keinen Zug und musst passen.",rvAiPass:"Der Gegner hat keinen Zug. Du bist wieder dran.",rvWin:"Gewonnen! {a} – {b}",rvLose:"Diesmal hat der Gegner gewonnen ({a} – {b}), aber die Lektion ist geschafft!",rvDraw:"Unentschieden!",sdPick:"Tippe ein leeres Feld an und wähle unten eine Zahl.",sdConflict:"Diese Zahl steht schon in der Zeile, Spalte oder im Kasten.",sdWrong:"Passt zu den Regeln, aber hier gehört eine andere Zahl hin.",sdDone:"Rätsel gelöst!",mgPick:"Tippe eine deiner Mulden in der unteren Reihe an.",mgYou:"Du",mgThem:"Gegner",mgExtra:"Letzter Stein in deiner Schatzkammer: nochmal!",mgEven:"Gerade! Die Steine gehören dir.",mgEmpty:"Leere Mulde! Du nimmst beide Mulden.",mgEmptyPit:"Diese Mulde ist leer.",mgOpp:"Der Gegner zieht …",mgYourTurn:"Du bist dran.",mgLost:"Der Gegner hat Steine genommen!",goHint:"Tippe auf einen Kreuzungspunkt.",goTaken:"Dieser Punkt ist besetzt.",goIllegal:"Hier geht nicht: Der Stein hätte keine Freiheiten.",goWrong:"Dieser Zug erreicht das Ziel nicht. Versuch es nochmal.",goCaptured:"Du hast {n} Steine gefangen!",rvHint:"Setz einen Stein auf ein Feld mit Punkt.",voiceBuiltIn:"Hochwertige Stimme in der App enthalten",updated:"Neue Version bereit. App schließen und neu öffnen.",notif:"Mitteilungen",notifAllow:"Mitteilungen erlauben",notifTest:"Testmitteilung senden",notifNeedInstall:"Für Mitteilungen füge die App zum Home-Bildschirm hinzu und öffne sie von dort (ab iOS 16.4).",notifDenied:"Mitteilungen sind aus. Einschalten unter iPhone-Einstellungen → Mitteilungen → Usta.",notifTitle:"Usta Akademi",notifBody:"Dein heutiges Training wartet! Halte deine Serie 🔥",notifSent:"Mitteilung gesendet.",notifFail:"Mitteilung konnte nicht gesendet werden."}
 };
 const UI_LANGS=[['tr','Türkçe'],['en','English'],['de','Deutsch']];
 
 /* ---------- state ---------- */
 const KEY='usta-akademi-v1';
-function defaults(){return{ui:'tr',target:'en',tab:'home',gameView:null,lastGame:'chess',xp:0,daily:{d:todayStr(),xp:0},streak:{last:null,n:0},langs:{},exams:{},games:{},trainings:0,lessons:0,sound:true,rate:.85,voice:{},swipeHint:false};}
+function defaults(){return{ui:'tr',target:'en',tab:'home',gameView:null,lastGame:'chess',xp:0,daily:{d:todayStr(),xp:0},streak:{last:null,n:0},langs:{},exams:{},games:{},trainings:0,lessons:0,sound:true,rate:.85,voice:{},swipeHint:false,tour:{}};}
 function load(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r)return Object.assign(defaults(),r);}catch(e){}return defaults();}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 let S=load();
@@ -1846,7 +1892,7 @@ function viewGames(){
  Object.entries(GAMES).forEach(([k,g],i)=>{
   const n=gTotal(k),d=gAllDone(k);
   grid.append(h('button',{class:'card game-card'+(i===0?' wide':''),onclick:()=>{S.gameView=k;save();render('r');screen.scrollTop=0;SFX.swipe();}},gameArt(k),
-   h('div',{class:'stack',style:'gap:6px;min-width:0'},h('div',{class:'h-m'},L(g.name)),i===0?h('p',{class:'muted',style:'font-size:14px'},L(g.desc)):null,h('div',{class:'muted',style:'font-size:13px;font-weight:700'},`${d}/${n} · ${t('lessons',{n})}`),h('div',{class:'meter'},h('i',{style:`width:${d/n*100}%`})))));
+   h('div',{class:'stack',style:'gap:6px;min-width:0'},h('div',{class:'h-m'},L(g.name),tWon(k)>=3?' 🏆':''),i===0?h('p',{class:'muted',style:'font-size:14px'},L(g.desc)):null,h('div',{class:'muted',style:'font-size:13px;font-weight:700'},`${d}/${n} · ${t('lessons',{n})}`),h('div',{class:'meter'},h('i',{style:`width:${d/n*100}%`})))));
  });
  const soon=h('div',{class:'soon-grid'});
  SOON.forEach(([n,g])=>soon.append(h('div',{class:'soon'},h('span',{class:'glyph'},g),L(n),h('span',{class:'pill'},t('soon')))));
@@ -1871,7 +1917,7 @@ function viewCourse(k){
  return h('div',{class:'stack'},
   h('button',{class:'back',onclick:()=>{S.gameView=null;save();render('l');SFX.swipe();},html:icon('back')+t('back')}),
   h('div',{class:'row'},h('div',{style:'width:96px;flex:none'},gameArt(k)),h('div',{style:'min-width:0'},h('h1',{class:'h-l'},L(g.name)),h('p',{class:'muted',style:'font-size:15px'},L(g.desc)))),
-  ...levels);
+  tourSection(k),...levels);
 }
 /* notifications (local, sent by the app itself through its service worker) */
 const notifSupported=()=>'Notification' in window&&'serviceWorker' in navigator;
@@ -1937,7 +1983,9 @@ function viewProfile(){
     h('div',{class:'card stat'},h('b',{},String(streakNow())),h('span',{},t('streakDays'))),
     h('div',{class:'card stat'},h('b',{},String(S.xp)),h('span',{},t('totalXp'))),
     h('div',{class:'card stat'},h('b',{},String(done)),h('span',{},t('trDone'))),
-    h('div',{class:'card stat'},h('b',{},String(Object.values(S.games).reduce((a,b)=>a+b,0))),h('span',{},t('lsDone')))),
+    h('div',{class:'card stat'},h('b',{},String(Object.values(S.games).reduce((a,b)=>a+b,0))),h('span',{},t('lsDone'))),
+    h('div',{class:'card stat'},h('b',{},`🏆 ${tCups()}`),h('span',{},t('tCups'))),
+    h('div',{class:'card stat'},h('b',{},String(Object.values(S.tour||{}).reduce((a,b)=>a+b,0))),h('span',{},t('tRoundsWon')))),
    h('h2',{class:'h-m'},t('theme')),h('p',{class:'muted',style:'font-size:14px;margin-top:-8px'},t('themeSub')),skinPicker(draw),
    h('h2',{class:'h-m'},t('settings')),settings,
    h('h2',{class:'h-m'},t('uiLang')),seg,reset,
@@ -1960,7 +2008,7 @@ function startLesson(g,i,l=0){
 function startPuzzle(){startSession({theme:'t-game',hearts:false,build:()=>[PUZZLE],lesson:true,onFinish:()=>{addXP(5);return 5;}});}
 
 let PS=null;
-const SELF=new Set(['match','board','ludo','dice','reversi','sudoku','mangala','go','tavla','okey','memory','simon','span','missing']),CONT=new Set(['intro','info']);
+const SELF=new Set(['tourney','match','board','ludo','dice','reversi','sudoku','mangala','go','tavla','okey','memory','simon','span','missing']),CONT=new Set(['intro','info']);
 function startSession(o){
  const steps=o.build();
  PS={...o,queue:steps.slice(),total:steps.length,done:0,hearts:o.hearts?5:null,mistakes:0,graded:0,answer:null,state:'ask'};
@@ -2025,12 +2073,12 @@ function showFeedback(ok,detail,selfDone){
 function finishSession(){
  const acc=PS.graded?Math.round(100*(PS.graded-PS.mistakes)/PS.graded):100;
  const xp=PS.onFinish(PS.mistakes);
- const lesson=PS.lesson;
+ const lesson=PS.lesson,tour=PS.tourney;
  player.innerHTML='';
  const res=h('div',{class:'result gut'},
   h('canvas',{class:'confetti'}),
   h('div',{class:'medal',html:icon('trophy')}),
-  h('h1',{class:'h-xl'},lesson?t('lessonDone'):t('done')),
+  h('h1',{class:'h-xl'},tour?(tour.r===2?t('tChampTitle'):t('tWonRound')):lesson?t('lessonDone'):t('done')),
   h('div',{class:'res-stats'},h('div',{class:'stat'},h('b',{},'+'+xp),h('span',{},t('xpEarned'))),h('div',{class:'stat'},h('b',{},acc+'%'),h('span',{},t('accuracy')))));
  const foot=h('div',{class:'p-foot gut'},h('button',{class:'btn block',id:'check-btn',onclick:closePlayer},t('cont')));
  player.append(res,foot);confetti($('canvas',res));SFX.win();
@@ -2076,7 +2124,7 @@ function drawTv(wrap,st,o={}){
   return el;};
  TV_TOP.forEach((p,i)=>g.append(cell(p,'top',i)));TV_BOT.forEach((p,i)=>g.append(cell(p,'bot',i)));
  const mid=h('div',{class:'tmid'});(o.dice||[]).forEach(d=>{const e=dieEl(d.v);if(d.used)e.classList.add('used');mid.append(e);});g.append(mid);
- const off=h('div',{class:'toff'+(tg.has(0)?' tg':'')},h('span',{class:'pn'},'⤓'),st.off?h('b',{},String(st.off)):null);
+ const off=h('div',{class:'toff'+(tg.has(0)?' tg':'')},st.oppOff?h('b',{class:'oo'},String(st.oppOff)):null,h('span',{class:'pn'},'⤓'),st.off?h('b',{},String(st.off)):null);
  if(o.onTap)off.append(h('button',{'aria-label':'off',onclick:()=>o.onTap(0)}));g.append(off);
  wrap.append(g);return g;
 }
@@ -2302,11 +2350,12 @@ const RENDER={
    if(!mv.length){if(rvLegal(B,n,1).length){api.flash(t('rvAiPass'));busy=false;draw();}else finish();return;}
    const corners=[0,n-1,n*(n-1),n*n-1],cm=mv.filter(m=>corners.includes(m));let p;
    if(q.ai==='hard'){const X=new Set([n+1,2*n-2,n*(n-2)+1,n*n-n-2]);const edge=m=>m%n===0||m%n===n-1||m<n||m>=n*(n-1);const sc=m=>(corners.includes(m)?100:0)-(X.has(m)?40:0)+(edge(m)?8:0)+rvFlips(B,n,m,-1).length;p=mv.reduce((a,b)=>sc(b)>sc(a)?b:a);}
+   else if(q.ai==='easy'&&Math.random()<.7)p=pick(mv);
    else if(cm.length&&Math.random()<.6)p=cm[0];else if(Math.random()<.4)p=mv.reduce((a,b)=>rvFlips(B,n,b,-1).length>rvFlips(B,n,a,-1).length?b:a);else p=pick(mv);
    const fl=apply(p,-1);
    setTimeout(()=>{if(rvLegal(B,n,1).length){busy=false;draw();}else if(rvLegal(B,n,-1).length){api.flash(t('rvPass'));setTimeout(aiTurn,900);}else finish();},450+fl.length*70);
   }
-  function finish(){done=true;draw();const[b,w]=counts();if(b>w)SFX.win();setTimeout(()=>api.complete(true,b>w?t('rvWin',{a:b,b:w}):b<w?t('rvLose',{a:b,b:w}):t('rvDraw')),500);}
+  function finish(){done=true;draw();const[b,w]=counts();if(b>w)SFX.win();setTimeout(()=>api.complete(!q.mustWin||b>w,b>w?t('rvWin',{a:b,b:w}):b<w?t('rvLose',{a:b,b:w}):t('rvDraw')),500);}
   draw();api.hint(t('rvHint'));
  },
  sudoku(q,api,body){
@@ -2316,6 +2365,10 @@ const RENDER={
   const cur=sol.map((v,i)=>blanks.has(i)?0:v);let left=blanks.size,done=false,sel=blanks.size?Math.min(...blanks):-1;
   const grid=h('div',{class:'sd n'+n,style:`grid-template-columns:repeat(${n},1fr)`}),pad=h('div',{class:'numpad',style:`grid-template-columns:repeat(${n>6?5:n},1fr)`});
   body.append(h('h2',{class:'prompt'},L(q.text)),h('div',{class:'board-wrap'},grid),pad);
+  let miss=0,tLeft=q.timeLimit||0,clockUpd=()=>{};
+  if(q.timeLimit){const clock=h('div',{class:'score'});body.insertBefore(clock,body.querySelector('.board-wrap'));
+   clockUpd=()=>{clock.innerHTML='';clock.append(h('span',{class:tLeft<60?'on':''},`⏱ ${Math.floor(tLeft/60)}:${String(tLeft%60).padStart(2,'0')}`),h('span',{},t('tMistakes',{n:miss,m:q.maxMiss})));};
+   const iv=setInterval(()=>{if(done||!document.body.contains(grid))return clearInterval(iv);tLeft--;clockUpd();if(tLeft<=0){clearInterval(iv);done=true;SFX.bad();api.complete(false,t('tTimeUp'));}},1000);clockUpd();}
   const rc=i=>[Math.floor(i/n),i%n],box=i=>{const[r,c]=rc(i);return Math.floor(r/bh)*10+Math.floor(c/bw);};
   const peers=(a,b)=>{const[r1,c1]=rc(a),[r2,c2]=rc(b);return r1===r2||c1===c2||box(a)===box(b);};
   function draw(fx){
@@ -2330,7 +2383,7 @@ const RENDER={
   function put(v){
    if(done)return;if(sel<0||!blanks.has(sel)||cur[sel]){SFX.bad();return api.flash(t('sdPick'));}
    if(sol[sel]===v){cur[sel]=v;left--;SFX.pop();const was=sel;const nxt=[...blanks].filter(i=>!cur[i]).sort((a,b)=>a-b)[0];sel=nxt??was;draw({i:was,c:'pop'});if(!left){done=true;SFX.win();setTimeout(()=>api.complete(true,t('sdDone')),450);}}
-   else{const conflict=[...Array(n*n).keys()].some(i=>i!==sel&&cur[i]===v&&peers(i,sel));SFX.bad();api.flash(conflict?t('sdConflict'):t('sdWrong'));draw({i:sel,c:'bad'});}
+   else{const conflict=[...Array(n*n).keys()].some(i=>i!==sel&&cur[i]===v&&peers(i,sel));SFX.bad();if(q.maxMiss!=null){miss++;clockUpd();if(miss>q.maxMiss){done=true;return api.complete(false,t('tTooMany'));}}api.flash(conflict?t('sdConflict'):t('sdWrong'));draw({i:sel,c:'bad'});}
   }
   draw();api.hint(t('sdPick'));
  },
@@ -2361,10 +2414,10 @@ const RENDER={
   function aiTurn(){
    const opts=[6,7,8,9,10,11].filter(i=>P[i]);if(!opts.length)return finish();
    let best=opts[0],bs=-1e9;for(const o of opts){const r=mgSim(P,ST,o,1);const s=(r.res.extra?6:0)+r.res.capN*2+(q.ai==='hard'?0:Math.random()*3)-(q.ai==='hard'&&r.end&&r.ST[1]<r.ST[0]?50:0);if(s>bs){bs=s;best=o;}}
-   if(q.ai!=='hard'&&Math.random()<.35)best=pick(opts);
+   if(q.ai!=='hard'&&Math.random()<(q.ai==='easy'?.7:.35))best=pick(opts);
    animate(best,1,r=>{if(r.end)return finish();if(r.res.cap)api.flash(t('mgLost'));if(r.res.extra){setTimeout(aiTurn,800);return;}status.textContent=t('mgYourTurn');busy=false;draw();});
   }
-  function finish(){done=true;draw();status.textContent='';if(ST[0]>ST[1])SFX.win();setTimeout(()=>api.complete(true,ST[0]>ST[1]?t('rvWin',{a:ST[0],b:ST[1]}):ST[0]<ST[1]?t('rvLose',{a:ST[0],b:ST[1]}):t('rvDraw')),500);}
+  function finish(){done=true;draw();status.textContent='';if(ST[0]>ST[1])SFX.win();setTimeout(()=>api.complete(!q.mustWin||ST[0]>ST[1],ST[0]>ST[1]?t('rvWin',{a:ST[0],b:ST[1]}):ST[0]<ST[1]?t('rvLose',{a:ST[0],b:ST[1]}):t('rvDraw')),500);}
   draw();api.hint(t('mgPick'));if(q.goal==='match')status.textContent=t('mgYourTurn');
  },
  go(q,api,body){
@@ -2537,6 +2590,476 @@ const RENDER={
  }
 
 };
+
+/* ================= tournament engines ================= */
+const AI_LV=['easy','normal','hard'];
+/* ---------- chess (full rules: castling, en passant, promotion to queen; white = you) ---------- */
+const CV={P:100,N:320,B:330,R:500,Q:900,K:0};
+const isW=p=>!!p&&p===p.toUpperCase();
+const colOf=p=>!p?null:(isW(p)?'w':'b');
+function chInit(){const b=Array(64).fill('');const back='RNBQKBNR';for(let f=0;f<8;f++){b[f]=back[f];b[8+f]='P';b[48+f]='p';b[56+f]=back[f].toLowerCase();}return{b,turn:'w',cs:{K:1,Q:1,k:1,q:1},ep:-1,half:0};}
+function chAttacked(b,sq,by){
+ const r=sq>>3,f=sq&7,at=(rr,ff)=>rr>=0&&rr<8&&ff>=0&&ff<8?b[rr*8+ff]:null,U=x=>by==='w'?x:x.toLowerCase();
+ const pr=by==='w'?r-1:r+1;if(at(pr,f-1)===U('P')||at(pr,f+1)===U('P'))return true;
+ for(const[a,c]of[[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]])if(at(r+a,f+c)===U('N'))return true;
+ for(const[a,c]of[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]])if(at(r+a,f+c)===U('K'))return true;
+ const ray=(ds,set)=>{for(const[a,c]of ds){let rr=r+a,ff=f+c;while(rr>=0&&rr<8&&ff>=0&&ff<8){const p=b[rr*8+ff];if(p){if(set.includes(p))return true;break;}rr+=a;ff+=c;}}return false;};
+ return ray([[1,0],[-1,0],[0,1],[0,-1]],[U('R'),U('Q')])||ray([[1,1],[1,-1],[-1,1],[-1,-1]],[U('B'),U('Q')]);
+}
+function chPseudo(s){
+ const b=s.b,me=s.turn,mv=[];
+ for(let sq=0;sq<64;sq++){
+  const p=b[sq];if(!p||colOf(p)!==me)continue;const r=sq>>3,f=sq&7,u=p.toUpperCase();
+  const add=(to,x)=>mv.push(Object.assign({from:sq,to},x||{}));
+  const tgt=(rr,ff)=>{if(rr<0||rr>7||ff<0||ff>7)return 0;const q=b[rr*8+ff];return !q?1:colOf(q)!==me?2:0;};
+  if(u==='P'){const d=me==='w'?1:-1,start=me==='w'?1:6,last=me==='w'?7:0;
+   if(tgt(r+d,f)===1){add((r+d)*8+f,r+d===last?{promo:1}:null);if(r===start&&tgt(r+2*d,f)===1)add((r+2*d)*8+f,{dbl:1});}
+   for(const c of[-1,1]){const ff=f+c,rr=r+d;if(ff<0||ff>7)continue;const to=rr*8+ff;if(tgt(rr,ff)===2)add(to,rr===last?{promo:1}:null);else if(to===s.ep)add(to,{epc:1});}}
+  else if(u==='N'||u==='K'){
+   const ds=u==='N'?[[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]]:[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+   for(const[a,c]of ds)if(tgt(r+a,f+c))add((r+a)*8+f+c);
+   if(u==='K'){const opp=me==='w'?'b':'w',hm=me==='w'?0:56,R=me==='w'?'R':'r';
+    if(sq===hm+4&&!chAttacked(b,sq,opp)){
+     if(s.cs[me==='w'?'K':'k']&&!b[hm+5]&&!b[hm+6]&&b[hm+7]===R&&!chAttacked(b,hm+5,opp)&&!chAttacked(b,hm+6,opp))add(hm+6,{castle:'K'});
+     if(s.cs[me==='w'?'Q':'q']&&!b[hm+3]&&!b[hm+2]&&!b[hm+1]&&b[hm]===R&&!chAttacked(b,hm+3,opp)&&!chAttacked(b,hm+2,opp))add(hm+2,{castle:'Q'});}}}
+  else{const ds=u==='B'?[[1,1],[1,-1],[-1,1],[-1,-1]]:u==='R'?[[1,0],[-1,0],[0,1],[0,-1]]:[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+   for(const[a,c]of ds){let rr=r+a,ff=f+c;for(;;){const k=tgt(rr,ff);if(!k)break;add(rr*8+ff);if(k===2)break;rr+=a;ff+=c;}}}
+ }
+ return mv;
+}
+function chMake(s,m){
+ const b=s.b.slice(),p=b[m.from],me=s.turn,cap=b[m.to];
+ b[m.to]=m.promo?(me==='w'?'Q':'q'):p;b[m.from]='';
+ if(m.epc)b[m.to+(me==='w'?-8:8)]='';
+ if(m.castle){const hm=me==='w'?0:56;if(m.castle==='K'){b[hm+5]=b[hm+7];b[hm+7]='';}else{b[hm+3]=b[hm];b[hm]='';}}
+ const cs={...s.cs};if(p==='K')cs.K=cs.Q=0;if(p==='k')cs.k=cs.q=0;
+ [[0,'Q'],[7,'K'],[56,'q'],[63,'k']].forEach(([q,k])=>{if(m.from===q||m.to===q)cs[k]=0;});
+ return{b,turn:me==='w'?'b':'w',cs,ep:m.dbl?(m.from+m.to)/2:-1,half:(cap||p.toUpperCase()==='P')?0:s.half+1};
+}
+const chKing=(b,c)=>b.indexOf(c==='w'?'K':'k');
+const chLegal=s=>chPseudo(s).filter(m=>{const n=chMake(s,m);return !chAttacked(n.b,chKing(n.b,s.turn),n.turn);});
+const chInCheck=s=>chAttacked(s.b,chKing(s.b,s.turn),s.turn==='w'?'b':'w');
+function chEval(b){let v=0;for(let i=0;i<64;i++){const p=b[i];if(!p)continue;const u=p.toUpperCase(),w=isW(p)?1:-1,r=i>>3,f=i&7,cen=3.5-Math.max(Math.abs(3.5-r),Math.abs(3.5-f));let x=CV[u];if(u==='N'||u==='B')x+=cen*9;if(u==='P')x+=(w>0?r-1:6-r)*7+(f>1&&f<6?cen*3:0);if(u==='Q'||u==='R')x+=cen*2;v+=w*x;}return v;}
+function chSearch(s,d,a,be){
+ if(d===0)return(s.turn==='w'?1:-1)*chEval(s.b);
+ const ms=chLegal(s);if(!ms.length)return chInCheck(s)?-100000-d:0;
+ ms.sort((x,y)=>(s.b[y.to]?CV[s.b[y.to].toUpperCase()]:0)-(s.b[x.to]?CV[s.b[x.to].toUpperCase()]:0));
+ let best=-1e9;for(const m of ms){const v=-chSearch(chMake(s,m),d-1,-be,-a);if(v>best)best=v;if(v>a)a=v;if(a>=be)break;}return best;
+}
+function chAI(s,lv){
+ const ms=chLegal(s);if(!ms.length)return null;
+ if(lv==='easy'&&Math.random()<.45)return pick(ms);
+ const d=lv==='hard'?3:2;let best=null,bv=-1e9;
+ for(const m of shuffle(ms)){const v=-chSearch(chMake(s,m),d-1,-1e9,-bv)+(lv==='easy'?Math.random()*120:lv==='normal'?Math.random()*25:0);if(v>bv){bv=v;best=m;}}
+ return best;
+}
+/* ---------- Turkish draughts (full game, longest capture is compulsory; white = you) ---------- */
+function dmSeqs(ps,color){
+ let all=[],max=0;
+ for(const[sq,p]of ps){if(p.c!==color)continue;
+  const rec=(cur,state,path)=>{const caps=genMoves('dama',state,cur).caps;let ext=false;
+   for(const c of caps){const n=new Map(state),pc=n.get(cur);n.delete(cur);n.delete(c.cap);n.set(c.to,pc);ext=true;rec(c.to,n,[...path,{to:c.to,cap:c.cap}]);}
+   if(!ext&&path.length){if(path.length>max){max=path.length;all=[];}if(path.length===max)all.push({from:sq,path});}};
+  rec(sq,ps,[]);}
+ if(max)return all;
+ const out=[];for(const[sq,p]of ps)if(p.c===color)genMoves('dama',ps,sq).moves.forEach(m=>out.push({from:sq,path:[{to:m.to,cap:null}]}));
+ return out;
+}
+function dmApply(ps,seq){const n=new Map(ps),pc={...n.get(seq.from)};n.delete(seq.from);let cur=seq.from;for(const st of seq.path){if(st.cap)n.delete(st.cap);cur=st.to;}const r=+cur.slice(1);if(pc.p==='M'&&((pc.c==='w'&&r===8)||(pc.c==='b'&&r===1)))pc.p='K';n.set(cur,pc);return n;}
+function dmEval(ps){let v=0;for(const[sq,p]of ps){const r=+sq.slice(1);const x=p.p==='K'?320:100+(p.c==='w'?r-2:7-r)*6;v+=p.c==='w'?x:-x;}return v;}
+function dmSearch(ps,c,d,a,be){const seqs=dmSeqs(ps,c);if(!seqs.length)return -100000-d;if(d===0)return(c==='w'?1:-1)*dmEval(ps);let best=-1e9;for(const q of seqs){const v=-dmSearch(dmApply(ps,q),c==='w'?'b':'w',d-1,-be,-a);if(v>best)best=v;if(v>a)a=v;if(a>=be)break;}return best;}
+function dmAI(ps,lv){const seqs=dmSeqs(ps,'b');if(!seqs.length)return null;if(lv==='easy'&&Math.random()<.45)return pick(seqs);const d=lv==='hard'?4:2;let best=null,bv=-1e9;for(const q of shuffle(seqs)){const v=-dmSearch(dmApply(ps,q),'w',d-1,-1e9,-bv)+(lv==='easy'?Math.random()*80:lv==='normal'?Math.random()*15:0);if(v>bv){bv=v;best=q;}}return best;}
+/* ---------- backgammon (full game; positions are kept from white's = your view) ---------- */
+const tvNew=()=>{const p=Array(26).fill(0);[[24,2],[13,5],[8,3],[6,5]].forEach(([i,n])=>p[i]=n);[[1,2],[12,5],[17,3],[19,5]].forEach(([i,n])=>p[i]=-n);return{p,bw:0,bb:0,ow:0,ob:0};};
+const tvMirror=s=>({p:s.p.map((_,i)=>i>=1&&i<=24?-s.p[25-i]:0),bw:s.bb,bb:s.bw,ow:s.ob,ob:s.ow});
+const tvCopy=s=>({p:s.p.slice(),bw:s.bw,bb:s.bb,ow:s.ow,ob:s.ob});
+function tvSingles(s,d){
+ const out=[];
+ if(s.bw){const t=25-d;if(s.p[t]>=-1)out.push({src:25,dst:t,d});return out;}
+ let home=true;for(let i=7;i<=24;i++)if(s.p[i]>0){home=false;break;}
+ let top=0;for(let i=24;i>=1;i--)if(s.p[i]>0){top=i;break;}
+ for(let i=1;i<=24;i++){if(s.p[i]<=0)continue;const t=i-d;
+  if(t>=1){if(s.p[t]>=-1)out.push({src:i,dst:t,d});}
+  else if(home&&(t===0||i===top))out.push({src:i,dst:0,d});}
+ return out;
+}
+function tvApply(s,m){const n=tvCopy(s);if(m.src===25)n.bw--;else n.p[m.src]--;if(m.dst===0)n.ow++;else{if(n.p[m.dst]===-1){n.p[m.dst]=0;n.bb++;m.hit=true;}n.p[m.dst]++;}return n;}
+const tvKey=s=>s.p.join(',')+'|'+s.bw+'|'+s.bb+'|'+s.ow;
+function tvSeqs(s,dice){
+ let best=[],maxU=0;const seen=new Set();
+ const rec=(st,ds,moves)=>{let any=false;const tried=new Set();
+  for(let k=0;k<ds.length;k++){const d=ds[k];if(tried.has(d))continue;tried.add(d);
+   for(const m of tvSingles(st,d)){any=true;const mm={...m};rec(tvApply(st,mm),[...ds.slice(0,k),...ds.slice(k+1)],[...moves,mm]);}}
+  if(!any||!ds.length){const u=moves.length,key=tvKey(st);if(u>maxU){maxU=u;best=[];seen.clear();}if(u===maxU&&!seen.has(key)){seen.add(key);best.push({moves,s:st});}}};
+ rec(s,dice,[]);
+ if(maxU===1&&dice.length===2&&dice[0]!==dice[1]){const hi=Math.max(...dice),w=best.filter(q=>q.moves[0].d===hi);if(w.length)best=w;}
+ return maxU?best:[];
+}
+function tvEval(s){
+ let pip=0,opip=0,blots=0,made=0,home=0;
+ for(let i=1;i<=24;i++){const v=s.p[i];
+  if(v>0){pip+=v*i;if(v===1){let risk=s.bb&&i<=12?1:0;for(let j=1;j<i&&!risk;j++)if(s.p[j]<0&&i-j<=11)risk=1;blots+=risk?1:.25;}if(v>=2){made++;if(i<=6)home++;}}
+  else if(v<0)opip+=-v*(25-i);}
+ pip+=s.bw*25;opip+=s.bb*25;
+ return(opip-pip)-blots*16+made*5+home*7+s.bb*20+s.ow*8;
+}
+function tvAIPick(s,dice,lv){const seqs=tvSeqs(s,dice);if(!seqs.length)return null;if(lv==='easy'&&Math.random()<.6)return pick(seqs);let best=null,bv=-1e9;for(const q of seqs){const v=tvEval(q.s)+(lv==='normal'?Math.random()*8:lv==='easy'?Math.random()*30:0);if(v>bv){bv=v;best=q;}}return best;}
+/* ---------- ludo: 40-square track, 4 home squares; you are yellow ---------- */
+const LD_TRACK=[[0,4],[1,4],[2,4],[3,4],[4,4],[4,3],[4,2],[4,1],[4,0],[5,0],[6,0],[6,1],[6,2],[6,3],[6,4],[7,4],[8,4],[9,4],[10,4],[10,5],[10,6],[9,6],[8,6],[7,6],[6,6],[6,7],[6,8],[6,9],[6,10],[5,10],[4,10],[4,9],[4,8],[4,7],[4,6],[3,6],[2,6],[1,6],[0,6],[0,5]];
+const LD_HOME=[[[1,5],[2,5],[3,5],[4,5]],[[5,1],[5,2],[5,3],[5,4]],[[9,5],[8,5],[7,5],[6,5]],[[5,9],[5,8],[5,7],[5,6]]];
+const LD_YARD=[[[0,0],[1,0],[0,1],[1,1]],[[9,0],[10,0],[9,1],[10,1]],[[9,9],[10,9],[9,10],[10,10]],[[0,9],[1,9],[0,10],[1,10]]];
+const LD_COL=['var(--sun)','var(--game)','var(--bad)','var(--lang)'];
+const ldAbs=(c,pr)=>(c*10+pr)%40;
+function ldMoves(pl,players,d){
+ const me=players[pl],out=[];
+ me.pcs.forEach((pr,i)=>{
+  if(pr<0){if(d===6&&!me.pcs.some(x=>x===0))out.push({i,to:0});return;}
+  const np=pr+d;if(np>43)return;
+  if(np>=40){if(me.pcs.some((x,j)=>j!==i&&x===np))return;for(let k=Math.max(pr+1,40);k<np;k++)if(me.pcs.includes(k))return;out.push({i,to:np});return;}
+  const a=ldAbs(me.c,np);if(me.pcs.some((x,j)=>j!==i&&x>=0&&x<40&&ldAbs(me.c,x)===a))return;out.push({i,to:np});
+ });
+ return out;
+}
+function ldVictims(pl,players,m){if(m.to>=40)return[];const a=ldAbs(players[pl].c,m.to),v=[];players.forEach((o,k)=>{if(k===pl)return;o.pcs.forEach((x,j)=>{if(x>=0&&x<40&&ldAbs(o.c,x)===a)v.push([k,j]);});});return v;}
+function ldDanger(pl,players,a){let n=0;players.forEach((o,k)=>{if(k===pl)return;o.pcs.forEach(x=>{if(x>=0&&x<40){const dist=(a-ldAbs(o.c,x)+40)%40;if(dist>=1&&dist<=6)n++;}});});return n;}
+function ldAIPick(pl,players,d,lv){
+ const ms=ldMoves(pl,players,d);if(!ms.length)return null;if(lv==='easy'&&Math.random()<.5)return pick(ms);
+ let best=null,bv=-1e9;const me=players[pl];
+ for(const m of ms){const pr=me.pcs[m.i];let v=d;
+  if(pr<0)v+=30;if(ldVictims(pl,players,m).length)v+=55;if(m.to>=40)v+=28;
+  if(m.to<40){v-=ldDanger(pl,players,ldAbs(me.c,m.to))*(lv==='hard'?22:14);}
+  if(pr>=0&&pr<40)v+=ldDanger(pl,players,ldAbs(me.c,pr))*(lv==='hard'?18:8);
+  v+=lv==='normal'?Math.random()*6:0;if(v>bv){bv=v;best=m;}}
+ return best;
+}
+/* ---------- go: area scoring ---------- */
+function goScore(B,n,komi){
+ let b=0,w=0;const seen=new Set();
+ for(let i=0;i<n*n;i++){if(B[i]===1)b++;else if(B[i]===-1)w++;else if(!seen.has(i)){
+  const st=[i],reg=[];let tb=false,tw=false;seen.add(i);
+  while(st.length){const k=st.pop();reg.push(k);for(const j of goNb(k,n)){if(B[j]===1)tb=true;else if(B[j]===-1)tw=true;else if(!seen.has(j)){seen.add(j);st.push(j);}}}
+  if(tb&&!tw)b+=reg.length;else if(tw&&!tb)w+=reg.length;}}
+ return{b,w:w+komi};
+}
+function goAIPick(B,n,ko,lv,moveNo){
+ let best=-1,bs=-1e9;
+ for(let i=0;i<n*n;i++){if(B[i])continue;const r=goPlay(B,n,i,-1);if(r.err)continue;const key=r.B.join('');if(key===ko)continue;
+  const nb=goNb(i,n);if(nb.every(j=>B[j]===-1)&&r.cap.length===0)continue;
+  let s=r.cap.length*12;
+  for(const j of nb){if(B[j]===-1&&goGroup(B,n,j).libs.size===1)s+=8*goGroup(B,n,j).stones.length;if(B[j]===1){const g=goGroup(r.B,n,j);if(r.B[j]===1&&g.libs.size===1)s+=4;}}
+  const own=goGroup(r.B,n,i);if(own.libs.size===1&&!r.cap.length)s-=12;if(own.libs.size>=3)s+=1;
+  let near=0;for(let k=0;k<n*n;k++)if(B[k]){const dx=Math.abs(k%n-i%n),dy=Math.abs(((k/n)|0)-((i/n)|0));if(dx+dy<=2)near++;}s+=Math.min(near,4)*.8;
+  const ex=i%n,ey=(i/n)|0;if(ex===0||ey===0||ex===n-1||ey===n-1)s-=moveNo<20?2:.3;
+  s+=Math.random()*(lv==='easy'?10:lv==='normal'?3:.6);
+  if(s>bs){bs=s;best=i;}}
+ if(best<0||(moveNo>30&&bs<1.2))return -1;return best;
+}
+/* ---------- okey tiles: solver ---------- */
+const OK_CI={r:0,y:1,b:2,k:3},OK_CS='rybk';
+function okCounts(codes,ok){const cnt=[...Array(4)].map(()=>Array(15).fill(0));let W=0;for(const x of codes){const t=okNorm(x,ok);if(t.w)W++;else cnt[OK_CI[t.c]][t.n]++;}return{cnt,W};}
+function okSolve(cnt,W){ // can all real tiles be split into sets/runs using up to W jokers?
+ let c=-1,n=-1;for(let a=0;a<4&&c<0;a++)for(let v=1;v<=13;v++)if(cnt[a][v]){c=a;n=v;break;}
+ if(c<0)return true;
+ cnt[c][n]--;
+ // sets
+ const others=[0,1,2,3].filter(a=>a!==c&&cnt[a][n]>0);
+ for(let mask=0;mask<(1<<others.length);mask++){const pickC=others.filter((_,k)=>mask>>k&1);
+  for(let w=0;w<=W;w++){const size=1+pickC.length+w;if(size<3||size>4)continue;pickC.forEach(a=>cnt[a][n]--);const ok_=okSolve(cnt,W-w);pickC.forEach(a=>cnt[a][n]++);if(ok_){cnt[c][n]++;return true;}}}
+ // runs where (c,n) is the lowest real tile
+ for(let lead=0;lead<=W;lead++){const s=n-lead;if(s<1)break;let used=lead;const took=[];
+  for(let v=n+1;v<=13;v++){if(cnt[c][v]>0){cnt[c][v]--;took.push(v);}else{if(used>=W)break;used++;took.push(-v);}
+   if(v-s+1>=3&&okSolve(cnt,W-used)){took.forEach(x=>{if(x>0)cnt[c][x]++;});cnt[c][n]++;return true;}}
+  took.forEach(x=>{if(x>0)cnt[c][x]++;});
+  if(lead>=1&&n-s+1>=3){/* run of jokers below n only */}
+ }
+ if(W>=2&&okSolve(cnt,W-2)){cnt[c][n]++;return true;}
+ cnt[c][n]++;return false;
+}
+const okCanSplit=(codes,ok)=>{const{cnt,W}=okCounts(codes,ok);return okSolve(cnt,W);};
+function okPairs(codes,ok){if(codes.length!==14)return false;const m={};let W=0;codes.forEach(x=>{const t=okNorm(x,ok);if(t.w)W++;else{const k=t.c+t.n;m[k]=(m[k]||0)+1;}});let single=0;Object.values(m).forEach(v=>{single+=v%2;});return single<=W&&(W-single)%2===0;}
+function okFinishIdx(hand,ok){ // indices of tiles that can be discarded to finish
+ const out=[];const seen=new Set();hand.forEach((x,i)=>{if(seen.has(x))return;seen.add(x);const rest=hand.filter((_,j)=>j!==i);if(okCanSplit(rest,ok)||okPairs(rest,ok))hand.forEach((y,k)=>{if(y===x)out.push(k);});});return out;}
+function okUseful(x,hand,ok){const t=okNorm(x,ok);if(t.w)return 100;let s=0;const ci=OK_CI[t.c];
+ hand.forEach(y=>{if(y===x)return;const u=okNorm(y,ok);if(u.w)return;if(u.c===t.c){const d=Math.abs(u.n-t.n);if(d===1)s+=3;else if(d===2)s+=1.5;else if(d===0)s+=.8;}else if(u.n===t.n)s+=3;});return s;}
+function okAIDiscard(hand,ok,lv){const idx=hand.map((_,i)=>i).filter(i=>!okNorm(hand[i],ok).w);if(lv==='easy'&&Math.random()<.35)return pick(idx);let best=idx[0],bv=1e9;for(const i of idx){const v=okUseful(hand[i],hand,ok)+(lv==='normal'?Math.random()*1.5:0);if(v<bv){bv=v;best=i;}}return best;}
+/* 101: best set of groups by points (tiles may stay in hand) */
+function okBest(codes,ok){
+ const tiles=codes.map((x,i)=>({x,i,t:okNorm(x,ok)}));const wild=tiles.filter(o=>o.t.w).map(o=>o.i);
+ const real=tiles.filter(o=>!o.t.w);let best={pts:0,groups:[]};let nodes=0;
+ const rec=(left,wl,pts,groups)=>{if(++nodes>40000)return;if(pts>best.pts)best={pts,groups:groups.slice()};
+  if(!left.length)return;const [h0,...rest]=left;rec(rest,wl,pts,groups);
+  // sets with h0
+  const same=rest.filter(o=>o.t.n===h0.t.n&&o.t.c!==h0.t.c);const cols=[...new Set(same.map(o=>o.t.c))];
+  for(let mask=0;mask<(1<<cols.length);mask++){const cs=cols.filter((_,k)=>mask>>k&1);const mem=cs.map(c=>same.find(o=>o.t.c===c));
+   for(let w=0;w<=wl.length;w++){const size=1+mem.length+w;if(size<3||size>4)continue;const ids=new Set(mem.map(o=>o.i));rec(rest.filter(o=>!ids.has(o.i)),wl.slice(w),pts+h0.t.n*size,[...groups,[h0.i,...mem.map(o=>o.i),...wl.slice(0,w)]]);}}
+  // runs upward from h0
+  let cur=[h0],usedW=0,avail=rest.slice(),sum=h0.t.n;
+  for(let v=h0.t.n+1;v<=13;v++){const nx=avail.find(o=>o.t.c===h0.t.c&&o.t.n===v);if(nx){cur.push(nx);avail=avail.filter(o=>o!==nx);}else{if(usedW>=wl.length)break;usedW++;cur.push(null);}sum+=v;
+   if(cur.length>=3){rec(avail,wl.slice(usedW),pts+sum,[...groups,[...cur.filter(Boolean).map(o=>o.i),...wl.slice(0,usedW)]]);}}
+ };
+ rec(real.sort((a,b)=>a.t.c<b.t.c?-1:a.t.c>b.t.c?1:a.t.n-b.t.n),wild,0,[]);
+ return best;
+}
+/* ================= tournaments ================= */
+const OPP=[{n:T("Can","Can","Can"),e:'🙂'},{n:T("Elif","Elif","Elif"),e:'😎'},{n:T("Kerem","Kerem","Kerem"),e:'🧠'}];
+const tWon=g=>(S.tour&&S.tour[g])||0;
+const tLevelDone=(g,l)=>gDone(g,l)>=GAMES[g].levels[l].length;
+const tOpen=(g,r)=>tLevelDone(g,r)&&tWon(g)>=r;
+const tCups=()=>Object.keys(GAMES).filter(k=>tWon(k)>=3).length;
+function startTourney(g,r){
+ S.tour=S.tour||{};
+ startSession({theme:'t-game',hearts:false,build:()=>[{type:'tourney',game:g,round:r}],lesson:true,tourney:{g,r},
+  onFinish:()=>{S.tour[g]=Math.max(tWon(g),r+1);const xp=50+25*r;addXP(xp);return xp;}});
+}
+function tourSection(k){
+ const won=tWon(k);
+ const box=h('div',{class:'card tour'},
+  h('div',{class:'spread'},h('div',{style:'min-width:0'},h('div',{class:'eyebrow'},t('tTitle')),h('div',{class:'h-m'},won>=3?t('tChampion'):t('tHead'))),won>=3?h('span',{class:'cup',html:icon('trophy')}):null));
+ const row=h('div',{class:'tour-row'});
+ [0,1,2].forEach(r=>{const open=tOpen(k,r),w=won>r,o=OPP[r];
+  row.append(h('button',{class:'tr'+(w?' won':open?' open':' locked'),onclick:()=>{if(!open&&!w)return toast(!tLevelDone(k,r)?t('tLockLv',{lv:t('lv')[r]}):t('tLockPrev'));startTourney(k,r);}},
+   h('span',{class:'tr-n'},t('tRound')[r]),h('span',{class:'tr-av'},o.e),h('b',{},L(o.n)),h('span',{class:'tr-d'},t('tDiff')[r]),
+   h('span',{class:'tr-s',html:w?icon('check')+t('tWin'):open?t('tPlay'):icon('lock')})));});
+ box.append(row,h('p',{class:'muted',style:'font-size:13px'},t('tSub')));
+ return box;
+}
+function matchHead(body,q){
+ const o=OPP[q.round],status=h('p',{class:'mh-status'});
+ body.append(h('div',{class:'mh'},h('span',{class:'mh-av'},'🧑'),h('b',{},t('mgYou')),h('span',{class:'mh-vs'},t('tRound')[q.round]),h('b',{},L(o.n)),h('span',{class:'mh-av'},o.e)),status);
+ return{status};
+}
+const tFinish=(api,win,msg,delay=700)=>setTimeout(()=>{if(win)SFX.win();api.complete(win,msg);},delay);
+const rnd6=()=>1+Math.floor(Math.random()*6);
+/* ---------- chess match ---------- */
+function m_chess(q,api,body){
+ const lv=AI_LV[q.round],hd=matchHead(body,q),wrap=h('div',{class:'board-wrap'});body.append(wrap);
+ let s=chInit(),legal=chLegal(s),sel=null,busy=false,done=false,plies=0;
+ const nm8=i=>FILES[i&7]+((i>>3)+1),ix8=sq=>(+sq.slice(1)-1)*8+FILES.indexOf(sq[0]);
+ const toMap=b=>{const m=new Map();b.forEach((p,i)=>{if(p)m.set(nm8(i),{p:p.toUpperCase(),c:isW(p)?'w':'b'});});return m;};
+ const draw=anim=>{const tg=sel===null?[]:legal.filter(m=>m.from===sel).map(m=>({to:nm8(m.to)}));drawBoard(wrap,'chess',toMap(s.b),{sel:sel===null?null:nm8(sel),targets:tg,hl:chInCheck(s)?[nm8(chKing(s.b,s.turn))]:[],onTap,anim});};
+ const status=()=>{hd.status.textContent=done?'':busy?t('tThinking'):chInCheck(s)?t('tCheck'):t('mgYourTurn');};
+ function onTap(sq){if(busy||done)return;const i=ix8(sq),m=sel!==null&&legal.find(x=>x.from===sel&&x.to===i);if(m)return play(m);if(s.b[i]&&isW(s.b[i])){sel=i;SFX.tap();draw();}else if(sel!==null){SFX.bad();api.flash(t('illegal'));}}
+ function play(m){
+  const capP=s.b[m.to]||(m.epc?'p':''),from=nm8(m.from),to=nm8(m.to),capSq=m.epc?nm8(m.to+(s.turn==='w'?-8:8)):to;
+  s=chMake(s,m);sel=null;plies++;capP?SFX.capture():SFX.wood();
+  draw({from,to,cap:capP?capSq:null,capPiece:capP?{p:capP.toUpperCase(),c:isW(capP)?'w':'b'}:null});
+  legal=chLegal(s);
+  if(!legal.length){done=true;status();const mate=chInCheck(s);return tFinish(api,mate&&s.turn==='b',mate?(s.turn==='b'?t('tMate'):t('tMated')):t('tDraw'));}
+  if(s.half>=100||plies>=240||s.b.filter(Boolean).length===2){done=true;return tFinish(api,false,t('tDraw'));}
+  if(s.turn==='b'){busy=true;status();setTimeout(()=>{const m2=chAI(s,lv);busy=false;if(m2)play(m2);},450);}else status();
+ }
+ draw();status();api.hint(t('boardHint'));
+}
+/* ---------- draughts match ---------- */
+function m_dama(q,api,body){
+ const lv=AI_LV[q.round],hd=matchHead(body,q),wrap=h('div',{class:'board-wrap'});body.append(wrap);
+ let ps=initPieces('start','dama'),seqs=dmSeqs(ps,'w'),sel=null,path=[],work=null,busy=false,done=false,plies=0;
+ const cur=()=>path.length?path[path.length-1].to:sel;
+ const cand=()=>seqs.filter(q2=>q2.from===sel&&path.every((p,k)=>q2.path[k]&&q2.path[k].to===p.to));
+ const draw=anim=>{const tg=sel===null?[]:[...new Map(cand().filter(q2=>q2.path.length>path.length).map(q2=>[q2.path[path.length].to,{to:q2.path[path.length].to}])).values()];drawBoard(wrap,'dama',work||ps,{sel:cur(),targets:tg,onTap,anim});};
+ const count=c=>[...ps.values()].filter(p=>p.c===c).length;
+ const status=()=>{hd.status.textContent=done?'':busy?t('tThinking'):`${t('mgYourTurn')} · ${count('w')} – ${count('b')}`;};
+ function onTap(sq){
+  if(busy||done)return;
+  if(sel!==null){const nx=cand().find(q2=>q2.path.length>path.length&&q2.path[path.length].to===sq);
+   if(nx){const stp=nx.path[path.length];work=work||new Map(ps);const pc=work.get(cur());const capP=stp.cap?{...work.get(stp.cap)}:null;const from=cur();work.delete(from);if(stp.cap)work.delete(stp.cap);work.set(stp.to,pc);path.push(stp);capP?SFX.capture():SFX.wood();
+    draw({from,to:stp.to,cap:stp.cap,capPiece:capP});
+    if(cand().some(q2=>q2.path.length===path.length))finishMove(cand().find(q2=>q2.path.length===path.length));return;}}
+  if(path.length){SFX.bad();return api.flash(t('mustCapture'));}
+  if(seqs.some(q2=>q2.from===sq)){sel=sq;SFX.tap();draw();return;}
+  if(ps.get(sq)&&ps.get(sq).c==='w'){SFX.bad();api.flash(seqs[0]&&seqs[0].path[0].cap?t('mustCapture'):t('illegal'));}
+ }
+ function finishMove(seq){ps=dmApply(ps,seq);work=null;sel=null;path=[];plies++;draw();afterMove('b');}
+ function afterMove(next){
+  if(!count('b'))return end(true);if(!count('w'))return end(false);
+  if(plies>=160)return end(count('w')>count('b')?true:false,count('w')===count('b'));
+  if(next==='b'){busy=true;status();setTimeout(aiTurn,500);}else{seqs=dmSeqs(ps,'w');if(!seqs.length)return end(false);busy=false;status();}
+ }
+ function aiTurn(){const seq=dmAI(ps,lv);if(!seq)return end(true);let k=0,curSq=seq.from;work=new Map(ps);
+  const step=()=>{const stp=seq.path[k++];const pc=work.get(curSq),capP=stp.cap?{...work.get(stp.cap)}:null;work.delete(curSq);if(stp.cap)work.delete(stp.cap);work.set(stp.to,pc);drawBoard(wrap,'dama',work,{anim:{from:curSq,to:stp.to,cap:stp.cap,capPiece:capP}});capP?SFX.capture():SFX.wood();curSq=stp.to;
+   if(k<seq.path.length)setTimeout(step,380);else{ps=dmApply(ps,seq);work=null;plies++;setTimeout(()=>{draw();afterMove('w');},250);}};
+  step();}
+ function end(win,draw_){done=true;busy=false;status();tFinish(api,win&&!draw_,draw_?t('tDraw'):win?t('tYouWonGame'):t('tLostGame'));}
+ draw();status();api.hint(t('boardHint'));
+}
+/* ---------- backgammon match ---------- */
+function m_tavla(q,api,body){
+ const lv=AI_LV[q.round],hd=matchHead(body,q),wrap=h('div',{}),bar=h('div',{class:'row',style:'justify-content:center;min-height:52px'});body.append(wrap,bar);
+ let s=tvNew(),dice=[],seqs=[],path=[],sel=null,phase='roll',done=false;
+ const view=()=>({pts:s.p,bar:s.bw,oppBar:s.bb,off:s.ow,oppOff:s.ob});
+ const same=(a,b)=>a.src===b.src&&a.dst===b.dst&&a.d===b.d;
+ const allowed=()=>{const out=[];seqs.forEach(q2=>{if(q2.moves.length>path.length&&path.every((m,k)=>same(m,q2.moves[k])))out.push(q2.moves[path.length]);});return out;};
+ const roll2=()=>{const a=rnd6(),b=rnd6();return(a===b?[a,a,a,a]:[a,b]).map(v=>({v,used:false}));};
+ const draw=()=>{const al=phase==='move'?allowed():[],tg=sel===null?[]:[...new Set(al.filter(m=>m.src===sel).map(m=>m.dst))];
+  const g=drawTv(wrap,view(),{dice,sel,targets:tg,onTap:phase==='move'?onTap:null});
+  bar.innerHTML='';if(phase==='roll'&&!done)bar.append(h('button',{class:'btn',onclick:roll},t('tRoll')));return g;};
+ function roll(){if(phase!=='roll'||done)return;dice=roll2();SFX.dice();seqs=tvSeqs(s,dice.map(d=>d.v));path=[];sel=null;
+  if(!seqs.length){phase='wait';hd.status.textContent=t('tNoMove');draw();return setTimeout(aiTurn,1300);}
+  phase='move';hd.status.textContent=t('mgYourTurn');if(s.bw)sel=25;draw();}
+ function onTap(p){const al=allowed();
+  if(sel!==null){const m=al.find(x=>x.src===sel&&x.dst===p);if(m)return move(m);}
+  if(al.some(x=>x.src===p)){sel=p;SFX.tap();return draw();}
+  SFX.bad();if(sel!==null)api.flash(p>=1&&p<=24&&s.p[p]<-1?t('tvBlocked'):t('tvNoDie'));}
+ function move(m){const bb=s.bb;s=tvApply(s,{...m});path.push(m);const di=dice.find(d=>!d.used&&d.v===m.d);if(di)di.used=true;sel=null;
+  const g=draw();tvFly(g,m.src,m.dst);s.bb>bb?SFX.capture():SFX.wood();if(s.bb>bb)api.flash(t('tvHit'),'good');
+  if(s.ow>=15)return end(true);
+  if(!allowed().length){phase='wait';draw();setTimeout(aiTurn,700);}else if(s.bw){sel=25;draw();}}
+ function aiTurn(){if(done)return;phase='ai';hd.status.textContent=t('tThinking');dice=roll2();SFX.dice();draw();
+  const best=tvAIPick(tvMirror(s),dice.map(d=>d.v),lv);
+  if(!best){setTimeout(()=>{api.flash(t('tAiNoMove'));phase='roll';dice=[];hd.status.textContent=t('mgYourTurn');draw();},1000);return;}
+  let k=0;const step=()=>{if(done)return;if(k>=best.moves.length){if(s.ob>=15)return end(false);phase='roll';dice=[];hd.status.textContent=t('mgYourTurn');draw();return;}
+   const mm=best.moves[k++],bw=s.bw;s=tvMirror(tvApply(tvMirror(s),{src:mm.src,dst:mm.dst,d:mm.d}));const di=dice.find(d=>!d.used&&d.v===mm.d);if(di)di.used=true;
+   const g=draw();const rs=mm.src===25?null:25-mm.src,rd=mm.dst===0?null:25-mm.dst;if(rs&&rd)tvFly(g,rs,rd);s.bw>bw?SFX.capture():SFX.wood();if(s.bw>bw)api.flash(t('tYouHit'));
+   setTimeout(step,480);};
+  setTimeout(step,800);}
+ function end(win){done=true;phase='done';draw();hd.status.textContent='';tFinish(api,win,win?t('tYouWonGame'):t('tLostGame'));}
+ draw();hd.status.textContent=t('mgYourTurn');
+}
+/* ---------- ludo match ---------- */
+function m_ludo(q,api,body){
+ const lv=AI_LV[q.round],four=q.round===2,cols=four?[0,1,2,3]:[0,2];
+ const names=four?[t('mgYou'),L(OPP[0].n),L(OPP[1].n),L(OPP[2].n)]:[t('mgYou'),L(OPP[q.round].n)];
+ const players=cols.map((c,k)=>({c,pcs:[-1,-1,-1,-1],ai:k>0,name:names[k]}));
+ let turn=0,dv=1,phase='roll',tries=0,done=false,movable=[],hop=null;
+ const hd=matchHead(body,q),legend=h('div',{class:'ld-legend'}),grid=h('div',{class:'ld'}),die=dieEl(1),btn=h('button',{class:'btn',onclick:()=>{if(!players[turn].ai)roll();}},t('tRoll'));
+ body.append(legend,grid,h('div',{class:'row',style:'justify-content:center;gap:14px'},die,btn));
+ const at=(pl,pr,i)=>{const c=players[pl].c;return pr<0?LD_YARD[c][i]:pr>=40?LD_HOME[c][pr-40]:LD_TRACK[ldAbs(c,pr)];};
+ function draw(){
+  grid.innerHTML='';const put=(x,y,cls)=>grid.append(h('div',{class:'ldc '+cls,style:`grid-column:${x+1};grid-row:${y+1}`}));
+  LD_TRACK.forEach(([x,y],i)=>put(x,y,i%10===0?'st s'+(i/10):'t'));LD_HOME.forEach((hs,c)=>hs.forEach(([x,y])=>put(x,y,'hm s'+c)));LD_YARD.forEach((ys,c)=>ys.forEach(([x,y])=>put(x,y,'yd s'+c)));
+  players.forEach((p,pl)=>p.pcs.forEach((pr,i)=>{const[x,y]=at(pl,pr,i),can=pl===turn&&!p.ai&&phase==='move'&&movable.some(m=>m.i===i);
+   grid.append(h(can?'button':'span',{class:'ldp'+(can?' can':'')+(hop&&hop[0]===pl&&hop[1]===i&&!RM()?' hop':''),style:`grid-column:${x+1};grid-row:${y+1};background:${LD_COL[p.c]}`,onclick:can?()=>doMove(movable.find(m=>m.i===i)):null,'aria-label':can?t('tMovePiece'):null}));}));
+  legend.innerHTML='';players.forEach((p,pl)=>legend.append(h('span',{class:'lg'+(pl===turn?' on':'')},h('i',{style:`background:${LD_COL[p.c]}`}),`${p.name} ${p.pcs.filter(x=>x>=40).length}/4`)));
+  btn.disabled=!(phase==='roll'&&!players[turn].ai&&!done);
+ }
+ const status=()=>{hd.status.textContent=done?'':players[turn].ai?`${players[turn].name} · ${t('tAiTurn')}`:phase==='move'?t('tapPiece'):t('mgYourTurn');};
+ function roll(){if(phase!=='roll'||done)return;phase='rolling';SFX.dice();let k=0;if(!RM())die.classList.add('rolling');
+  const iv=setInterval(()=>{setDie(die,rnd6());if(++k>6){clearInterval(iv);die.classList.remove('rolling');dv=rnd6();setDie(die,dv);afterRoll();}},60);}
+ function afterRoll(){const p=players[turn];movable=ldMoves(turn,players,dv);
+  if(!movable.length){const stuck=p.pcs.every(x=>x<0||x>=40);
+   if(stuck&&dv!==6&&tries<2){tries++;phase='roll';draw();status();if(p.ai)setTimeout(roll,550);return;}
+   if(!p.ai)api.flash(t('tNoMove'));tries=0;phase='wait';draw();return setTimeout(next,800);}
+  tries=0;phase='move';draw();status();
+  if(p.ai)setTimeout(()=>doMove(ldAIPick(turn,players,dv,lv)),650);}
+ function doMove(m){if(!m||phase!=='move')return;phase='anim';const p=players[turn],pr=p.pcs[m.i],vic=ldVictims(turn,players,m);movable=[];
+  const steps=pr<0?[0]:[...Array(m.to-pr)].map((_,k)=>pr+1+k);let k=0;
+  const st=()=>{p.pcs[m.i]=steps[k++];hop=[turn,m.i];SFX.step();draw();if(k<steps.length)setTimeout(st,140);else fin();};
+  const fin=()=>{hop=null;if(vic.length){vic.forEach(([pl,j])=>players[pl].pcs[j]=-1);SFX.capture();api.flash(turn===0?t('captured'):vic.some(([pl])=>pl===0)?t('tYouHit'):t('tHitOther'),turn===0?'good':undefined);draw();}
+   if(p.pcs.every(x=>x>=40)){done=true;draw();status();return tFinish(api,turn===0,turn===0?t('tYouWonGame'):t('tOppWon',{n:p.name}),600);}
+   if(dv===6){phase='roll';draw();status();if(p.ai)setTimeout(roll,600);return;}
+   next();};
+  st();}
+ function next(){if(done)return;turn=(turn+1)%players.length;phase='roll';tries=0;movable=[];draw();status();if(players[turn].ai)setTimeout(roll,700);}
+ draw();status();
+}
+/* ---------- go match ---------- */
+function m_go(q,api,body){
+ const n=9,lv=AI_LV[q.round],komi=[0.5,3.5,6.5][q.round];
+ let B=Array(n*n).fill(0),hist=[B.join('')],passes=0,moves=0,busy=false,done=false;
+ const hd=matchHead(body,q),wrap=h('div',{class:'board-wrap'}),sc=h('span',{class:'pill'}),pass=h('button',{class:'btn ghost sm',onclick:()=>{if(busy||done)return;passes++;hist.push(B.join(''));if(passes>=2)return end();busy=true;status();setTimeout(ai,450);}},t('tPass'));
+ body.append(wrap,h('div',{class:'row',style:'justify-content:center;gap:10px'},pass,sc));
+ const forbidden=()=>hist.length>=2?hist[hist.length-2]:'';
+ const draw=o=>{drawGo(wrap,n,B,Object.assign({onTap},o||{}));const s=goScore(B,n,komi);sc.textContent=t('tScore',{b:s.b,w:s.w});};
+ const status=()=>{hd.status.textContent=done?'':busy?t('tThinking'):`${t('mgYourTurn')} · ${t('tKomi',{k:komi})}`;};
+ function onTap(i){if(busy||done)return;const r=goPlay(B,n,i,1);if(r.err){SFX.bad();return api.flash(r.err==='taken'?t('goTaken'):t('goIllegal'));}
+  if(r.B.join('')===forbidden()){SFX.bad();return api.flash(t('tKo'));}
+  B=r.B;hist.push(B.join(''));passes=0;moves++;draw({drop:i,ghost:r.cap});SFX.place();if(r.cap.length)setTimeout(SFX.capture,140);
+  busy=true;status();setTimeout(ai,550);}
+ function ai(){if(done)return;const i=goAIPick(B,n,forbidden(),lv,moves);
+  if(i<0){passes++;hist.push(B.join(''));api.flash(t('tPassed',{who:L(OPP[q.round].n)}));if(passes>=2)return end();busy=false;return status();}
+  const r=goPlay(B,n,i,-1);B=r.B;hist.push(B.join(''));passes=0;moves++;draw({drop:i});SFX.place();if(r.cap.length){setTimeout(SFX.capture,140);api.flash(t('tStonesLost',{n:r.cap.length}));}
+  if(moves>=170)return end();busy=false;status();}
+ function end(){done=true;busy=false;const s=goScore(B,n,komi),win=s.b>s.w;draw();hd.status.textContent=t('tScore',{b:s.b,w:s.w});tFinish(api,win,t(win?'tGoWin':'tGoLose',{b:s.b,w:s.w}),900);}
+ draw();status();api.hint(t('goHint'));
+}
+/* ---------- okey / 101 match (you + 3 computer players) ---------- */
+function m_okey(q,api,body,is101){
+ const lv=AI_LV[q.round],deck=[];for(const c of OK_CS)for(let v=1;v<=13;v++)deck.push(c+v,c+v);deck.push('f','f');
+ let D=shuffle(deck),ind=D.pop();while(ind==='f'){D.unshift(ind);ind=D.pop();}
+ const ok=okFromInd(ind),N=is101?21:14;
+ const P=[0,1,2,3].map(k=>({hand:D.splice(0,k===0?N+1:N),disc:[],opened:false,name:k===0?t('mgYou'):[L(OPP[0].n),L(OPP[1].n),L(OPP[2].n)][k-1],av:k===0?'🧑':OPP[k-1].e}));
+ const table=[];let turn=0,phase='discard',sel=-1,done=false;
+ const hd=matchHead(body,q),opps=h('div',{class:'ok-opps'}),mid=h('div',{class:'ok-mid'}),tableEl=h('div',{class:'ogroups'}),rackEl=h('div',{class:'rack ok-rack'}),acts=h('div',{class:'ok-acts'});
+ body.append(opps,mid,tableEl,rackEl,acts);
+ const me=P[0],prev=()=>P[3];
+ const isOkey=x=>okNorm(x,ok).w;
+ function sortHand(){me.hand.sort((a,b)=>{const A=okNorm(a,ok),B_=okNorm(b,ok);if(A.w!==B_.w)return A.w?1:-1;return A.c===B_.c?A.n-B_.n:OK_CS.indexOf(A.c)-OK_CS.indexOf(B_.c);});sel=-1;SFX.tap();draw();}
+ function draw(){
+  opps.innerHTML='';[1,2,3].forEach(k=>{const p=P[k],top=p.disc[p.disc.length-1];opps.append(h('div',{class:'ok-opp'+(turn===k?' on':'')},h('span',{class:'mh-av'},p.av),h('b',{},p.name),h('span',{class:'muted'},t('tTiles',{n:p.hand.length})),p.opened?h('span',{class:'pill ok'},t('tOpenedShort')):null,top?tileEl(top,{small:true}):h('span',{class:'ok-empty'})));});
+  mid.innerHTML='';mid.append(h('span',{},t('okInd')),tileEl(ind,{small:true}),h('span',{class:'muted'},t('tCenter',{n:D.length})));
+  tableEl.innerHTML='';table.forEach(g=>{const v=okValid(g.codes,ok);tableEl.append(h('div',{class:'ogroup'},h('span',{class:'lbl'},`${P[g.owner].av} ${v?v.points:''}`),okSort(g.codes,ok).map(c=>tileEl(c,{small:true}))));});tableEl.hidden=!table.length;
+  rackEl.innerHTML='';me.hand.forEach((x,i)=>{const el=tileEl(x,{btn:true});if(isOkey(x))el.classList.add('okeytile');if(i===sel)el.setAttribute('aria-pressed','true');el.onclick=()=>{if(done)return;sel=sel===i?-1:i;SFX.tap();draw();};rackEl.append(el);});
+  acts.innerHTML='';const my=turn===0&&!done,pt=prev().disc[prev().disc.length-1];
+  const B_=(label,on,fn,ghost)=>h('button',{class:'btn sm'+(ghost?' ghost':''),disabled:!on,onclick:fn},label);
+  if(my&&phase==='draw'){acts.append(B_(t('tDrawTile'),D.length>0,()=>take(false)),B_(t('tTakeSide'),!!pt,()=>take(true)));}
+  if(my&&phase==='discard'){
+   if(!is101){const fi=okFinishIdx(me.hand,ok);acts.append(B_(t('tDiscard'),sel>=0,()=>discard(sel)),B_(t('tFinish'),sel>=0&&fi.includes(sel),()=>discard(sel,true)));}
+   else{const best=!me.opened?okBest(me.hand,ok):null;acts.append(B_(t('tDiscard'),sel>=0,()=>discard(sel)));
+    if(!me.opened)acts.append(B_(t('tOpenN',{n:best.pts}),best.pts>=101,()=>{open101(0);if(!me.hand.length)end(0);}));else acts.append(B_(t('tLay'),true,()=>lay101(0)));}}
+  acts.append(B_(t('tSort'),true,sortHand,true));
+  hd.status.textContent=done?'':turn===0?(phase==='draw'?t('tDrawFirst'):t('tPickDiscard')):`${P[turn].name} · ${t('tAiTurn')}`;
+ }
+ function take(side){if(turn!==0||phase!=='draw')return;let x;if(side){x=prev().disc.pop();}else{if(!D.length)return end(null);x=D.pop();}me.hand.push(x);sel=me.hand.length-1;phase='discard';SFX.flip();draw();}
+ function open101(k){const p=P[k],b=okBest(p.hand,ok);if(b.pts<101)return false;layGroups(k,b);p.opened=true;if(k===0){SFX.promote();api.flash(t('tOpenedPts',{n:b.pts}),'good');draw();}return true;}
+ function layGroups(k,b){const p=P[k],ids=new Set();b.groups.forEach(g=>{table.push({owner:k,codes:g.map(i=>p.hand[i])});g.forEach(i=>ids.add(i));});p.hand=p.hand.filter((_,i)=>!ids.has(i));if(k===0)sel=-1;}
+ function lay101(k){const p=P[k];const b=okBest(p.hand,ok);if(b.pts>0&&p.hand.length-b.groups.flat().length>=1)layGroups(k,b);
+  let moved=true;while(moved&&p.hand.length>1){moved=false;for(let i=0;i<p.hand.length&&p.hand.length>1;i++){for(const g of table){if(okValid([...g.codes,p.hand[i]],ok)){g.codes.push(p.hand[i]);p.hand.splice(i,1);i--;moved=true;break;}}}}
+  if(k===0){SFX.pop();draw();}}
+ function discard(i,finish){if(turn!==0||phase!=='discard'||i<0)return;const x=me.hand.splice(i,1)[0];me.disc.push(x);sel=-1;SFX.wood();
+  if(finish||(is101&&!me.hand.length))return end(0);
+  if(is101&&me.opened&&!me.hand.length)return end(0);
+  turn=1;draw();setTimeout(aiTurn,650);}
+ function aiTurn(){if(done)return;const k=turn,p=P[k],pv=P[(k+3)%4],top=pv.disc[pv.disc.length-1];
+  let tookSide=false;
+  if(top&&(okUseful(top,p.hand,ok)>=(lv==='hard'?4.5:6)||(!is101&&okFinishIdx([...p.hand,top],ok).length))){p.hand.push(pv.disc.pop());tookSide=true;}
+  else{if(!D.length)return end(null);p.hand.push(D.pop());}
+  if(!is101){const fi=okFinishIdx(p.hand,ok);if(fi.length&&(lv!=='easy'||Math.random()<.8)){p.disc.push(p.hand.splice(fi[0],1)[0]);return end(k);}}
+  else{if(!p.opened)open101(k);if(p.opened)lay101(k);}
+  if(!p.hand.length)return end(k);
+  const di=okAIDiscard(p.hand,ok,lv);p.disc.push(p.hand.splice(di,1)[0]);
+  if(is101&&p.opened&&!p.hand.length)return end(k);
+  SFX.flip();turn=(k+1)%4;if(turn===0){phase='draw';}draw();if(turn!==0)setTimeout(aiTurn,650);}
+ function end(winner){done=true;draw();hd.status.textContent='';
+  if(winner===null)return tFinish(api,false,t('tDeckEmpty'));
+  tFinish(api,winner===0,winner===0?t('tYouFinished'):t('tOppFinished',{n:P[winner].name}));}
+ sortHand();
+}
+/* ---------- memory duel ---------- */
+function m_memory(q,api,body){
+ const r=q.round,pairs=[8,10,12][r],cols=[4,5,4][r],recall=[.35,.65,.92][r];
+ const cards=shuffle(shuffle(MM_POOL).slice(0,pairs).flatMap(e=>[e,e])).map((e,i)=>({e,i,up:false,ok:false}));
+ const mem=new Map(),sc=[0,0];let turn=0,open=[],busy=false,done=false;
+ const hd=matchHead(body,q),score=h('div',{class:'score'}),grid=h('div',{class:'mm',style:`grid-template-columns:repeat(${cols},1fr)`});
+ body.append(score,grid);
+ const upd=()=>{score.innerHTML='';score.append(h('span',{class:turn===0?'on':''},`🧑 ${sc[0]}`),h('span',{class:turn===1?'on':''},`${OPP[r].e} ${sc[1]}`));hd.status.textContent=done?'':turn===0?t('tYourPick'):`${L(OPP[r].n)} · ${t('tAiTurn')}`;};
+ cards.forEach(c=>{c.el=h('div',{class:'card3d'},h('div',{class:'in'},h('div',{class:'bk'}),h('div',{class:'fr'},c.e)),h('button',{'aria-label':String(c.i+1),onclick:()=>{if(turn===0&&!busy)flip(c);}}));grid.append(c.el);});
+ const remember=c=>{if(Math.random()<recall+.08)mem.set(c.i,c.e);};
+ function flip(c){if(c.up||c.ok||done)return;c.up=true;c.el.classList.add('up');SFX.flip();remember(c);open.push(c);if(open.length<2)return;busy=true;const[a,b]=open;open=[];
+  if(a.e===b.e){a.ok=b.ok=true;sc[turn]++;mem.delete(a.i);mem.delete(b.i);setTimeout(()=>{a.el.classList.add('ok');b.el.classList.add('ok');SFX.pop();upd();
+    if(sc[0]+sc[1]===pairs)return finish();busy=false;if(turn===1)setTimeout(aiTurn,650);},350);}
+  else setTimeout(()=>{a.up=b.up=false;a.el.classList.remove('up');b.el.classList.remove('up');turn=1-turn;busy=false;upd();if(turn===1)setTimeout(aiTurn,650);},950);}
+ function aiTurn(){if(done)return;const left=cards.filter(c=>!c.ok);
+  const known=[...mem.entries()].filter(([i])=>!cards[i].ok);const byE={};known.forEach(([i,e])=>{(byE[e]=byE[e]||[]).push(i);});
+  const pair=Object.values(byE).find(v=>v.length>=2);
+  let first=pair&&Math.random()<recall?cards[pair[0]]:pick(left.filter(c=>!mem.has(c.i)).length?left.filter(c=>!mem.has(c.i)):left);
+  busy=false;flipAI(first,()=>{const m=[...mem.entries()].find(([i,e])=>i!==first.i&&e===first.e&&!cards[i].ok);
+   let second=(pair&&first.i===pair[0])?cards[pair[1]]:(m&&Math.random()<recall?cards[m[0]]:pick(left.filter(c=>c!==first&&!c.up)));flipAI(second);});}
+ function flipAI(c,then){setTimeout(()=>{flip(c);if(then)then();},500);}
+ function finish(){done=true;upd();const win=sc[0]>sc[1];tFinish(api,win,win?t('tMemWin',{a:sc[0],b:sc[1]}):sc[0]===sc[1]?t('tDraw'):t('tMemLose',{a:sc[0],b:sc[1]}),600);}
+ upd();api.hint(t('mmHint'));
+}
+function m_dispatch(q,api,body){
+ const lv=AI_LV[q.round],beat=T("Rakibini yen!","Beat your opponent!","Besiege deinen Gegner!");
+ switch(q.game){
+  case 'chess':return m_chess(q,api,body);case 'dama':return m_dama(q,api,body);case 'tavla':return m_tavla(q,api,body);
+  case 'ludo':return m_ludo(q,api,body);case 'go':return m_go(q,api,body);case 'memory':return m_memory(q,api,body);
+  case 'okey':return m_okey(q,api,body,false);case 'okey101':return m_okey(q,api,body,true);
+  case 'mangala':matchHead(body,q);return RENDER.mangala({goal:'match',ai:lv,mustWin:true,text:beat},api,body);
+  case 'reversi':matchHead(body,q);return RENDER.reversi({goal:'match',ai:lv,mustWin:true,b:['d5','e4'],w:['d4','e5'],text:beat},api,body);
+  case 'sudoku':matchHead(body,q);return RENDER.sudoku({n:9,blanks:[40,46,52][q.round],timeLimit:[900,720,600][q.round],maxMiss:3,text:T("Süre bitmeden ve 3'ten fazla hata yapmadan çöz.","Solve it before time runs out, with at most 3 mistakes.","Löse es rechtzeitig mit höchstens 3 Fehlern.")},api,body);
+ }
+}
+Object.assign(RENDER,{tourney:m_dispatch});
 
 document.addEventListener('keydown',e=>{if(!PS||player.hidden)return;if(e.key==='Enter'&&!(e.target&&e.target.tagName==='TEXTAREA')){const b=$('#check-btn',player);if(b&&!b.disabled){e.preventDefault();b.click();}}});
 fixTarget();loadClips(S.target);loadClips(S.ui);applySkin();
