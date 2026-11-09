@@ -17,7 +17,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="fonts/fonts.css">
 <script>try{var _s=JSON.parse(localStorage.getItem('usta-akademi-v1'));if(_s&&_s.skin&&_s.skin!=='classic')document.documentElement.setAttribute('data-skin',_s.skin);}catch(e){}</script>
-<script>window.APP_VERSION='2.1';</script>
+<script>window.APP_VERSION='2.2';</script>
 <style>
 /* standalone shell: what the artifact host used to provide */
 html{background:var(--bg,#EDF1EC);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;-webkit-text-size-adjust:100%}
@@ -2083,7 +2083,7 @@ function viewProfile(){
    h('h2',{class:'h-m'},t('theme')),h('p',{class:'muted',style:'font-size:14px;margin-top:-8px'},t('themeSub')),skinPicker(draw),
    h('h2',{class:'h-m'},t('settings')),settings,
    h('h2',{class:'h-m'},t('uiLang')),seg,reset,
-   h('p',{class:'muted center',style:'font-size:12px;font-weight:600'},`${t('version')} ${window.APP_VERSION||''}`),
+   h('p',{class:'muted center',style:'font-size:12px;font-weight:600;user-select:none',onclick:()=>{admTap();}},`${t('version')} ${window.APP_VERSION||''}`+(S.adm&&S.adm.on?' · ADMIN':'')),
    h('p',{class:'muted center',style:'font-size:11px'},h('a',{href:'chars/CREDITS.txt',target:'_blank',style:'color:inherit'},'3D: MakeHuman (CC0 / CC BY)')));
  };
  draw();return wrap;
@@ -4123,8 +4123,41 @@ function queueSnap(el,ch,w,h){SNAPQ.push([el,ch,w,h]);if(!snapBusy){snapBusy=tru
 function runSnapQ(){const j=SNAPQ.shift();if(!j){snapBusy=false;return;}snapBusy=true;const[el,ch,w,h]=j;if(!el.isConnected){runSnapQ();return;}
  snap3D(normChar({...ch,anim:'idle'}),w,h,'full','idle',0).then(u=>{el.innerHTML=`<img alt="" src="${u}" width="${w}" height="${h}">`;}).catch(()=>{el.innerHTML=charSVG(ch,78,'full');}).finally(()=>setTimeout(runSnapQ,0));}
 function stMount(){stScrollTab();const pv=document.querySelector('.st-av');if(!pv)return;if(STG&&STG.el!==pv){STG.dispose();STG=null;}stRefresh();}
+
+/* ================= admin panel (local, for testing the shop) ================= */
+let ADMT=[];
+function admTap(){const n=Date.now();ADMT=ADMT.filter(x=>n-x<2500);ADMT.push(n);if(ADMT.length>=7){ADMT=[];admPin();}}
+function admPin(){
+ const bg=h('div',{class:'sheet-bg',onclick:e=>{if(e.target===bg)bg.remove();}});
+ const inp=h('input',{type:'password',inputmode:'numeric',class:'select',placeholder:'PIN',style:'text-align:center;font-size:22px;letter-spacing:6px'});
+ const msg=h('p',{class:'center',style:'color:var(--bad);font-weight:700;min-height:20px'});
+ const ok=()=>{const pin=(S.adm&&S.adm.pin)||'2580';if(inp.value===pin){S.adm={...(S.adm||{}),on:true,pin};save();bg.remove();admPanel();}else{msg.textContent='PIN yanlış';inp.value='';SFX.bad&&SFX.bad();}};
+ inp.addEventListener('keydown',e=>{if(e.key==='Enter')ok();});
+ bg.append(h('div',{class:'sheet gut'},h('h3',{class:'h-l',style:'text-align:center'},'Admin'),inp,msg,h('div',{class:'row',style:'justify-content:center;gap:10px'},h('button',{class:'btn',onclick:ok},'Gir'),h('button',{class:'btn ghost',onclick:()=>bg.remove()},t('cancel')))));
+ app.append(bg);setTimeout(()=>inp.focus(),50);
+}
+function admPanel(){
+ const bg=h('div',{class:'sheet-bg',onclick:e=>{if(e.target===bg)bg.remove();}});
+ const A=S.adm||(S.adm={on:true,pin:'2580'});
+ const done=m=>{save();toast(m);bg.remove();render();admPanel();};
+ const allIds=()=>[...SHOP_ITEMS.map(i=>i.id),...PREMIUM_SKINS.map(x=>'skin_'+x[0])];
+ const row=(label,...btns)=>h('div',{class:'stack',style:'gap:6px'},h('b',{style:'font-size:14px'},label),h('div',{class:'row',style:'flex-wrap:wrap;gap:8px'},...btns));
+ const b=(txt,fn,ghost)=>h('button',{class:'btn sm'+(ghost?' ghost':''),onclick:fn},txt);
+ const owned=(S.owned||[]).length,total=allIds().length;
+ bg.append(h('div',{class:'sheet gut',style:'max-height:86vh;overflow:auto'},
+  h('h3',{class:'h-l',style:'text-align:center'},'Admin paneli'),
+  h('p',{class:'muted center',style:'font-size:13px'},`Altın: ${S.gold||0} · Sahip olunan: ${owned}/${total} · Bu ayarlar sadece bu cihazda geçerli.`),
+  row('Test modu',h('button',{class:'switch',role:'switch','aria-checked':A.free?'true':'false',onclick:()=>{A.free=!A.free;done(A.free?'Test modu açık: her şey ücretsiz':'Test modu kapalı');}}),h('span',{class:'muted',style:'font-size:13px'},'Açıkken tüm kıyafet, saç, kostüm, animasyon, arka plan ve temalar ücretsiz denenir ve kaydedilir.')),
+  row('Altın',b('+500',()=>{S.gold=(S.gold||0)+500;done('+500 altın');}),b('+5.000',()=>{S.gold=(S.gold||0)+5000;done('+5.000 altın');}),b('+50.000',()=>{S.gold=(S.gold||0)+50000;done('+50.000 altın');}),b('Sıfırla',()=>{S.gold=0;done('Altın 0');},1)),
+  row('Satın alımlar',b('Hepsini satın al',()=>{S.owned=[...new Set([...(S.owned||[]),...allIds()])];done('Tüm parçalar açıldı');}),b('Satın alımları sıfırla',()=>{S.owned=[];if(S.char){const d=DEF_CHAR(S.char.g);S.char={...d,skin:S.char.skin};}if(PREMIUM_SKINS.some(x=>x[0]===S.skin)){S.skin='classic';applySkin();}done('Satın alımlar sıfırlandı');},1)),
+  row('Güçlendirmeler',b('+10 ipucu',()=>{S.hints=(S.hints||0)+10;done('+10 ipucu');}),b('+2 seri dondurma',()=>{S.freezes=Math.min(2,(S.freezes||0)+2);done('Seri dondurma eklendi');})),
+  row('Karakter',b('Kadın varsayılan',()=>{S.char=DEF_CHAR('w');done('Karakter sıfırlandı');},1),b('Erkek varsayılan',()=>{S.char=DEF_CHAR('m');done('Karakter sıfırlandı');},1),b('Stüdyoyu aç',()=>{bg.remove();DRAFT=null;S.dCat='top';S.shopView='dresser';goTab('shop');})),
+  row('PIN',b('PIN değiştir',()=>{const p=prompt('Yeni PIN (en az 4 rakam)');if(p&&/^\d{4,8}$/.test(p)){A.pin=p;done('PIN değişti');}else if(p)toast('PIN 4-8 rakam olmalı');},1)),
+  h('div',{class:'row',style:'justify-content:center;gap:10px;margin-top:6px'},b('Kapat',()=>bg.remove()),b('Admin modundan çık',()=>{A.on=false;A.free=false;done('Admin modu kapandı');},1))));
+ app.append(bg);
+}
 /* ================= gold, shop, character, hints, streak freeze ================= */
-const owns=id=>(S.owned||[]).includes(id);
+const owns=id=>!!(S.adm&&S.adm.free)||(S.owned||[]).includes(id);
 function addGold(n){if(!n)return;S.gold=(S.gold||0)+n;save();if(PS)PS.gold=(PS.gold||0)+n;const c=document.querySelector('.chip.gold .num');if(c)c.textContent=String(S.gold);}
 const coin=(big)=>h('span',{class:'coin'+(big?' big':''),'aria-hidden':'true'});
 function goldLine(n){return h('span',{class:'price'},coin(),String(n));}
@@ -4475,12 +4508,25 @@ if('serviceWorker' in navigator){
   reloading=true;location.reload();
  });
  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>{
-  const check=()=>reg.update().catch(()=>{});
+  const check=()=>{reg.update().catch(()=>{});verCheck();};
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')check();});
   window.addEventListener('focus',check);
   setInterval(check,20*60*1000);
  }).catch(()=>{});});
 }
+/* compare with the published version; old links / home-screen copies jump to the newest release */
+async function verCheck(){
+ try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
+  if(!v||v===window.APP_VERSION)return;
+  const tried=sessionStorage.getItem('ua-upd');if(tried===v)return;sessionStorage.setItem('ua-upd',v);
+  if(typeof PS!=='undefined'&&PS){window.__needReload=true;return;}
+  try{const ks=await caches.keys();await Promise.all(ks.filter(k=>!k.includes('chars')).map(k=>caches.delete(k)));}catch(e){}
+  try{const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(x=>x.update()));}catch(e){}
+  location.replace(location.pathname+'?v='+encodeURIComponent(v));
+ }catch(e){}
+}
+window.addEventListener('load',()=>setTimeout(verCheck,800));
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')verCheck();});
 </script>
 </body>
 </html>

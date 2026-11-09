@@ -1,12 +1,13 @@
-/* Usta Akademi service worker — v2.1 */
+/* Usta Akademi service worker — v2.2 */
 const CHARS='usta-chars-1';
-const CACHE='usta-3cb76188';
+const CACHE='usta-4d9ad8b4';
 const FILES=["./", "vendor/three-min.js", "index.html", "manifest.webmanifest", "fonts/fonts.css", "fonts/10d6a582947e.woff2", "fonts/16db5cbe6178.woff2", "fonts/3b58e8bdf772.woff2", "fonts/7471c0c20c13.woff2", "fonts/f96cbbc03519.woff2", "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png"];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES.map(f=>new Request(f,{cache:'reload'})))));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE&&k!==CHARS).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',e=>{
  const req=e.request;if(req.method!=='GET')return;
  const url=new URL(req.url);if(url.origin!==location.origin)return;
+ if(url.pathname.endsWith('/version.json')){e.respondWith(fetch(req,{cache:'no-store'}));return;}
  const isPage=req.mode==='navigate'||url.pathname.endsWith('/index.html')||url.pathname.endsWith('/');
  if(isPage){
   // network first: always show the newest version when online, cached copy when offline
