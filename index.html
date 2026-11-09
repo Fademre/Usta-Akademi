@@ -16,7 +16,7 @@
 <meta name="theme-color" content="#0E1512" media="(prefers-color-scheme: dark)">
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="fonts/fonts.css">
-<script>window.APP_VERSION='1.2';</script>
+<script>window.APP_VERSION='1.3';</script>
 <style>
 /* standalone shell: what the artifact host used to provide */
 html{background:var(--bg,#EDF1EC);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;-webkit-text-size-adjust:100%}
@@ -38,6 +38,7 @@ input,textarea,select{font-size:16px}
   --sq-l:#EEE0C1; --sq-d:#B4835A; --wood:#E2C690; --wood-line:#9A7146;
   --piece-w:#FFFDF7; --piece-b:#1B1712; --on-acc:#FFFFFF;
   --felt:#2C8A5A; --felt-line:#17573A; --go-board:#E2B868; --go-line:#4E3518; --pit:#A57A45;
+  --tv-a:#F1DFB6; --tv-b:#9B3A2C; --ck-w:#FBF6EA; --ck-b:#2A2420;
   --shadow:0 1px 2px rgba(19,32,26,.06),0 10px 30px rgba(19,32,26,.10);
   --f-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
   --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -54,6 +55,7 @@ input,textarea,select{font-size:16px}
   --sq-l:#CDBB97; --sq-d:#8E6644; --wood:#BFA270; --wood-line:#7B5934;
   --piece-w:#FFFDF7; --piece-b:#14110D; --on-acc:#0E1512;
   --felt:#1F6A45; --felt-line:#0F3B26; --go-board:#B8924E; --go-line:#3A2610; --pit:#7D5A30;
+  --tv-a:#CDB78B; --tv-b:#7A2C21; --ck-w:#F1EBDD; --ck-b:#1E1915;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
   color-scheme:dark;
 }}
@@ -67,6 +69,7 @@ input,textarea,select{font-size:16px}
   --sq-l:#CDBB97; --sq-d:#8E6644; --wood:#BFA270; --wood-line:#7B5934;
   --piece-w:#FFFDF7; --piece-b:#14110D; --on-acc:#0E1512;
   --felt:#1F6A45; --felt-line:#0F3B26; --go-board:#B8924E; --go-line:#3A2610; --pit:#7D5A30;
+  --tv-a:#CDB78B; --tv-b:#7A2C21; --ck-w:#F1EBDD; --ck-b:#1E1915;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
   color-scheme:dark;
 }
@@ -448,6 +451,80 @@ button.tw{color:var(--ink)}
 .art-rv .rvd{width:100%;height:auto;aspect-ratio:1}
 .art-go{position:relative;width:58%;aspect-ratio:1;border-radius:8px;background-color:var(--go-board);background-image:linear-gradient(var(--go-line) 1.5px,transparent 1.5px),linear-gradient(90deg,var(--go-line) 1.5px,transparent 1.5px);background-size:26% 26%;background-position:center}
 .art-go .gs{position:absolute;width:30%;height:30%}
+/* v1.3: tavla, okey, memory */
+.tv{display:grid;grid-template-columns:repeat(6,minmax(0,1fr)) minmax(0,.75fr) repeat(6,minmax(0,1fr)) minmax(0,.8fr);grid-template-rows:minmax(0,1fr) auto minmax(0,1fr);width:100%;aspect-ratio:.95;background:var(--wood);border:6px solid var(--wood-line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.tp{position:relative;display:flex;flex-direction:column;align-items:center;padding:2px 1px}
+.tp::before{content:"";position:absolute;inset:0 6%;background:var(--tv-b);clip-path:polygon(0 0,100% 0,50% 92%)}
+.tp.a::before{background:var(--tv-a)}
+.tp.bot{flex-direction:column-reverse}
+.tp.bot::before{clip-path:polygon(50% 8%,100% 100%,0 100%)}
+.tp .pn{position:absolute;font-size:9px;font-weight:800;color:var(--wood-line);z-index:1;left:0;right:0;text-align:center}
+.tp.top .pn{bottom:2px}.tp.bot .pn{top:2px}
+.tp.sel{background:color-mix(in srgb,var(--sun) 35%,transparent)}
+.tp.tg::after{content:"";position:absolute;left:50%;width:44%;aspect-ratio:1;border-radius:50%;transform:translateX(-50%);background:var(--sun);box-shadow:0 0 0 4px color-mix(in srgb,var(--sun) 40%,transparent);z-index:3;animation:pulse2 1s ease-in-out infinite}
+.tp.top.tg::after{bottom:14%}.tp.bot.tg::after{top:14%}
+@keyframes pulse2{50%{transform:translateX(-50%) scale(1.25)}}
+.stk{position:relative;z-index:2;display:flex;flex-direction:inherit;align-items:center;width:100%;gap:1px}
+.ck{display:grid;place-items:center;width:88%;max-width:30px;aspect-ratio:1;border-radius:50%;font:800 10px var(--f-body);box-shadow:inset 0 -2px 0 rgba(0,0,0,.25),0 1px 2px rgba(0,0,0,.35)}
+.ck.w{background:var(--ck-w);color:var(--ck-b);border:1.5px solid #B9AA88}
+.ck.b{background:var(--ck-b);color:var(--ck-w);border:1.5px solid #000}
+.tbar{position:relative;background:var(--wood-line);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:4px 0}
+.tbar.top{justify-content:flex-start}
+.tbar.sel{box-shadow:inset 0 0 0 3px var(--sun)}
+.tmid{grid-column:1/14;grid-row:2;display:flex;align-items:center;justify-content:center;gap:10px;padding:6px 0;background:color-mix(in srgb,var(--wood-line) 25%,var(--wood));min-height:44px}
+.tmid .die{width:34px;height:34px;border-radius:9px;padding:5px;box-shadow:0 2px 0 var(--line)}
+.tmid .die.used{opacity:.3}
+.toff{grid-column:14;grid-row:1/4;position:relative;background:var(--wood-line);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;padding:8px 0;color:var(--ck-w)}
+.toff .pn{font-size:16px;font-weight:800}
+.toff b{font:800 18px var(--f-display);background:var(--ck-w);color:var(--ck-b);border-radius:8px;padding:2px 6px}
+.toff.tg{box-shadow:inset 0 0 0 3px var(--sun);background:color-mix(in srgb,var(--sun) 35%,var(--wood-line))}
+.tp button,.tbar button,.toff button{position:absolute;inset:0;z-index:4}
+.rack{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:12px 8px 16px;border-radius:14px;background:linear-gradient(var(--wood),color-mix(in srgb,var(--wood) 78%,#000));box-shadow:0 4px 0 var(--wood-line)}
+.otile{width:40px;height:56px;border-radius:7px;background:#FBF6EA;box-shadow:0 3px 0 #C9BC9F,0 4px 6px rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;font:800 21px/1 var(--f-display);transition:transform .15s,box-shadow .15s;flex:none}
+.otile::after{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;margin-top:4px}
+.otile.r{color:#C9302C}.otile.y{color:#C98500}.otile.b{color:#1F5FC4}.otile.k{color:#1C1C1C}
+.otile.f{color:#1E7A4E}.otile.f::after{display:none}
+.otile.sm{width:30px;height:42px;font-size:16px;border-radius:6px}
+.otile.sm::after{width:5px;height:5px;margin-top:3px}
+.otile[aria-pressed="true"]{transform:translateY(-10px);box-shadow:0 3px 0 var(--sun),0 10px 14px rgba(0,0,0,.25)}
+.ogroups{display:flex;flex-wrap:wrap;gap:14px 10px;padding-top:8px}
+.ogroup{position:relative;display:flex;gap:3px;padding:10px 8px 8px;border-radius:12px;background:var(--surface);border:1.5px solid var(--line)}
+button.ogroup{cursor:pointer}
+button.ogroup:active{border-color:var(--acc)}
+.ogroup.pop{animation:pop2 .35s}
+.ogroup .lbl{position:absolute;top:-10px;left:8px;font-size:11px;font-weight:800;background:var(--good);color:var(--on-acc);padding:1px 7px;border-radius:99px;white-space:nowrap}
+.ind{display:flex;align-items:center;gap:10px;font-weight:700}
+.mm{display:grid;gap:8px;width:100%}
+.card3d{position:relative;aspect-ratio:.82;perspective:700px}
+.card3d .in{position:absolute;inset:0;transition:transform .42s cubic-bezier(.3,1.2,.5,1);transform-style:preserve-3d}
+.card3d.up .in,.card3d.ok .in{transform:rotateY(180deg)}
+.card3d .fr,.card3d .bk{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center}
+.card3d .bk{background-color:var(--acc);background-image:radial-gradient(circle,rgba(255,255,255,.28) 2px,transparent 3px);background-size:14px 14px;box-shadow:0 3px 0 var(--acc-2)}
+.card3d .fr{background:var(--surface);border:2px solid var(--line);transform:rotateY(180deg);font-size:clamp(22px,7.5vw,36px)}
+.card3d.ok .fr{border-color:var(--good);background:var(--good-soft)}
+.card3d button{position:absolute;inset:0;z-index:2}
+.simon{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:min(100%,300px);margin:0 auto}
+.pad{aspect-ratio:1;border-radius:26px;opacity:.5;transition:opacity .1s,transform .1s;box-shadow:0 5px 0 rgba(0,0,0,.25)}
+.pad:nth-child(1){background:var(--lang)}.pad:nth-child(2){background:var(--game)}.pad:nth-child(3){background:var(--sun)}.pad:nth-child(4){background:var(--bad)}
+.pad.on{opacity:1;transform:scale(1.05)}
+.span-num{font:800 clamp(30px,10vw,48px) var(--f-display);letter-spacing:.1em;text-align:center;font-variant-numeric:tabular-nums;padding:18px 0}
+.span-in{min-height:0!important;text-align:center;font:800 28px var(--f-display)!important;letter-spacing:.15em}
+.ms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ms-grid div{aspect-ratio:1;border-radius:16px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;font-size:clamp(30px,10vw,44px)}
+.ms-grid div.q{color:var(--muted);font:800 36px var(--f-display);border-style:dashed;border-color:var(--acc)}
+.rounds{display:flex;justify-content:center;gap:6px}
+.rounds i{width:10px;height:10px;border-radius:50%;background:var(--surface-2)}
+.rounds i.on{background:var(--acc)}
+.art-tv{position:relative;display:grid;grid-template-columns:repeat(6,1fr);width:70%;height:62%;background:var(--wood);border:3px solid var(--wood-line);border-radius:8px;overflow:hidden}
+.art-tv span{clip-path:polygon(0 0,100% 0,50% 90%);background:var(--tv-b)}
+.art-tv span.a{background:var(--tv-a)}
+.art-tv .ck{position:absolute;bottom:8%;width:22%;max-width:none}
+.art-rack{padding:8px 8px 10px;gap:4px;position:relative}
+.art-101{position:absolute;right:-8px;top:-12px;font:800 13px var(--f-display);background:var(--bad);color:var(--on-acc);padding:2px 7px;border-radius:99px}
+.art-mm{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:50%}
+.art-mm span{aspect-ratio:.82;border-radius:8px;display:grid;place-items:center;font-size:22px}
+.art-mm .fr{background:var(--surface);border:2px solid var(--line)}
+.art-mm .bk{background:var(--game);background-image:radial-gradient(circle,rgba(255,255,255,.28) 2px,transparent 3px);background-size:10px 10px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
@@ -493,9 +570,9 @@ const iconEl=(n,c)=>h('span',{style:'display:contents',html:icon(n,c)});
 
 /* ---------- i18n ---------- */
 const I18N={
-tr:{home:"Ana sayfa",langs:"Diller",games:"Oyunlar",profile:"Profil",hi:"Merhaba!",homeSub:"Bugün biraz dil, biraz zekâ. Küçük adımlarla ilerle.",streak:"gün seri",dailyGoal:"Günlük hedef",dailyOf:"{n} / {g} XP bugün",dailyHint:"Her antrenman 10–15 XP kazandırır.",contLang:"Kaldığın yerden devam et",start:"Başla",puzzle:"Günün bulmacası",puzzleSub:"Beyaz oynar, tek hamlede mat eder.",solve:"Çöz",yourGames:"Zekâ oyunları",seeAll:"Tümü",langsTitle:"Dil öğren",langsSub:"Her seviye bölümlerden, her bölüm 5 antrenmandan oluşur. Zorluk adım adım artar.",pickLang:"Öğrenmek istediğin dil",level:"Seviye",unit:"Bölüm",trn:["Tanış","Eşleştir","Cümle kur","Yaz","Ustalık"],trainingsOf:"{d}/5 antrenman",exam:"Seviye sınavı",examSub:"Bütün bölümleri bitirince açılır · 12 karışık soru",examPassed:"Sınavı geçtin, A1 tamamlandı!",soonAI:"Yakında · içerik yapay zekâ ile üretilecek",locked:"Kilitli",lockedHint:"Önce bir önceki adımı tamamla.",gamesTitle:"Zekâ oyunları",gamesSub:"Kuralları öğren, bulmacaları çöz, pratik zekânı geliştir.",lessons:"{n} ders",steps:"{n} adım",soon:"Yakında",lv:["Başlangıç","Orta","İleri"],check:"Kontrol et",cont:"Devam",good:["Harika!","Doğru!","Süper!","Aynen böyle!"],wrong:"Olmadı",answer:"Doğru cevap:",accent:"Doğru, ama yazımına dikkat:",newWord:"Yeni kelime",whichIs:"Hangisi “{w}”?",howSay:"“{w}” nasıl denir?",listenPick:"Duyduğunu seç",noAudio:"Ses gelmiyor mu? Kelimeyi göster",matchPairs:"Eşleri bul",fillBlank:"Boşluğu doldur",build:"Cümleyi kur",writeIn:"{lang} yaz",typeHere:"Buraya yaz…",boardHint:"Taşa dokun, sonra gideceği kareye dokun.",illegal:"Bu hamle kurala uygun değil.",notSolution:"Bu doğru hamle değil. Tekrar dene.",mustCapture:"Alma zorunlu! Rakip taşı alabilen taşla oyna.",promoted:"Taşın dama oldu!",roll:"Zar at",need6:"6 gelmedi. Tekrar at!",got6:"6 geldi! Taşın oyuna girdi.",dice:"Zar",tapPiece:"Oynatacağın taşa dokun.",captured:"Kızdırdın! Rakip taş başlangıca döndü.",overshoot:"Zar bu taş için fazla. Eve tam sayıyla girmelisin.",ludoWrong:"Bu hamle hedefe ulaşmıyor. Diğer taşı dene.",done:"Antrenman tamamlandı!",lessonDone:"Ders tamamlandı!",xpEarned:"XP kazandın",accuracy:"Doğruluk",outHearts:"Canların bitti",outText:"Sorun değil. Tekrar ederek öğreniyoruz.",retry:"Tekrar dene",quit:"Çık",uiLang:"Uygulama dili",stats:"İstatistikler",totalXp:"Toplam XP",trDone:"Antrenman",lsDone:"Oyun dersi",streakDays:"Gün serisi",reset:"İlerlemeyi sıfırla",resetQ:"Bütün ilerlemen bu cihazdan silinecek. Emin misin?",resetYes:"Evet, sıfırla",cancel:"Vazgeç",learner:"Öğrenci",profileSub:"İlerlemen bu cihazda saklanır",back:"Geri",allDone:"Bu dilde A1'i bitirdin. Sonraki seviyeler yakında!",nextUp:"Sıradaki",lessonN:"Ders {n}",levelsTitle:"Seviyeler",mate:"Mat!",chooseUi:"Uygulama dilini seç",soundFx:"Ses efektleri",speed:"Konuşma hızı",speeds:["Yavaş","Normal","Hızlı"],voice:"Ses",voiceAuto:"Otomatik (en net ses)",test:"Dinle",slow:"Yavaş",voiceNone:"Bu cihazda bu dil için yüklü ses yok; tarayıcının varsayılan sesi kullanılır.",voiceTip:"Daha doğal bir ses için telefonunun ayarlarından bu dilin “gelişmiş” ya da “premium” sesini indirebilirsin.",settings:"Ses ve konuşma",swipeTip:"İpucu: Menüler arasında ekranı sağa sola kaydırarak geçebilirsin.",writeInRo:"{lang} yaz (Latin harfleriyle de olur)",rvIllegal:"Buraya oynayamazsın: en az bir rakip taşı çevirmelisin.",rvFlipped:"{n} taş çevirdin!",rvPass:"Oynayacak yerin yok, sıra rakibe geçti.",rvAiPass:"Rakibin oynayacak yeri yok, sıra yine sende.",rvWin:"Kazandın! {a} – {b}",rvLose:"Bu sefer rakip kazandı ({a} – {b}), ama ders tamam!",rvDraw:"Berabere!",sdPick:"Boş bir kareye dokun, sonra alttan sayı seç.",sdConflict:"Bu sayı satırda, sütunda ya da kutuda zaten var.",sdWrong:"Kurala uyuyor ama buraya başka bir sayı gelmeli.",sdDone:"Bulmaca çözüldü!",mgPick:"Alt sıradaki kendi kuyularından birine dokun.",mgYou:"Sen",mgThem:"Rakip",mgExtra:"Son taş hazinende: bir hamle daha!",mgEven:"Çift yaptın, taşlar senin!",mgEmpty:"Boş kuyu! İki kuyunun taşları senin.",mgEmptyPit:"Bu kuyu boş.",mgOpp:"Rakip oynuyor…",mgYourTurn:"Sıra sende.",mgLost:"Rakip taş aldı!",goHint:"Bir kesişim noktasına dokun.",goTaken:"Bu nokta dolu.",goIllegal:"Buraya taş koyamazsın: hiç özgürlüğü olmaz.",goWrong:"Bu hamle hedefi tutturmadı. Tekrar dene.",goCaptured:"{n} taş yakaladın!",rvHint:"Noktalı karelerden birine taş koy.",voiceBuiltIn:"Uygulamaya gömülü yüksek kaliteli ses",updated:"Yeni sürüm hazır. Uygulamayı kapatıp açınca gelecek.",updatedLater:"Yeni sürüm hazır, ders bitince yüklenecek.",version:"Sürüm",notif:"Bildirimler",notifAllow:"Bildirimlere izin ver",notifTest:"Deneme bildirimi gönder",notifNeedInstall:"Bildirimler için uygulamayı ana ekrana ekleyip oradan açmalısın (iOS 16.4 ve üstü).",notifDenied:"Bildirimler kapalı. Açmak için: iPhone Ayarlar → Bildirimler → Usta.",notifTitle:"Usta Akademi",notifBody:"Bugünkü antrenmanın seni bekliyor! Serini koru 🔥",notifSent:"Bildirim gönderildi.",notifFail:"Bildirim gönderilemedi."},
-en:{home:"Home",langs:"Languages",games:"Games",profile:"Profile",hi:"Hello!",homeSub:"A little language, a little logic. Small steps every day.",streak:"day streak",dailyGoal:"Daily goal",dailyOf:"{n} / {g} XP today",dailyHint:"Each training earns 10–15 XP.",contLang:"Pick up where you left off",start:"Start",puzzle:"Puzzle of the day",puzzleSub:"White to play and mate in one.",solve:"Solve",yourGames:"Mind games",seeAll:"All",langsTitle:"Learn a language",langsSub:"Each level has units, each unit has 5 trainings. Difficulty grows step by step.",pickLang:"Language you want to learn",level:"Level",unit:"Unit",trn:["Discover","Match","Build","Write","Mastery"],trainingsOf:"{d}/5 trainings",exam:"Level exam",examSub:"Unlocks after all units · 12 mixed questions",examPassed:"Exam passed, A1 complete!",soonAI:"Coming soon · content generated with AI",locked:"Locked",lockedHint:"Finish the previous step first.",gamesTitle:"Mind games",gamesSub:"Learn the rules, solve puzzles, sharpen your thinking.",lessons:"{n} lessons",steps:"{n} steps",soon:"Soon",lv:["Beginner","Intermediate","Advanced"],check:"Check",cont:"Continue",good:["Great!","Correct!","Nice!","Exactly!"],wrong:"Not quite",answer:"Correct answer:",accent:"Correct, but mind the spelling:",newWord:"New word",whichIs:"Which one is “{w}”?",howSay:"How do you say “{w}”?",listenPick:"Pick what you hear",noAudio:"No sound? Show the word",matchPairs:"Match the pairs",fillBlank:"Fill in the blank",build:"Build the sentence",writeIn:"Write it in {lang}",typeHere:"Type here…",boardHint:"Tap a piece, then the square to move to.",illegal:"That move isn't allowed.",notSolution:"That's not the right move. Try again.",mustCapture:"Capturing is mandatory! Move a piece that can capture.",promoted:"Your piece is crowned!",roll:"Roll",need6:"No 6. Roll again!",got6:"A 6! Your piece is in play.",dice:"Dice",tapPiece:"Tap the piece you want to move.",captured:"Gotcha! The opponent goes back to start.",overshoot:"Too high for this piece. You need the exact number to get home.",ludoWrong:"That move doesn't reach the goal. Try the other piece.",done:"Training complete!",lessonDone:"Lesson complete!",xpEarned:"XP earned",accuracy:"Accuracy",outHearts:"Out of hearts",outText:"No problem. We learn by trying again.",retry:"Try again",quit:"Quit",uiLang:"App language",stats:"Stats",totalXp:"Total XP",trDone:"Trainings",lsDone:"Game lessons",streakDays:"Day streak",reset:"Reset progress",resetQ:"All progress on this device will be deleted. Are you sure?",resetYes:"Yes, reset",cancel:"Cancel",learner:"Learner",profileSub:"Your progress is saved on this device",back:"Back",allDone:"You finished A1 in this language. Next levels coming soon!",nextUp:"Up next",lessonN:"Lesson {n}",levelsTitle:"Levels",mate:"Checkmate!",chooseUi:"Choose the app language",soundFx:"Sound effects",speed:"Speech speed",speeds:["Slow","Normal","Fast"],voice:"Voice",voiceAuto:"Automatic (clearest voice)",test:"Listen",slow:"Slow",voiceNone:"No voice for this language is installed on this device; the browser default will be used.",voiceTip:"For a more natural voice, download the “enhanced” or “premium” voice for this language in your phone's settings.",settings:"Sound and speech",swipeTip:"Tip: swipe left or right to move between menus.",writeInRo:"Write it in {lang} (Latin letters are fine)",rvIllegal:"You can't play here: you must flip at least one disc.",rvFlipped:"You flipped {n} discs!",rvPass:"You have no move, so your turn passes.",rvAiPass:"Your opponent has no move. Your turn again.",rvWin:"You won! {a} – {b}",rvLose:"Your opponent won this time ({a} – {b}), but the lesson is done!",rvDraw:"It's a draw!",sdPick:"Tap an empty square, then pick a number below.",sdConflict:"That number is already in this row, column or box.",sdWrong:"It fits the rules, but another number belongs here.",sdDone:"Puzzle solved!",mgPick:"Tap one of your pits on the bottom row.",mgYou:"You",mgThem:"Opponent",mgExtra:"Last stone in your treasury: play again!",mgEven:"Even! Those stones are yours.",mgEmpty:"Empty pit! You take both pits.",mgEmptyPit:"That pit is empty.",mgOpp:"Opponent is playing…",mgYourTurn:"Your turn.",mgLost:"Your opponent captured stones!",goHint:"Tap an intersection.",goTaken:"That point is taken.",goIllegal:"You can't play here: the stone would have no liberties.",goWrong:"That move didn't reach the goal. Try again.",goCaptured:"You captured {n} stones!",rvHint:"Place a disc on one of the dotted squares.",voiceBuiltIn:"High-quality voice built into the app",updated:"A new version is ready. Close and reopen the app to get it.",notif:"Notifications",notifAllow:"Allow notifications",notifTest:"Send a test notification",notifNeedInstall:"To get notifications, add the app to your home screen and open it from there (iOS 16.4 or later).",notifDenied:"Notifications are off. Turn them on in iPhone Settings → Notifications → Usta.",notifTitle:"Usta Akademi",notifBody:"Today's training is waiting for you! Keep your streak 🔥",notifSent:"Notification sent.",notifFail:"Couldn't send the notification."},
-de:{home:"Start",langs:"Sprachen",games:"Spiele",profile:"Profil",hi:"Hallo!",homeSub:"Ein bisschen Sprache, ein bisschen Denken. Jeden Tag kleine Schritte.",streak:"Tage in Folge",dailyGoal:"Tagesziel",dailyOf:"{n} / {g} XP heute",dailyHint:"Jedes Training bringt 10–15 XP.",contLang:"Mach weiter, wo du warst",start:"Los",puzzle:"Rätsel des Tages",puzzleSub:"Weiß zieht und setzt in einem Zug matt.",solve:"Lösen",yourGames:"Denkspiele",seeAll:"Alle",langsTitle:"Sprache lernen",langsSub:"Jede Stufe hat Lektionen, jede Lektion 5 Trainings. Es wird Schritt für Schritt schwerer.",pickLang:"Sprache, die du lernen willst",level:"Stufe",unit:"Lektion",trn:["Entdecken","Zuordnen","Sätze bauen","Schreiben","Meister"],trainingsOf:"{d}/5 Trainings",exam:"Stufentest",examSub:"Nach allen Lektionen frei · 12 gemischte Fragen",examPassed:"Test bestanden, A1 geschafft!",soonAI:"Bald · Inhalte werden mit KI erstellt",locked:"Gesperrt",lockedHint:"Schließe zuerst den vorherigen Schritt ab.",gamesTitle:"Denkspiele",gamesSub:"Lerne die Regeln, löse Rätsel, trainiere dein Denken.",lessons:"{n} Lektionen",steps:"{n} Schritte",soon:"Bald",lv:["Anfänger","Fortgeschritten","Experte"],check:"Prüfen",cont:"Weiter",good:["Super!","Richtig!","Toll!","Genau!"],wrong:"Leider falsch",answer:"Richtige Antwort:",accent:"Richtig, aber achte auf die Schreibung:",newWord:"Neues Wort",whichIs:"Was ist „{w}“?",howSay:"Wie sagt man „{w}“?",listenPick:"Wähle, was du hörst",noAudio:"Kein Ton? Wort anzeigen",matchPairs:"Finde die Paare",fillBlank:"Fülle die Lücke",build:"Bilde den Satz",writeIn:"Auf {lang} schreiben",typeHere:"Hier schreiben…",boardHint:"Tippe eine Figur an, dann das Zielfeld.",illegal:"Dieser Zug ist nicht erlaubt.",notSolution:"Das ist nicht der richtige Zug. Versuch es nochmal.",mustCapture:"Schlagzwang! Zieh mit einem Stein, der schlagen kann.",promoted:"Dein Stein ist jetzt eine Dame!",roll:"Würfeln",need6:"Keine 6. Nochmal würfeln!",got6:"Eine 6! Deine Figur ist im Spiel.",dice:"Würfel",tapPiece:"Tippe die Figur an, die du ziehen willst.",captured:"Rausgeworfen! Der Gegner muss zurück zum Start.",overshoot:"Zu viel für diese Figur. Ins Haus geht es nur mit der genauen Zahl.",ludoWrong:"Dieser Zug erreicht das Ziel nicht. Versuch die andere Figur.",done:"Training geschafft!",lessonDone:"Lektion geschafft!",xpEarned:"XP verdient",accuracy:"Genauigkeit",outHearts:"Keine Herzen mehr",outText:"Kein Problem. Wir lernen durch Wiederholen.",retry:"Nochmal",quit:"Beenden",uiLang:"App-Sprache",stats:"Statistik",totalXp:"XP gesamt",trDone:"Trainings",lsDone:"Spiellektionen",streakDays:"Tage in Folge",reset:"Fortschritt zurücksetzen",resetQ:"Dein ganzer Fortschritt auf diesem Gerät wird gelöscht. Sicher?",resetYes:"Ja, zurücksetzen",cancel:"Abbrechen",learner:"Lernende Person",profileSub:"Dein Fortschritt wird auf diesem Gerät gespeichert",back:"Zurück",allDone:"Du hast A1 in dieser Sprache geschafft. Weitere Stufen folgen bald!",nextUp:"Als Nächstes",lessonN:"Lektion {n}",levelsTitle:"Stufen",mate:"Schachmatt!",chooseUi:"App-Sprache wählen",soundFx:"Soundeffekte",speed:"Sprechtempo",speeds:["Langsam","Normal","Schnell"],voice:"Stimme",voiceAuto:"Automatisch (klarste Stimme)",test:"Anhören",slow:"Langsam",voiceNone:"Auf diesem Gerät ist keine Stimme für diese Sprache installiert; der Browser nutzt seine Standardstimme.",voiceTip:"Für eine natürlichere Stimme lade in den Telefoneinstellungen die „erweiterte“ oder „Premium“-Stimme dieser Sprache herunter.",settings:"Ton und Sprache",swipeTip:"Tipp: Wische nach links oder rechts, um zwischen den Menüs zu wechseln.",writeInRo:"Auf {lang} schreiben (lateinische Buchstaben gehen auch)",rvIllegal:"Hier geht nicht: Du musst mindestens einen Stein umdrehen.",rvFlipped:"Du hast {n} Steine umgedreht!",rvPass:"Du hast keinen Zug und musst passen.",rvAiPass:"Der Gegner hat keinen Zug. Du bist wieder dran.",rvWin:"Gewonnen! {a} – {b}",rvLose:"Diesmal hat der Gegner gewonnen ({a} – {b}), aber die Lektion ist geschafft!",rvDraw:"Unentschieden!",sdPick:"Tippe ein leeres Feld an und wähle unten eine Zahl.",sdConflict:"Diese Zahl steht schon in der Zeile, Spalte oder im Kasten.",sdWrong:"Passt zu den Regeln, aber hier gehört eine andere Zahl hin.",sdDone:"Rätsel gelöst!",mgPick:"Tippe eine deiner Mulden in der unteren Reihe an.",mgYou:"Du",mgThem:"Gegner",mgExtra:"Letzter Stein in deiner Schatzkammer: nochmal!",mgEven:"Gerade! Die Steine gehören dir.",mgEmpty:"Leere Mulde! Du nimmst beide Mulden.",mgEmptyPit:"Diese Mulde ist leer.",mgOpp:"Der Gegner zieht …",mgYourTurn:"Du bist dran.",mgLost:"Der Gegner hat Steine genommen!",goHint:"Tippe auf einen Kreuzungspunkt.",goTaken:"Dieser Punkt ist besetzt.",goIllegal:"Hier geht nicht: Der Stein hätte keine Freiheiten.",goWrong:"Dieser Zug erreicht das Ziel nicht. Versuch es nochmal.",goCaptured:"Du hast {n} Steine gefangen!",rvHint:"Setz einen Stein auf ein Feld mit Punkt.",voiceBuiltIn:"Hochwertige Stimme in der App enthalten",updated:"Neue Version bereit. App schließen und neu öffnen.",notif:"Mitteilungen",notifAllow:"Mitteilungen erlauben",notifTest:"Testmitteilung senden",notifNeedInstall:"Für Mitteilungen füge die App zum Home-Bildschirm hinzu und öffne sie von dort (ab iOS 16.4).",notifDenied:"Mitteilungen sind aus. Einschalten unter iPhone-Einstellungen → Mitteilungen → Usta.",notifTitle:"Usta Akademi",notifBody:"Dein heutiges Training wartet! Halte deine Serie 🔥",notifSent:"Mitteilung gesendet.",notifFail:"Mitteilung konnte nicht gesendet werden."}
+tr:{home:"Ana sayfa",langs:"Diller",games:"Oyunlar",profile:"Profil",hi:"Merhaba!",homeSub:"Bugün biraz dil, biraz zekâ. Küçük adımlarla ilerle.",streak:"gün seri",dailyGoal:"Günlük hedef",dailyOf:"{n} / {g} XP bugün",dailyHint:"Her antrenman 10–15 XP kazandırır.",contLang:"Kaldığın yerden devam et",start:"Başla",puzzle:"Günün bulmacası",puzzleSub:"Beyaz oynar, tek hamlede mat eder.",solve:"Çöz",yourGames:"Zekâ oyunları",seeAll:"Tümü",langsTitle:"Dil öğren",langsSub:"Her seviye bölümlerden, her bölüm 5 antrenmandan oluşur. Zorluk adım adım artar.",pickLang:"Öğrenmek istediğin dil",level:"Seviye",unit:"Bölüm",trn:["Tanış","Eşleştir","Cümle kur","Yaz","Ustalık"],trainingsOf:"{d}/5 antrenman",exam:"Seviye sınavı",examSub:"Bütün bölümleri bitirince açılır · 12 karışık soru",examPassed:"Sınavı geçtin, A1 tamamlandı!",soonAI:"Yakında · içerik yapay zekâ ile üretilecek",locked:"Kilitli",lockedHint:"Önce bir önceki adımı tamamla.",gamesTitle:"Zekâ oyunları",gamesSub:"Kuralları öğren, bulmacaları çöz, pratik zekânı geliştir.",lessons:"{n} ders",steps:"{n} adım",soon:"Yakında",lv:["Başlangıç","Orta","İleri"],check:"Kontrol et",cont:"Devam",good:["Harika!","Doğru!","Süper!","Aynen böyle!"],wrong:"Olmadı",answer:"Doğru cevap:",accent:"Doğru, ama yazımına dikkat:",newWord:"Yeni kelime",whichIs:"Hangisi “{w}”?",howSay:"“{w}” nasıl denir?",listenPick:"Duyduğunu seç",noAudio:"Ses gelmiyor mu? Kelimeyi göster",matchPairs:"Eşleri bul",fillBlank:"Boşluğu doldur",build:"Cümleyi kur",writeIn:"{lang} yaz",typeHere:"Buraya yaz…",boardHint:"Taşa dokun, sonra gideceği kareye dokun.",illegal:"Bu hamle kurala uygun değil.",notSolution:"Bu doğru hamle değil. Tekrar dene.",mustCapture:"Alma zorunlu! Rakip taşı alabilen taşla oyna.",promoted:"Taşın dama oldu!",roll:"Zar at",need6:"6 gelmedi. Tekrar at!",got6:"6 geldi! Taşın oyuna girdi.",dice:"Zar",tapPiece:"Oynatacağın taşa dokun.",captured:"Kızdırdın! Rakip taş başlangıca döndü.",overshoot:"Zar bu taş için fazla. Eve tam sayıyla girmelisin.",ludoWrong:"Bu hamle hedefe ulaşmıyor. Diğer taşı dene.",done:"Antrenman tamamlandı!",lessonDone:"Ders tamamlandı!",xpEarned:"XP kazandın",accuracy:"Doğruluk",outHearts:"Canların bitti",outText:"Sorun değil. Tekrar ederek öğreniyoruz.",retry:"Tekrar dene",quit:"Çık",uiLang:"Uygulama dili",stats:"İstatistikler",totalXp:"Toplam XP",trDone:"Antrenman",lsDone:"Oyun dersi",streakDays:"Gün serisi",reset:"İlerlemeyi sıfırla",resetQ:"Bütün ilerlemen bu cihazdan silinecek. Emin misin?",resetYes:"Evet, sıfırla",cancel:"Vazgeç",learner:"Öğrenci",profileSub:"İlerlemen bu cihazda saklanır",back:"Geri",allDone:"Bu dilde A1'i bitirdin. Sonraki seviyeler yakında!",nextUp:"Sıradaki",lessonN:"Ders {n}",levelsTitle:"Seviyeler",mate:"Mat!",chooseUi:"Uygulama dilini seç",tvHint:"Bir pula dokun, sonra gideceği haneye dokun.",tvBarFirst:"Önce kırık pulunu oyuna sokmalısın!",tvBlocked:"Bu hane kapalı: orada rakibin 2 ya da daha fazla pulu var.",tvNoDie:"Zarlarınla bu haneye gidemezsin.",tvNotHome:"Pul toplamak için bütün pulların iç bölgende (1–6) olmalı.",tvNoMove:"Bu pul kalan zarlarla oynayamaz.",tvHit:"Kırdın! Rakip pul bara çıktı.",tvRetry:"Hedefe ulaşmadın. Baştan dene.",tvStuck:"Oynanacak hamle kalmadı. Baştan dene.",okInd:"Gösterge:",okHint:"Taşlara dokunarak seç, sonra ‘Grup yap’a bas.",okPickHint:"Doğru taşa dokun.",okMake:"Grup yap",okReset:"Baştan",okBad:"Bu taşlar per ya da seri oluşturmuyor.",okPer:"Per",okSeri:"Seri",okTotal:"Toplam {n} / {g}",okNot:"Bu değil. Tekrar dene.",okLeft:"Kalan taşlar grup oluşturamıyor. Baştan dene.",okAttachHint:"Önce elindeki taşa, sonra masadaki gruba dokun.",okAttachBad:"Bu taş o gruba işlenemez.",mmHint:"Kartları çevir, eşlerini bul.",mmMoves:"{n} hamle",mmDone:"Bütün eşleri {n} hamlede buldun!",smWatch:"İzle…",smYour:"Sıra sende: aynı sırayla dokun.",smWrong:"Yanlış sıra! Bu turu tekrar izle.",smDone:"{n} adımlık diziyi hatırladın!",spWatch:"Sayıyı aklında tut…",spType:"Gördüğün sayıyı yaz.",spOk:"Doğru! Bir basamak daha.",spWrong:"Doğrusu {n} idi. Yeni bir sayı geliyor.",spDone:"Harika sayı hafızası!",msWatch:"Nesneleri aklında tut…",msPick:"Hangisi kayboldu?",msOk:"Doğru! Sıradaki tur.",msWrong:"Olmadı. Yeni tur geliyor.",msDone:"Dikkatin çok iyi!",soundFx:"Ses efektleri",speed:"Konuşma hızı",speeds:["Yavaş","Normal","Hızlı"],voice:"Ses",voiceAuto:"Otomatik (en net ses)",test:"Dinle",slow:"Yavaş",voiceNone:"Bu cihazda bu dil için yüklü ses yok; tarayıcının varsayılan sesi kullanılır.",voiceTip:"Daha doğal bir ses için telefonunun ayarlarından bu dilin “gelişmiş” ya da “premium” sesini indirebilirsin.",settings:"Ses ve konuşma",swipeTip:"İpucu: Menüler arasında ekranı sağa sola kaydırarak geçebilirsin.",writeInRo:"{lang} yaz (Latin harfleriyle de olur)",rvIllegal:"Buraya oynayamazsın: en az bir rakip taşı çevirmelisin.",rvFlipped:"{n} taş çevirdin!",rvPass:"Oynayacak yerin yok, sıra rakibe geçti.",rvAiPass:"Rakibin oynayacak yeri yok, sıra yine sende.",rvWin:"Kazandın! {a} – {b}",rvLose:"Bu sefer rakip kazandı ({a} – {b}), ama ders tamam!",rvDraw:"Berabere!",sdPick:"Boş bir kareye dokun, sonra alttan sayı seç.",sdConflict:"Bu sayı satırda, sütunda ya da kutuda zaten var.",sdWrong:"Kurala uyuyor ama buraya başka bir sayı gelmeli.",sdDone:"Bulmaca çözüldü!",mgPick:"Alt sıradaki kendi kuyularından birine dokun.",mgYou:"Sen",mgThem:"Rakip",mgExtra:"Son taş hazinende: bir hamle daha!",mgEven:"Çift yaptın, taşlar senin!",mgEmpty:"Boş kuyu! İki kuyunun taşları senin.",mgEmptyPit:"Bu kuyu boş.",mgOpp:"Rakip oynuyor…",mgYourTurn:"Sıra sende.",mgLost:"Rakip taş aldı!",goHint:"Bir kesişim noktasına dokun.",goTaken:"Bu nokta dolu.",goIllegal:"Buraya taş koyamazsın: hiç özgürlüğü olmaz.",goWrong:"Bu hamle hedefi tutturmadı. Tekrar dene.",goCaptured:"{n} taş yakaladın!",rvHint:"Noktalı karelerden birine taş koy.",voiceBuiltIn:"Uygulamaya gömülü yüksek kaliteli ses",updated:"Yeni sürüm hazır. Uygulamayı kapatıp açınca gelecek.",updatedLater:"Yeni sürüm hazır, ders bitince yüklenecek.",version:"Sürüm",notif:"Bildirimler",notifAllow:"Bildirimlere izin ver",notifTest:"Deneme bildirimi gönder",notifNeedInstall:"Bildirimler için uygulamayı ana ekrana ekleyip oradan açmalısın (iOS 16.4 ve üstü).",notifDenied:"Bildirimler kapalı. Açmak için: iPhone Ayarlar → Bildirimler → Usta.",notifTitle:"Usta Akademi",notifBody:"Bugünkü antrenmanın seni bekliyor! Serini koru 🔥",notifSent:"Bildirim gönderildi.",notifFail:"Bildirim gönderilemedi."},
+en:{home:"Home",langs:"Languages",games:"Games",profile:"Profile",hi:"Hello!",homeSub:"A little language, a little logic. Small steps every day.",streak:"day streak",dailyGoal:"Daily goal",dailyOf:"{n} / {g} XP today",dailyHint:"Each training earns 10–15 XP.",contLang:"Pick up where you left off",start:"Start",puzzle:"Puzzle of the day",puzzleSub:"White to play and mate in one.",solve:"Solve",yourGames:"Mind games",seeAll:"All",langsTitle:"Learn a language",langsSub:"Each level has units, each unit has 5 trainings. Difficulty grows step by step.",pickLang:"Language you want to learn",level:"Level",unit:"Unit",trn:["Discover","Match","Build","Write","Mastery"],trainingsOf:"{d}/5 trainings",exam:"Level exam",examSub:"Unlocks after all units · 12 mixed questions",examPassed:"Exam passed, A1 complete!",soonAI:"Coming soon · content generated with AI",locked:"Locked",lockedHint:"Finish the previous step first.",gamesTitle:"Mind games",gamesSub:"Learn the rules, solve puzzles, sharpen your thinking.",lessons:"{n} lessons",steps:"{n} steps",soon:"Soon",lv:["Beginner","Intermediate","Advanced"],check:"Check",cont:"Continue",good:["Great!","Correct!","Nice!","Exactly!"],wrong:"Not quite",answer:"Correct answer:",accent:"Correct, but mind the spelling:",newWord:"New word",whichIs:"Which one is “{w}”?",howSay:"How do you say “{w}”?",listenPick:"Pick what you hear",noAudio:"No sound? Show the word",matchPairs:"Match the pairs",fillBlank:"Fill in the blank",build:"Build the sentence",writeIn:"Write it in {lang}",typeHere:"Type here…",boardHint:"Tap a piece, then the square to move to.",illegal:"That move isn't allowed.",notSolution:"That's not the right move. Try again.",mustCapture:"Capturing is mandatory! Move a piece that can capture.",promoted:"Your piece is crowned!",roll:"Roll",need6:"No 6. Roll again!",got6:"A 6! Your piece is in play.",dice:"Dice",tapPiece:"Tap the piece you want to move.",captured:"Gotcha! The opponent goes back to start.",overshoot:"Too high for this piece. You need the exact number to get home.",ludoWrong:"That move doesn't reach the goal. Try the other piece.",done:"Training complete!",lessonDone:"Lesson complete!",xpEarned:"XP earned",accuracy:"Accuracy",outHearts:"Out of hearts",outText:"No problem. We learn by trying again.",retry:"Try again",quit:"Quit",uiLang:"App language",stats:"Stats",totalXp:"Total XP",trDone:"Trainings",lsDone:"Game lessons",streakDays:"Day streak",reset:"Reset progress",resetQ:"All progress on this device will be deleted. Are you sure?",resetYes:"Yes, reset",cancel:"Cancel",learner:"Learner",profileSub:"Your progress is saved on this device",back:"Back",allDone:"You finished A1 in this language. Next levels coming soon!",nextUp:"Up next",lessonN:"Lesson {n}",levelsTitle:"Levels",mate:"Checkmate!",chooseUi:"Choose the app language",updatedLater:"A new version is ready and will load when this lesson ends.",version:"Version",tvHint:"Tap a checker, then the point to move to.",tvBarFirst:"Enter your checker from the bar first!",tvBlocked:"That point is blocked: your opponent has 2 or more checkers there.",tvNoDie:"Your dice can't take you there.",tvNotHome:"To bear off, all your checkers must be in your home board (1–6).",tvNoMove:"This checker can't move with the dice left.",tvHit:"Hit! The opponent's checker goes to the bar.",tvRetry:"You didn't reach the goal. Try again.",tvStuck:"No moves left. Try again.",okInd:"Indicator:",okHint:"Tap tiles to select them, then press ‘Make group’.",okPickHint:"Tap the right tile.",okMake:"Make group",okReset:"Start over",okBad:"These tiles don't form a set or a run.",okPer:"Set",okSeri:"Run",okTotal:"Total {n} / {g}",okNot:"Not that one. Try again.",okLeft:"The remaining tiles can't form a group. Start over.",okAttachHint:"Tap a tile in your rack, then a group on the table.",okAttachBad:"That tile doesn't fit that group.",mmHint:"Flip the cards and find the pairs.",mmMoves:"{n} moves",mmDone:"You found all pairs in {n} moves!",smWatch:"Watch…",smYour:"Your turn: tap in the same order.",smWrong:"Wrong order! Watch this round again.",smDone:"You remembered a sequence of {n}!",spWatch:"Remember the number…",spType:"Type the number you saw.",spOk:"Correct! One more digit.",spWrong:"It was {n}. Here comes a new number.",spDone:"Great number memory!",msWatch:"Remember the objects…",msPick:"Which one disappeared?",msOk:"Correct! Next round.",msWrong:"Not quite. New round coming.",msDone:"Sharp attention!",soundFx:"Sound effects",speed:"Speech speed",speeds:["Slow","Normal","Fast"],voice:"Voice",voiceAuto:"Automatic (clearest voice)",test:"Listen",slow:"Slow",voiceNone:"No voice for this language is installed on this device; the browser default will be used.",voiceTip:"For a more natural voice, download the “enhanced” or “premium” voice for this language in your phone's settings.",settings:"Sound and speech",swipeTip:"Tip: swipe left or right to move between menus.",writeInRo:"Write it in {lang} (Latin letters are fine)",rvIllegal:"You can't play here: you must flip at least one disc.",rvFlipped:"You flipped {n} discs!",rvPass:"You have no move, so your turn passes.",rvAiPass:"Your opponent has no move. Your turn again.",rvWin:"You won! {a} – {b}",rvLose:"Your opponent won this time ({a} – {b}), but the lesson is done!",rvDraw:"It's a draw!",sdPick:"Tap an empty square, then pick a number below.",sdConflict:"That number is already in this row, column or box.",sdWrong:"It fits the rules, but another number belongs here.",sdDone:"Puzzle solved!",mgPick:"Tap one of your pits on the bottom row.",mgYou:"You",mgThem:"Opponent",mgExtra:"Last stone in your treasury: play again!",mgEven:"Even! Those stones are yours.",mgEmpty:"Empty pit! You take both pits.",mgEmptyPit:"That pit is empty.",mgOpp:"Opponent is playing…",mgYourTurn:"Your turn.",mgLost:"Your opponent captured stones!",goHint:"Tap an intersection.",goTaken:"That point is taken.",goIllegal:"You can't play here: the stone would have no liberties.",goWrong:"That move didn't reach the goal. Try again.",goCaptured:"You captured {n} stones!",rvHint:"Place a disc on one of the dotted squares.",voiceBuiltIn:"High-quality voice built into the app",updated:"A new version is ready. Close and reopen the app to get it.",notif:"Notifications",notifAllow:"Allow notifications",notifTest:"Send a test notification",notifNeedInstall:"To get notifications, add the app to your home screen and open it from there (iOS 16.4 or later).",notifDenied:"Notifications are off. Turn them on in iPhone Settings → Notifications → Usta.",notifTitle:"Usta Akademi",notifBody:"Today's training is waiting for you! Keep your streak 🔥",notifSent:"Notification sent.",notifFail:"Couldn't send the notification."},
+de:{home:"Start",langs:"Sprachen",games:"Spiele",profile:"Profil",hi:"Hallo!",homeSub:"Ein bisschen Sprache, ein bisschen Denken. Jeden Tag kleine Schritte.",streak:"Tage in Folge",dailyGoal:"Tagesziel",dailyOf:"{n} / {g} XP heute",dailyHint:"Jedes Training bringt 10–15 XP.",contLang:"Mach weiter, wo du warst",start:"Los",puzzle:"Rätsel des Tages",puzzleSub:"Weiß zieht und setzt in einem Zug matt.",solve:"Lösen",yourGames:"Denkspiele",seeAll:"Alle",langsTitle:"Sprache lernen",langsSub:"Jede Stufe hat Lektionen, jede Lektion 5 Trainings. Es wird Schritt für Schritt schwerer.",pickLang:"Sprache, die du lernen willst",level:"Stufe",unit:"Lektion",trn:["Entdecken","Zuordnen","Sätze bauen","Schreiben","Meister"],trainingsOf:"{d}/5 Trainings",exam:"Stufentest",examSub:"Nach allen Lektionen frei · 12 gemischte Fragen",examPassed:"Test bestanden, A1 geschafft!",soonAI:"Bald · Inhalte werden mit KI erstellt",locked:"Gesperrt",lockedHint:"Schließe zuerst den vorherigen Schritt ab.",gamesTitle:"Denkspiele",gamesSub:"Lerne die Regeln, löse Rätsel, trainiere dein Denken.",lessons:"{n} Lektionen",steps:"{n} Schritte",soon:"Bald",lv:["Anfänger","Fortgeschritten","Experte"],check:"Prüfen",cont:"Weiter",good:["Super!","Richtig!","Toll!","Genau!"],wrong:"Leider falsch",answer:"Richtige Antwort:",accent:"Richtig, aber achte auf die Schreibung:",newWord:"Neues Wort",whichIs:"Was ist „{w}“?",howSay:"Wie sagt man „{w}“?",listenPick:"Wähle, was du hörst",noAudio:"Kein Ton? Wort anzeigen",matchPairs:"Finde die Paare",fillBlank:"Fülle die Lücke",build:"Bilde den Satz",writeIn:"Auf {lang} schreiben",typeHere:"Hier schreiben…",boardHint:"Tippe eine Figur an, dann das Zielfeld.",illegal:"Dieser Zug ist nicht erlaubt.",notSolution:"Das ist nicht der richtige Zug. Versuch es nochmal.",mustCapture:"Schlagzwang! Zieh mit einem Stein, der schlagen kann.",promoted:"Dein Stein ist jetzt eine Dame!",roll:"Würfeln",need6:"Keine 6. Nochmal würfeln!",got6:"Eine 6! Deine Figur ist im Spiel.",dice:"Würfel",tapPiece:"Tippe die Figur an, die du ziehen willst.",captured:"Rausgeworfen! Der Gegner muss zurück zum Start.",overshoot:"Zu viel für diese Figur. Ins Haus geht es nur mit der genauen Zahl.",ludoWrong:"Dieser Zug erreicht das Ziel nicht. Versuch die andere Figur.",done:"Training geschafft!",lessonDone:"Lektion geschafft!",xpEarned:"XP verdient",accuracy:"Genauigkeit",outHearts:"Keine Herzen mehr",outText:"Kein Problem. Wir lernen durch Wiederholen.",retry:"Nochmal",quit:"Beenden",uiLang:"App-Sprache",stats:"Statistik",totalXp:"XP gesamt",trDone:"Trainings",lsDone:"Spiellektionen",streakDays:"Tage in Folge",reset:"Fortschritt zurücksetzen",resetQ:"Dein ganzer Fortschritt auf diesem Gerät wird gelöscht. Sicher?",resetYes:"Ja, zurücksetzen",cancel:"Abbrechen",learner:"Lernende Person",profileSub:"Dein Fortschritt wird auf diesem Gerät gespeichert",back:"Zurück",allDone:"Du hast A1 in dieser Sprache geschafft. Weitere Stufen folgen bald!",nextUp:"Als Nächstes",lessonN:"Lektion {n}",levelsTitle:"Stufen",mate:"Schachmatt!",chooseUi:"App-Sprache wählen",updatedLater:"Neue Version bereit, sie wird nach dieser Lektion geladen.",version:"Version",tvHint:"Tippe einen Stein an, dann das Zielfeld.",tvBarFirst:"Bring zuerst deinen Stein von der Bar ins Spiel!",tvBlocked:"Dieses Feld ist blockiert: Dort stehen 2 oder mehr gegnerische Steine.",tvNoDie:"Mit deinen Würfeln kommst du da nicht hin.",tvNotHome:"Zum Auswürfeln müssen alle Steine im Heimfeld (1–6) sein.",tvNoMove:"Dieser Stein kann mit den übrigen Würfeln nicht ziehen.",tvHit:"Geschlagen! Der gegnerische Stein muss auf die Bar.",tvRetry:"Ziel nicht erreicht. Versuch es nochmal.",tvStuck:"Keine Züge mehr. Versuch es nochmal.",okInd:"Anzeiger:",okHint:"Tippe Steine an und drücke dann „Gruppe bilden“.",okPickHint:"Tippe den richtigen Stein an.",okMake:"Gruppe bilden",okReset:"Neu anfangen",okBad:"Diese Steine bilden weder Satz noch Reihe.",okPer:"Satz",okSeri:"Reihe",okTotal:"Summe {n} / {g}",okNot:"Nicht der. Versuch es nochmal.",okLeft:"Die übrigen Steine bilden keine Gruppe. Fang neu an.",okAttachHint:"Tippe einen Stein auf deiner Bank an, dann eine Gruppe auf dem Tisch.",okAttachBad:"Der Stein passt nicht zu dieser Gruppe.",mmHint:"Dreh die Karten um und finde die Paare.",mmMoves:"{n} Züge",mmDone:"Alle Paare in {n} Zügen gefunden!",smWatch:"Schau zu …",smYour:"Du bist dran: in derselben Reihenfolge tippen.",smWrong:"Falsche Reihenfolge! Schau die Runde nochmal an.",smDone:"Du hast dir eine Folge von {n} gemerkt!",spWatch:"Merk dir die Zahl …",spType:"Gib die Zahl ein, die du gesehen hast.",spOk:"Richtig! Eine Ziffer mehr.",spWrong:"Es war {n}. Gleich kommt eine neue Zahl.",spDone:"Tolles Zahlengedächtnis!",msWatch:"Merk dir die Dinge …",msPick:"Was ist verschwunden?",msOk:"Richtig! Nächste Runde.",msWrong:"Leider nicht. Neue Runde.",msDone:"Super aufgepasst!",soundFx:"Soundeffekte",speed:"Sprechtempo",speeds:["Langsam","Normal","Schnell"],voice:"Stimme",voiceAuto:"Automatisch (klarste Stimme)",test:"Anhören",slow:"Langsam",voiceNone:"Auf diesem Gerät ist keine Stimme für diese Sprache installiert; der Browser nutzt seine Standardstimme.",voiceTip:"Für eine natürlichere Stimme lade in den Telefoneinstellungen die „erweiterte“ oder „Premium“-Stimme dieser Sprache herunter.",settings:"Ton und Sprache",swipeTip:"Tipp: Wische nach links oder rechts, um zwischen den Menüs zu wechseln.",writeInRo:"Auf {lang} schreiben (lateinische Buchstaben gehen auch)",rvIllegal:"Hier geht nicht: Du musst mindestens einen Stein umdrehen.",rvFlipped:"Du hast {n} Steine umgedreht!",rvPass:"Du hast keinen Zug und musst passen.",rvAiPass:"Der Gegner hat keinen Zug. Du bist wieder dran.",rvWin:"Gewonnen! {a} – {b}",rvLose:"Diesmal hat der Gegner gewonnen ({a} – {b}), aber die Lektion ist geschafft!",rvDraw:"Unentschieden!",sdPick:"Tippe ein leeres Feld an und wähle unten eine Zahl.",sdConflict:"Diese Zahl steht schon in der Zeile, Spalte oder im Kasten.",sdWrong:"Passt zu den Regeln, aber hier gehört eine andere Zahl hin.",sdDone:"Rätsel gelöst!",mgPick:"Tippe eine deiner Mulden in der unteren Reihe an.",mgYou:"Du",mgThem:"Gegner",mgExtra:"Letzter Stein in deiner Schatzkammer: nochmal!",mgEven:"Gerade! Die Steine gehören dir.",mgEmpty:"Leere Mulde! Du nimmst beide Mulden.",mgEmptyPit:"Diese Mulde ist leer.",mgOpp:"Der Gegner zieht …",mgYourTurn:"Du bist dran.",mgLost:"Der Gegner hat Steine genommen!",goHint:"Tippe auf einen Kreuzungspunkt.",goTaken:"Dieser Punkt ist besetzt.",goIllegal:"Hier geht nicht: Der Stein hätte keine Freiheiten.",goWrong:"Dieser Zug erreicht das Ziel nicht. Versuch es nochmal.",goCaptured:"Du hast {n} Steine gefangen!",rvHint:"Setz einen Stein auf ein Feld mit Punkt.",voiceBuiltIn:"Hochwertige Stimme in der App enthalten",updated:"Neue Version bereit. App schließen und neu öffnen.",notif:"Mitteilungen",notifAllow:"Mitteilungen erlauben",notifTest:"Testmitteilung senden",notifNeedInstall:"Für Mitteilungen füge die App zum Home-Bildschirm hinzu und öffne sie von dort (ab iOS 16.4).",notifDenied:"Mitteilungen sind aus. Einschalten unter iPhone-Einstellungen → Mitteilungen → Usta.",notifTitle:"Usta Akademi",notifBody:"Dein heutiges Training wartet! Halte deine Serie 🔥",notifSent:"Mitteilung gesendet.",notifFail:"Mitteilung konnte nicht gesendet werden."}
 };
 const UI_LANGS=[['tr','Türkçe'],['en','English'],['de','Deutsch']];
 
@@ -636,7 +713,8 @@ const SFX=(()=>{let ctx=null;
   step:()=>tone({f:880,d:.05,v:.05,type:'triangle'}),
   promote:()=>[784,988,1175].forEach((f,i)=>tone({f,d:.18,v:.1,type:'triangle',delay:i*.07})),
   win:()=>[523,659,784,1047].forEach((f,i)=>tone({f,d:.28,v:.12,type:'triangle',delay:i*.11})),
-  swipe:()=>noise({d:.07,v:.12,f:2600,q:.8})
+  swipe:()=>noise({d:.07,v:.12,f:2600,q:.8}),
+  note:i=>tone({f:[330,392,494,587][i%4],d:.32,v:.15,type:'triangle'})
  };})();
 
 /* ---------- training builder ---------- */
@@ -847,6 +925,108 @@ const GO=[
   {type:'go',goal:'captureAll',b:['a3','b2','c1'],w:['a2','b1'],text:T("Köşe noktası yasak gibi görünüyor… İki beyaz taşı yakala!","The corner point looks forbidden… capture both white stones!","Der Eckpunkt sieht verboten aus … fang beide weißen Steine!")},
   {type:'quiz',q:T("Taşın hiç özgürlüğü kalmayacaksa ne olur?","What if your stone would have no liberties?","Was, wenn dein Stein keine Freiheiten hätte?"),opts:[T("Rakibi yakalamıyorsa oynanamaz","Not allowed unless it captures","Nur erlaubt, wenn er fängt"),T("Her zaman oynanabilir","Always allowed","Immer erlaubt")],a:0}]}
 ];
+const TAVLA=[
+ {title:T("Tahta ve diziliş","Board and setup","Brett und Aufstellung"),steps:[
+  {type:'info',text:T("Tavla 24 haneli (üçgenli) bir tahtada iki kişiyle oynanır. Her oyuncunun 15 pulu vardır. Sen beyaz pullarla oynarsın ve pullarını 24'ten 1'e doğru ilerletirsin. 1–6 arası haneler senin iç bölgendir. Amaç bütün pullarını iç bölgene getirip tahtadan toplamaktır.","Backgammon is played by two on a board with 24 points (triangles). Each player has 15 checkers. You play white and move from point 24 towards point 1. Points 1–6 are your home board. The goal is to bring all your checkers home and bear them off.","Backgammon spielen zwei auf einem Brett mit 24 Zungen (Dreiecken). Jeder hat 15 Steine. Du spielst Weiß und ziehst von Feld 24 Richtung Feld 1. Die Felder 1–6 sind dein Heimfeld. Ziel ist es, alle Steine nach Hause zu bringen und auszuwürfeln."),visual:{kind:'tavla'}},
+  {type:'quiz',q:T("Her oyuncunun kaç pulu vardır?","How many checkers does each player have?","Wie viele Steine hat jeder?"),opts:['12','15','16'],a:1},
+  {type:'quiz',q:T("Tavla tahtasında kaç hane vardır?","How many points are on the board?","Wie viele Zungen hat das Brett?"),opts:['12','24','30'],a:1},
+  {type:'quiz',q:T("Oyunu kim kazanır?","Who wins the game?","Wer gewinnt?"),opts:[T("Bütün pullarını ilk toplayan","The first to bear off all checkers","Wer zuerst alle Steine ausgewürfelt hat"),T("En çok pul kıran","Whoever hits the most","Wer am meisten schlägt"),T("En büyük zarı atan","The highest roll","Wer am höchsten würfelt")],a:0}]},
+ {title:T("Zar ve hareket","Dice and moving","Würfel und Ziehen"),steps:[
+  {type:'info',text:T("İki zar atılır ve her zar ayrı bir hamledir. Bir pulu iki zarın toplamı kadar ya da iki farklı pulu birer zarla ilerletebilirsin. Bir pula dokununca gidebileceği haneler parlar.","You roll two dice and each die is a separate move. Move one checker by both dice, or two checkers by one die each. Tap a checker and the points it can reach light up.","Du würfelst mit zwei Würfeln, jeder Würfel ist ein eigener Zug. Zieh einen Stein um beide Würfel oder zwei Steine um je einen. Tippe einen Stein an, dann leuchten seine Zielfelder.")},
+  {type:'tavla',goal:'useAll',dice:[5,3],text:T("Zar 5–3 geldi. İki zarı da oyna.","You rolled 5–3. Play both dice.","Du hast 5–3. Spiele beide Würfel.")},
+  {type:'tavla',goal:'useAll',dice:[6,1],text:T("Şimdi 6–1. İki zarı da oyna.","Now 6–1. Play both dice.","Jetzt 6–1. Spiele beide Würfel.")}]},
+ {title:T("Kapı ve kırma","Blocks and hits","Blockieren und Schlagen"),steps:[
+  {type:'info',text:T("Rakibin 2 ya da daha fazla pulu olan haneye (kapıya) gidemezsin. Rakibin tek pulu olan haneye gelirsen o pulu kırarsın; kırılan pul bara çıkar ve oyuna baştan girmek zorunda kalır.","You can't land on a point with 2 or more opponent checkers (a block). If you land on a point with a single opponent checker, you hit it: it goes to the bar and has to start again.","Auf ein Feld mit 2 oder mehr gegnerischen Steinen darfst du nicht. Landest du auf einem Feld mit nur einem gegnerischen Stein, schlägst du ihn: Er muss auf die Bar und von vorn beginnen.")},
+  {type:'tavla',goal:'hit',dice:[3,2],w:{13:3,8:2,6:4,4:2},b:{10:1,5:2,19:5,17:3,12:4},text:T("Zar 3–2. Rakibin açıkta kalan pulunu kır!","You rolled 3–2. Hit your opponent's lone checker!","Du hast 3–2. Schlag den einzelnen gegnerischen Stein!"),whyWrong:T("Rakip pulu kıramadın. 10. hanedeki tek pula bak.","You didn't hit. Look at the lone checker on point 10.","Nicht geschlagen. Schau auf den einzelnen Stein auf Feld 10.")},
+  {type:'quiz',q:T("Rakibin 2 pulu olan haneye gidebilir misin?","Can you land on a point with 2 opponent checkers?","Darfst du auf ein Feld mit 2 gegnerischen Steinen ziehen?"),opts:YESNO,a:1}]},
+ {title:T("Kırık pulu sokmak","Entering from the bar","Von der Bar einwürfeln"),steps:[
+  {type:'info',text:T("Kırık pulun varsa önce onu oyuna sokmalısın. Pul rakibin iç bölgesine (19–24) girer: zar 1 ise 24'e, zar 6 ise 19'a. Girdiğin hane kapalıysa o zarla giremezsin.","If you have a checker on the bar, you must enter it first. It enters your opponent's home board (19–24): a 1 enters on 24, a 6 on 19. You can't enter on a blocked point.","Hast du einen Stein auf der Bar, musst du ihn zuerst einwürfeln. Er kommt ins gegnerische Heimfeld (19–24): eine 1 auf 24, eine 6 auf 19. Auf ein blockiertes Feld geht es nicht.")},
+  {type:'tavla',goal:'enter',bar:1,dice:[4,3],w:{13:4,8:3,6:5,5:2},b:{22:2,20:2,19:3,12:4,17:3,1:1},text:T("Zar 4–3. Kırık pulunu oyuna sok.","You rolled 4–3. Enter your checker from the bar.","Du hast 4–3. Würfle deinen Stein von der Bar ein.")},
+  {type:'quiz',q:T("Kırık pulun varken başka bir pul oynayabilir misin?","Can you move another checker while one is on the bar?","Darfst du ziehen, während ein Stein auf der Bar ist?"),opts:YESNO,a:1}]},
+ {title:T("Çift zar","Doubles","Pasch"),steps:[
+  {type:'info',text:T("İki zar aynı gelirse (çift), o sayıyı 4 kez oynarsın. Örneğin 3–3 gelirse dört kez 3 hane ilerlersin.","If both dice show the same number (doubles), you play that number 4 times. With 3–3 you move 3 points four times.","Zeigen beide Würfel dieselbe Zahl (Pasch), spielst du sie viermal. Bei 3–3 ziehst du viermal 3 Felder.")},
+  {type:'tavla',goal:'useAll',dice:[3,3],text:T("Zar 3–3 (çift). Dört hamle yap.","You rolled 3–3 (doubles). Make four moves.","Du hast 3–3 (Pasch). Mach vier Züge.")},
+  {type:'quiz',q:T("Zar 4–4 gelirse toplam kaç hane ilerlersin?","With 4–4, how many points do you move in total?","Wie viele Felder ziehst du bei 4–4 insgesamt?"),opts:['8','16','4'],a:1}]},
+ {title:T("Pul toplama","Bearing off","Auswürfeln"),steps:[
+  {type:'info',text:T("Bütün pulların iç bölgendeyse (1–6) toplamaya başlarsın. Zar kaç ise o hanedeki pulu tahtadan çıkarırsın. Zar, en uzaktaki pulundan büyükse en uzaktaki pulu toplarsın. Bütün pullarını ilk toplayan kazanır.","When all your checkers are in your home board (1–6), you start bearing off. A die removes a checker from the matching point. If the die is higher than your farthest checker, you bear that one off. First to bear off everything wins.","Sind alle Steine im Heimfeld (1–6), beginnt das Auswürfeln. Ein Würfel nimmt einen Stein vom passenden Feld. Ist die Zahl höher als dein entferntester Stein, nimmst du diesen. Wer zuerst alle draußen hat, gewinnt.")},
+  {type:'tavla',goal:'bearoff',need:2,dice:[6,3],w:{6:2,5:3,3:2,2:3,1:5},b:{24:3,22:4,20:4,19:4},text:T("Zar 6–3. İki pul topla. Sağdaki ok alanına dokunarak pul çıkarırsın.","You rolled 6–3. Bear off two checkers by tapping the arrow area on the right.","Du hast 6–3. Würfle zwei Steine aus, indem du auf den Pfeilbereich rechts tippst."),whyWrong:T("İki pul toplayamadın. 6 ve 3 numaralı hanelerden topla.","You didn't bear off two. Take them from points 6 and 3.","Nicht zwei ausgewürfelt. Nimm sie von Feld 6 und 3.")},
+  {type:'quiz',q:T("Pul toplamaya ne zaman başlayabilirsin?","When can you start bearing off?","Wann darfst du auswürfeln?"),opts:[T("Bütün pullarım iç bölgedeyken","When all my checkers are home","Wenn alle Steine im Heimfeld sind"),T("İstediğim zaman","Whenever I like","Jederzeit"),T("Çift zar atınca","After rolling doubles","Nach einem Pasch")],a:0}]}
+];
+const OKEY=[
+ {title:T("Taşlar","The tiles","Die Steine"),steps:[
+  {type:'info',text:T("Okey 106 taşla oynanır: 4 renk (kırmızı, sarı, mavi, siyah), her renkte 1'den 13'e kadar ikişer taş ve 2 sahte okey (★). Her oyuncu 14 taş alır; başlayan oyuncu 15 taş alır ve bir taş atarak oyunu başlatır.","Okey uses 106 tiles: 4 colours (red, yellow, blue, black), two of each number 1–13 in every colour, plus 2 false jokers (★). Everyone gets 14 tiles; the starting player gets 15 and begins by discarding one.","Okey wird mit 106 Steinen gespielt: 4 Farben (rot, gelb, blau, schwarz), jede Zahl von 1 bis 13 zweimal pro Farbe, dazu 2 falsche Joker (★). Jeder bekommt 14 Steine, wer beginnt, 15 und legt zuerst einen ab."),visual:{kind:'okey',tiles:['r1','y5','b9','k13','f','r12','b3']}},
+  {type:'quiz',q:T("Okey kaç taşla oynanır?","How many tiles are in Okey?","Wie viele Steine hat Okey?"),opts:['52','106','108'],a:1},
+  {type:'quiz',q:T("Kaç farklı renk vardır?","How many colours are there?","Wie viele Farben gibt es?"),opts:['2','4','5'],a:1},
+  {type:'quiz',q:T("Başlayan oyuncu kaç taş alır?","How many tiles does the starting player get?","Wie viele Steine bekommt, wer beginnt?"),opts:['14','15','21'],a:1}]},
+ {title:T("Gösterge ve okey","Indicator and joker","Anzeiger und Joker"),steps:[
+  {type:'info',text:T("Ortada açılan taşa gösterge denir. Okey, göstergenin aynı renkte bir fazlasıdır: gösterge sarı 7 ise okey sarı 8'dir; gösterge 13 ise okey 1'dir. Okey her taşın yerine geçebilir. Sahte okey (★) ise okey taşının yerine kullanılır.","The tile turned face up is the indicator. The joker (okey) is the next number in the same colour: if the indicator is yellow 7, the joker is yellow 8; after 13 comes 1. The joker can stand for any tile. The false joker (★) stands for the joker tile itself.","Der aufgedeckte Stein ist der Anzeiger. Der Joker (Okey) ist die nächste Zahl in derselben Farbe: Bei gelb 7 ist gelb 8 der Joker, nach 13 kommt 1. Der Joker ersetzt jeden Stein. Der falsche Joker (★) ersetzt den Jokerstein selbst.")},
+  {type:'okey',mode:'pick',ind:'y7',rack:['y6','r8','y8','b8','y9','k7'],correct:[2],text:T("Gösterge sarı 7. Elindeki okey taşını bul.","The indicator is yellow 7. Find the joker in your rack.","Der Anzeiger ist gelb 7. Finde den Joker in deiner Bank."),whyWrong:T("Okey göstergenin aynı renkte bir fazlasıdır.","The joker is one higher, in the same colour.","Der Joker ist eins höher, in derselben Farbe.")},
+  {type:'okey',mode:'pick',ind:'k13',rack:['k12','b13','r1','k1','k2'],correct:[3],text:T("Gösterge siyah 13. Okey hangisi?","The indicator is black 13. Which tile is the joker?","Der Anzeiger ist schwarz 13. Welcher Stein ist der Joker?"),whyWrong:T("13'ten sonra 1 gelir, renk aynı kalır.","After 13 comes 1, same colour.","Nach 13 kommt 1, gleiche Farbe.")},
+  {type:'quiz',q:T("Gösterge mavi 10 ise okey nedir?","If the indicator is blue 10, what is the joker?","Ist der Anzeiger blau 10, was ist der Joker?"),opts:[T("Mavi 11","Blue 11","Blau 11"),T("Mavi 9","Blue 9","Blau 9"),T("Kırmızı 11","Red 11","Rot 11")],a:0}]},
+ {title:T("Per ve seri","Sets and runs","Sätze und Reihen"),steps:[
+  {type:'info',text:T("Per: aynı sayının farklı renkleri (3 ya da 4 taş), örneğin kırmızı 5, sarı 5, siyah 5. Seri: aynı rengin sıralı sayıları (en az 3 taş), örneğin mavi 3-4-5.","Set: the same number in different colours (3 or 4 tiles), e.g. red 5, yellow 5, black 5. Run: consecutive numbers in one colour (at least 3), e.g. blue 3-4-5.","Satz: dieselbe Zahl in verschiedenen Farben (3 oder 4 Steine), z. B. rot 5, gelb 5, schwarz 5. Reihe: aufeinanderfolgende Zahlen einer Farbe (mindestens 3), z. B. blau 3-4-5."),visual:{kind:'okey',groups:[['r5','y5','k5'],['b3','b4','b5']]}},
+  {type:'okey',mode:'group',goal:'all',rack:['b4','r5','k10','y5','b3','k9','k5','b5','k11'],text:T("Bütün taşları gruplara ayır.","Split all tiles into groups.","Teile alle Steine in Gruppen auf."),whyWrong:T("Kalan taşlar grup olmuyor. Mavi 5 nereye ait?","The tiles left can't form a group. Where does blue 5 belong?","Die übrigen Steine passen nicht. Wohin gehört blau 5?")},
+  {type:'quiz',q:T("Kırmızı 7, kırmızı 8, kırmızı 9 nedir?","Red 7, red 8, red 9 is a…","Rot 7, rot 8, rot 9 ist ein(e) …"),opts:[T("Seri","Run","Reihe"),T("Per","Set","Satz"),T("Hiçbiri","Neither","Keins von beiden")],a:0},
+  {type:'quiz',q:T("Kırmızı 4, kırmızı 4, mavi 4 per olur mu?","Is red 4, red 4, blue 4 a set?","Ist rot 4, rot 4, blau 4 ein Satz?"),opts:YESNO,a:1}]},
+ {title:T("Okeyi joker yap","Using the joker","Den Joker nutzen"),steps:[
+  {type:'info',text:T("Eksik taşın yerine okeyi koyabilirsin. Gösterge kırmızı 1 ise okey kırmızı 2'dir: mavi 7, okey, mavi 9 geçerli bir seridir. Sahte okey (★) ise gerçek kırmızı 2 gibi davranır.","You can use the joker for a missing tile. If the indicator is red 1, the joker is red 2: blue 7, joker, blue 9 is a valid run. The false joker (★) then counts as a real red 2.","Der Joker ersetzt einen fehlenden Stein. Ist der Anzeiger rot 1, ist rot 2 der Joker: blau 7, Joker, blau 9 ist eine gültige Reihe. Der falsche Joker (★) zählt dann als echte rote 2.")},
+  {type:'okey',mode:'group',goal:'all',ind:'r1',rack:['b7','y3','r2','k3','b9','r3'],text:T("Gösterge kırmızı 1, yani okey kırmızı 2. Grupları kur.","The indicator is red 1, so red 2 is the joker. Build the groups.","Der Anzeiger ist rot 1, also ist rot 2 der Joker. Bilde die Gruppen.")},
+  {type:'okey',mode:'group',goal:'all',ind:'r1',rack:['k11','f','r4','b11','r3','y11'],text:T("Sahte okey (★) burada kırmızı 2 yerine geçer. Grupları kur.","Here the false joker (★) counts as red 2. Build the groups.","Hier zählt der falsche Joker (★) als rot 2. Bilde die Gruppen.")}]},
+ {title:T("Elini bitir","Finishing","Beenden"),steps:[
+  {type:'info',text:T("Elini bitirmek için 14 taşın hepsi per ve serilerden oluşmalı; 15. taşı ortaya atarak bitirirsin. Okeyi atarak bitirirsen puan iki katı olur.","To finish, all 14 tiles must be in sets and runs; you finish by discarding the 15th. Finishing by discarding the joker scores double.","Zum Beenden müssen alle 14 Steine in Sätzen und Reihen liegen; den 15. legst du ab. Wer mit dem Joker beendet, punktet doppelt.")},
+  {type:'okey',mode:'discard',rack:['r1','k7','b10','r2','y2','b11','y12','r3','b7','b12','k2','r4','b13','y7','b2'],correct:[6],text:T("Hangi taşı atarsan elin biter?","Which tile do you discard to finish?","Welchen Stein legst du ab, um zu beenden?"),whyWrong:T("O taş bir gruba ait. Hiçbir gruba girmeyen taşı bul.","That tile belongs to a group. Find the one that fits nowhere.","Der Stein gehört zu einer Gruppe. Finde den, der nirgends passt."),success:T("Doğru! Kırmızı 1-2-3-4, mavi 10-11-12-13, 7'li per ve 2'li per kaldı.","Right! Red 1-2-3-4, blue 10-11-12-13, the 7s and the 2s remain.","Richtig! Rot 1-2-3-4, blau 10-11-12-13, die 7er und die 2er bleiben.")},
+  {type:'quiz',q:T("Elini bitirmek için kaç taşın gruplarda olması gerekir?","How many tiles must be in groups to finish?","Wie viele Steine müssen zum Beenden in Gruppen liegen?"),opts:['13','14','15'],a:1}]},
+ {title:T("Çifte gitmek","Going for pairs","Auf Paare spielen"),steps:[
+  {type:'info',text:T("Elinde 7 çift varsa (aynı renk, aynı sayı iki taş) çifte bitebilirsin. Çifte bitmek puanı iki katına çıkarır, ama çifte gittiğini belli edersen rakipler senin taşlarını tutar.","With 7 pairs (two identical tiles each) you can finish with pairs, which scores double. But if others notice, they will hold back the tiles you need.","Mit 7 Paaren (je zwei gleiche Steine) kannst du mit Paaren beenden, das zählt doppelt. Merken die anderen es, halten sie deine Steine zurück."),visual:{kind:'okey',groups:[['r6','r6'],['b9','b9'],['k2','k2']]}},
+  {type:'quiz',q:T("Çift nedir?","What is a pair?","Was ist ein Paar?"),opts:[T("Aynı renk, aynı sayı iki taş","Two tiles, same colour and number","Zwei Steine, gleiche Farbe und Zahl"),T("Farklı renk, aynı sayı","Same number, different colours","Gleiche Zahl, andere Farben"),T("Sıralı iki taş","Two consecutive tiles","Zwei aufeinanderfolgende Steine")],a:0},
+  {type:'quiz',q:T("Çifte bitmek için kaç çift gerekir?","How many pairs do you need to finish with pairs?","Wie viele Paare brauchst du dafür?"),opts:['5','7','14'],a:1}]}
+];
+const OKEY101=[
+ {title:T("101'in kuralları","How 101 works","So geht 101"),steps:[
+  {type:'info',text:T("101 Okey'de taşlar ve okey aynıdır, ama her oyuncu 21 taş alır (başlayan 22). Elini açabilmek için per ve serilerinin toplamı en az 101 puan olmalı. Bir taşın puanı üzerindeki sayıdır.","101 Okey uses the same tiles and joker, but everyone gets 21 tiles (the starter 22). To open, your sets and runs must add up to at least 101 points. A tile is worth its number.","101 Okey nutzt dieselben Steine und Joker, aber jeder bekommt 21 Steine (wer beginnt, 22). Zum Auslegen müssen deine Sätze und Reihen zusammen mindestens 101 Punkte ergeben. Ein Stein zählt seine Zahl.")},
+  {type:'quiz',q:T("Elini açmak için en az kaç puan gerekir?","How many points do you need to open?","Wie viele Punkte brauchst du zum Auslegen?"),opts:['51','101','151'],a:1},
+  {type:'quiz',q:T("101'de her oyuncu kaç taş alır?","How many tiles does each player get in 101?","Wie viele Steine bekommt jeder bei 101?"),opts:['14','21','22'],a:1}]},
+ {title:T("Puan sayma","Counting points","Punkte zählen"),steps:[
+  {type:'info',text:T("Bir grubun puanı taşlarının toplamıdır: kırmızı 10-11-12 = 33 puan, sarı 9 + mavi 9 + siyah 9 = 27 puan. Okey, yerine geçtiği taşın puanını alır.","A group is worth the sum of its tiles: red 10-11-12 = 33 points, yellow 9 + blue 9 + black 9 = 27 points. The joker counts as the tile it replaces.","Eine Gruppe zählt die Summe ihrer Steine: rot 10-11-12 = 33 Punkte, gelb 9 + blau 9 + schwarz 9 = 27 Punkte. Der Joker zählt wie der Stein, den er ersetzt."),visual:{kind:'okey',groups:[['r10','r11','r12'],['y9','b9','k9']],showPts:true}},
+  {type:'quiz',q:T("Mavi 5-6-7 serisi kaç puan?","How many points is the run blue 5-6-7?","Wie viele Punkte hat die Reihe blau 5-6-7?"),opts:['15','18','21'],a:1},
+  {type:'quiz',q:T("Dört renk 13'ten oluşan per kaç puan?","How many points is a set of four 13s?","Wie viele Punkte hat ein Satz aus vier 13ern?"),opts:['13','39','52'],a:2}]},
+ {title:T("101'e ulaş","Reach 101","Erreiche 101"),steps:[
+  {type:'okey',mode:'group',goal:'points',need:101,showPts:true,rack:['r13','y10','b9','k4','b13','y11','b10','r2','k13','y12','b11','y6'],text:T("Gruplar kurarak en az 101 puana ulaş.","Build groups worth at least 101 points.","Bilde Gruppen mit mindestens 101 Punkten.")},
+  {type:'quiz',q:T("Elinde 95 puanlık grup var. Açabilir misin?","Your groups are worth 95 points. Can you open?","Deine Gruppen sind 95 Punkte wert. Darfst du auslegen?"),opts:YESNO,a:1}]},
+ {title:T("Çiftle açmak","Opening with pairs","Mit Paaren auslegen"),steps:[
+  {type:'info',text:T("101'de en az 5 çiftin varsa elini çiftle de açabilirsin. Çift: aynı renk, aynı sayı iki taş. Çiftle açan oyuncu sonra sadece çift işleyebilir.","In 101 you can also open with at least 5 pairs. A pair is two identical tiles. After opening with pairs, you can only add pairs.","Bei 101 kannst du auch mit mindestens 5 Paaren auslegen. Ein Paar sind zwei gleiche Steine. Danach darfst du nur noch Paare anlegen."),visual:{kind:'okey',groups:[['r8','r8'],['b3','b3'],['y11','y11'],['k6','k6'],['r1','r1']]}},
+  {type:'quiz',q:T("Çiftle açmak için en az kaç çift gerekir?","How many pairs do you need to open with pairs?","Wie viele Paare brauchst du mindestens?"),opts:['3','5','7'],a:1},
+  {type:'quiz',q:T("Kırmızı 8 + kırmızı 8 bir çift midir?","Is red 8 + red 8 a pair?","Ist rot 8 + rot 8 ein Paar?"),opts:YESNO,a:0}]},
+ {title:T("Taş işleme","Adding to the table","Anlegen"),steps:[
+  {type:'info',text:T("Elini açtıktan sonra elindeki taşları masadaki gruplara ekleyebilirsin; buna işlemek denir. Mavi 4-5-6 serisine mavi 3 ya da mavi 7 işlenir; 9'lu pere eksik renkteki 9 işlenir.","After opening you can add tiles to groups on the table. Blue 4-5-6 takes blue 3 or blue 7; a set of 9s takes the missing colour's 9.","Nach dem Auslegen darfst du Steine an Gruppen auf dem Tisch anlegen. An blau 4-5-6 passen blau 3 oder blau 7; an einen 9er-Satz die fehlende Farbe.")},
+  {type:'okey',mode:'attach',table:[['b4','b5','b6'],['r9','y9','k9']],rack:['b7','b9','b3'],text:T("Elindeki taşları masadaki gruplara işle.","Add your tiles to the groups on the table.","Lege deine Steine an die Gruppen auf dem Tisch an.")}]},
+ {title:T("Ceza puanları","Penalty points","Strafpunkte"),steps:[
+  {type:'info',text:T("Biri elini bitirince puanlar yazılır. Çoğu masada: elini hiç açamayan 202 ceza alır, açan oyuncular elinde kalan taşların toplamı kadar ceza alır, eli bitiren −101 yazar. Okeyi elde tutarak bitirmek ceza getirebilir, bu yüzden okeyi erken kullan.","When someone finishes, scores are written down. At most tables: a player who never opened gets 202 penalty points, players who opened get the sum of their remaining tiles, and the finisher scores −101. Holding the joker can cost you, so use it early.","Beendet jemand, wird gezählt. An den meisten Tischen: Wer nie ausgelegt hat, bekommt 202 Strafpunkte, wer ausgelegt hat, die Summe seiner restlichen Steine, und wer beendet, −101. Den Joker zu lange zu halten kann teuer werden.")},
+  {type:'quiz',q:T("Elini hiç açamayan oyuncu kaç ceza alır?","How many penalty points for a player who never opened?","Wie viele Strafpunkte bekommt, wer nie ausgelegt hat?"),opts:['101','202','0'],a:1},
+  {type:'quiz',q:T("101'de en düşük puan mı en yüksek puan mı kazanır?","In 101, does the lowest or highest score win?","Gewinnt bei 101 die niedrigste oder höchste Punktzahl?"),opts:[T("En düşük","Lowest","Niedrigste"),T("En yüksek","Highest","Höchste")],a:0}]}
+];
+const MEMORY=[
+ {title:T("Hafıza nasıl çalışır?","How memory works","Wie das Gedächtnis arbeitet"),steps:[
+  {type:'info',text:T("Kısa süreli hafıza aynı anda ortalama 5–9 şeyi tutabilir. Düzenli alıştırma, dikkat ve tekrar bu kapasiteyi daha iyi kullanmanı sağlar. Bu derslerde görsel, sıralı ve sayısal hafızanı çalıştıracağız.","Short-term memory holds about 5–9 items at once. Regular practice, attention and repetition help you use it better. In these lessons you'll train your visual, sequence and number memory.","Das Kurzzeitgedächtnis hält etwa 5–9 Dinge gleichzeitig. Regelmäßiges Üben, Aufmerksamkeit und Wiederholung helfen, es besser zu nutzen. Hier trainierst du dein Bild-, Reihenfolge- und Zahlengedächtnis.")},
+  {type:'quiz',q:T("Kısa süreli hafıza aynı anda ortalama kaç şey tutabilir?","About how many items can short-term memory hold?","Wie viele Dinge hält das Kurzzeitgedächtnis etwa?"),opts:['2–3','5–9','50+'],a:1},
+  {type:'memory',pairs:4,cols:4,peek:2500,text:T("Kartlara iyi bak, sonra eşlerini bul.","Look carefully, then find the pairs.","Schau genau hin und finde dann die Paare.")}]},
+ {title:T("Kart eşleştirme","Matching cards","Paare finden"),steps:[
+  {type:'memory',pairs:6,cols:4,text:T("6 çifti bul.","Find 6 pairs.","Finde 6 Paare.")},
+  {type:'memory',pairs:8,cols:4,text:T("Şimdi 8 çift.","Now 8 pairs.","Jetzt 8 Paare.")}]},
+ {title:T("Sıra hafızası","Sequence memory","Reihenfolge merken"),steps:[
+  {type:'info',text:T("Renkler sırayla yanacak; aynı sırayla dokun. Her turda dizi bir uzar. İpucu: diziyi içinden sesli say ya da bir ritim gibi düşün.","The colours light up in order; tap them in the same order. The sequence grows by one each round. Tip: say it in your head or think of it as a rhythm.","Die Farben leuchten nacheinander auf; tippe sie in derselben Reihenfolge. Jede Runde wird die Folge länger. Tipp: Sprich sie innerlich mit oder denk an einen Rhythmus.")},
+  {type:'simon',start:3,len:5,text:T("Diziyi tekrarla.","Repeat the sequence.","Wiederhole die Folge.")}]},
+ {title:T("Sayı hafızası","Number memory","Zahlengedächtnis"),steps:[
+  {type:'info',text:T("Ekranda bir sayı belirecek ve kaybolacak. Sayıyı ikişerli ya da üçerli gruplara bölerek hatırla: 4 7 2 9 yerine “47 – 29” diye düşün.","A number appears and then disappears. Split it into groups of two or three: think “47 – 29” instead of 4 7 2 9.","Eine Zahl erscheint und verschwindet. Teile sie in Zweier- oder Dreiergruppen: denk „47 – 29“ statt 4 7 2 9.")},
+  {type:'span',lens:[4,5,6],text:T("Sayıyı aklında tut ve yaz.","Remember the number and type it.","Merk dir die Zahl und gib sie ein.")}]},
+ {title:T("Ne kayboldu?","What's missing?","Was fehlt?"),steps:[
+  {type:'info',text:T("Nesnelere bakıp aklında tut. Biri kaybolunca hangisi olduğunu bul. İpucu: nesneleri kafanda küçük bir hikâyeye bağla.","Look at the objects and remember them. When one disappears, find which. Tip: link them in a little story in your head.","Schau dir die Dinge an und merk sie dir. Verschwindet eins, finde heraus, welches. Tipp: Verbinde sie im Kopf zu einer kleinen Geschichte.")},
+  {type:'missing',count:6,rounds:3,ms:4000,text:T("Hangisi kayboldu?","Which one is missing?","Was fehlt?")}]},
+ {title:T("Usta hafıza","Master memory","Meistergedächtnis"),steps:[
+  {type:'memory',pairs:10,cols:5,text:T("10 çifti bul.","Find 10 pairs.","Finde 10 Paare.")},
+  {type:'simon',start:4,len:7,text:T("7 adımlık diziye ulaş.","Reach a sequence of 7.","Schaffe eine Folge von 7.")},
+  {type:'span',lens:[7],text:T("7 basamaklı sayı.","A 7-digit number.","Eine 7-stellige Zahl.")}]}
+];
 const GAMES={
  chess:{name:T("Satranç","Chess","Schach"),desc:T("Taşların hareketinden ilk matına kadar.","From piece moves to your first checkmate.","Von den Zügen bis zum ersten Matt."),lessons:CHESS,
   more:[T("Açılış prensipleri · Çatal · Açmaz","Opening principles · Forks · Pins","Eröffnungsprinzipien · Gabel · Fesselung"),T("Oyun sonu · Kombinasyonlar · Plan","Endgames · Combinations · Planning","Endspiele · Kombinationen · Planung")]},
@@ -861,9 +1041,18 @@ const GAMES={
  reversi:{name:T("Reversi","Reversi","Reversi"),desc:T("Sıkıştır, çevir, köşeleri kap.","Trap, flip, grab the corners.","Einschließen, umdrehen, Ecken holen."),lessons:REVERSI,
   more:[T("Hareketlilik · Kenar oyunu","Mobility · Edge play","Mobilität · Randspiel"),T("Parite · Oyun sonu","Parity · Endgame","Parität · Endspiel")]},
  go:{name:T("Go","Go","Go"),desc:T("Alan çevir, taş yakala; 9×9 ile başla.","Surround territory, capture stones; start on 9×9.","Gebiet umschließen, Steine fangen; Start auf 9×9."),lessons:GO,
-  more:[T("Canlı ve ölü gruplar · Ko","Life and death · Ko","Leben und Tod · Ko"),T("Alan sayımı · Açılışlar","Counting · Openings","Zählen · Eröffnungen")]}
+  more:[T("Canlı ve ölü gruplar · Ko","Life and death · Ko","Leben und Tod · Ko"),T("Alan sayımı · Açılışlar","Counting · Openings","Zählen · Eröffnungen")]},
+ tavla:{name:T("Tavla","Backgammon","Backgammon"),desc:T("Zar, kapı, kırma ve pul toplama.","Dice, blocks, hits and bearing off.","Würfel, Blocks, Schlagen und Auswürfeln."),lessons:TAVLA,
+  more:[T("Açılış hamleleri · Kapı yapma","Opening moves · Making points","Eröffnungszüge · Felder bauen"),T("Mars · Oyun sonu stratejisi","Gammons · Endgame strategy","Gammon · Endspielstrategie")]},
+ okey:{name:T("Okey","Okey","Okey"),desc:T("Gösterge, per, seri ve elini bitirmek.","Indicator, sets, runs and finishing.","Anzeiger, Sätze, Reihen und Beenden."),lessons:OKEY,
+  more:[T("Taş saklama · Rakibi okuma","Holding tiles · Reading opponents","Steine halten · Gegner lesen"),T("Okey atarak bitirme stratejisi","Finishing with the joker","Mit dem Joker beenden")]},
+ okey101:{name:T("101 Okey","101 Okey","101 Okey"),desc:T("101 puanla açmak, işlemek ve ceza puanları.","Opening with 101, adding tiles and penalties.","Mit 101 auslegen, anlegen und Strafpunkte."),lessons:OKEY101,
+  more:[T("Puan hesabı · Açma zamanlaması","Counting · When to open","Rechnen · Wann auslegen"),T("Eşli 101 · Takım oyunu","Partner 101 · Team play","101 zu zweit · Teamspiel")]},
+ memory:{name:T("Hafıza","Memory","Gedächtnis"),desc:T("Kart eşleştirme, sıra ve sayı hafızası.","Card pairs, sequences and number memory.","Paare, Reihenfolgen und Zahlen merken."),lessons:MEMORY,
+  more:[T("Hafıza sarayı tekniği","The memory palace","Gedächtnispalast"),T("Hızlı okuma ve hatırlama","Speed reading and recall","Schnelllesen und Erinnern")]}
 };
-const SOON=[[T("Tavla","Backgammon","Backgammon"),'⛁'],[T("Okey","Okey","Okey"),'▯'],[T("Mastermind","Mastermind","Mastermind"),'◉'],[T("Hafıza","Memory","Memory"),'▣']];
+const SOON=[[T("Batak","Batak","Batak"),'♠'],[T("Pişti","Pişti","Pişti"),'♣'],[T("Mastermind","Mastermind","Mastermind"),'◉'],[T("Tangram","Tangram","Tangram"),'◭']];
+{const order=['chess','dama','tavla','okey','okey101','mangala','ludo','sudoku','reversi','go','memory'];const G={};order.forEach(k=>{if(GAMES[k])G[k]=GAMES[k];});Object.keys(GAMES).forEach(k=>delete GAMES[k]);Object.assign(GAMES,G);}
 const PUZZLE={type:'board',game:'chess',goal:'solve',text:T("Atla tek hamlede mat et!","Mate in one with the knight!","Matt in einem Zug mit dem Springer!"),pieces:[P_('h8','K','b'),P_('g8','R','b'),P_('g7','P','b'),P_('h7','P','b'),P_('g5','N'),P_('a1','K','w',1)],solutions:['g5-f7'],success:T("Mat! Buna boğmaca mat denir: şah kendi taşları arasında sıkıştı.","Checkmate! A smothered mate: the king is trapped by its own pieces.","Matt! Ein ersticktes Matt: Der König ist von eigenen Figuren eingesperrt.")};
 
 /* ---------- board engine ---------- */
@@ -1111,6 +1300,10 @@ function gameArt(k){
  if(k==='mangala'){const w=h('div',{class:'art-mg'});for(let i=0;i<6;i++){const p=h('span',{});stones(p,1+(i*3)%5);w.append(p);}a.append(w);}
  if(k==='sudoku'){const w=h('div',{class:'art-sd'});['5','','3','','7','','9','1',''].forEach(d=>w.append(h('span',{},d)));a.append(w);}
  if(k==='reversi'){const w=h('div',{class:'art-rv'});['w','b','b','w'].forEach(c=>w.append(h('span',{class:'rvd '+c})));a.append(w);}
+ if(k==='tavla'){const w=h('div',{class:'art-tv'});for(let i=0;i<6;i++)w.append(h('span',{class:i%2?'a':'b'}));w.append(h('i',{class:'ck w',style:'left:12%'}),h('i',{class:'ck b',style:'left:62%'}));a.append(w);}
+ if(k==='okey'){const w=h('div',{class:'rack art-rack'});['r7','y7','k7'].forEach(c=>w.append(tileEl(c,{small:true})));a.append(w);}
+ if(k==='okey101'){const w=h('div',{class:'rack art-rack'});['b10','f','b12'].forEach(c=>w.append(tileEl(c,{small:true})));w.append(h('span',{class:'art-101'},'101'));a.append(w);}
+ if(k==='memory'){const w=h('div',{class:'art-mm'});['🍎','','⭐',''].forEach(e=>w.append(h('span',{class:e?'fr':'bk'},e)));a.append(w);}
  if(k==='go'){const w=h('div',{class:'art-go'});w.append(h('span',{class:'gs b',style:'left:22%;top:30%'}),h('span',{class:'gs w',style:'left:48%;top:30%'}),h('span',{class:'gs b',style:'left:48%;top:56%'}));a.append(w);}
  return a;
 }
@@ -1243,7 +1436,7 @@ function startLesson(g,i){
 function startPuzzle(){startSession({theme:'t-game',hearts:false,build:()=>[PUZZLE],lesson:true,onFinish:()=>{addXP(5);return 5;}});}
 
 let PS=null;
-const SELF=new Set(['match','board','ludo','dice','reversi','sudoku','mangala','go']),CONT=new Set(['intro','info']);
+const SELF=new Set(['match','board','ludo','dice','reversi','sudoku','mangala','go','tavla','okey','memory','simon','span','missing']),CONT=new Set(['intro','info']);
 function startSession(o){
  const steps=o.build();
  PS={...o,queue:steps.slice(),total:steps.length,done:0,hearts:o.hearts?5:null,mistakes:0,graded:0,answer:null,state:'ask'};
@@ -1319,6 +1512,72 @@ function confetti(cv){
  const ps=Array.from({length:90},()=>({x:r.width/2,y:r.height*.35,vx:(Math.random()-.5)*9,vy:-Math.random()*9-3,s:4+Math.random()*5,c:pick(cols),a:Math.random()*6}));
  let f=0;(function tick(){ctx.clearRect(0,0,r.width,r.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.28;p.a+=.15;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);ctx.restore();});if(++f<110)requestAnimationFrame(tick);else ctx.clearRect(0,0,r.width,r.height);})();
 }
+
+/* ---------- tavla (backgammon): you play white, moving 24 → 1; 25 = your bar, 0 = borne off ---------- */
+const TV_START={w:{24:2,13:5,8:3,6:5},b:{1:2,12:5,17:3,19:5}};
+function tvInit(q){const pts=Array(26).fill(0),W=q.w||TV_START.w,B=q.b||TV_START.b;for(const k in W)pts[+k]+=W[k];for(const k in B)pts[+k]-=B[k];return{pts,bar:q.bar||0,off:q.off||0,oppBar:0};}
+function tvAllHome(st){if(st.bar)return false;for(let i=7;i<=24;i++)if(st.pts[i]>0)return false;return true;}
+function tvTarget(st,src,d){
+ if(src===25){if(!st.bar)return null;const t=25-d;return st.pts[t]>=-1?t:null;}
+ if(st.bar||st.pts[src]<=0)return null;
+ const t=src-d;if(t>=1)return st.pts[t]>=-1?t:null;
+ if(!tvAllHome(st))return null;if(t===0)return 0;
+ for(let i=src+1;i<=6;i++)if(st.pts[i]>0)return null;return 0;
+}
+function tvAnyMove(st,dice){const srcs=st.bar?[25]:[...Array(24).keys()].map(i=>i+1).filter(i=>st.pts[i]>0);return dice.some(d=>srcs.some(s=>tvTarget(st,s,d)!==null));}
+const TV_TOP=[13,14,15,16,17,18,'bar',19,20,21,22,23,24],TV_BOT=[12,11,10,9,8,7,'bar',6,5,4,3,2,1];
+function tvStack(n,col){const box=h('div',{class:'stk'});const m=Math.min(n,5);for(let i=0;i<m;i++){const c=h('span',{class:'ck '+col});if(i===m-1&&n>5)c.textContent=String(n);box.append(c);}return box;}
+function drawTv(wrap,st,o={}){
+ wrap.innerHTML='';const g=h('div',{class:'tv'}),tg=new Set(o.targets||[]);
+ const cell=(p,row,ci)=>{
+  const pos=`grid-column:${ci+1};grid-row:${row==='top'?1:3}`;
+  if(p==='bar'){const el=h('div',{class:'tbar '+row,style:pos});
+   if(row==='top'&&st.oppBar)el.append(tvStack(st.oppBar,'b'));
+   if(row==='bot'){if(st.bar)el.append(tvStack(st.bar,'w'));if(o.sel===25)el.classList.add('sel');if(o.onTap&&st.bar)el.append(h('button',{'aria-label':'bar',onclick:()=>o.onTap(25)}));}
+   return el;}
+  const n=st.pts[p];const el=h('div',{class:'tp '+row+(ci%2?' a':' b')+(o.sel===p?' sel':'')+(tg.has(p)?' tg':''),style:pos,'data-p':String(p)},h('span',{class:'pn'},String(p)));
+  if(n)el.append(tvStack(Math.abs(n),n>0?'w':'b'));
+  if(o.onTap)el.append(h('button',{'aria-label':String(p),onclick:()=>o.onTap(p)}));
+  return el;};
+ TV_TOP.forEach((p,i)=>g.append(cell(p,'top',i)));TV_BOT.forEach((p,i)=>g.append(cell(p,'bot',i)));
+ const mid=h('div',{class:'tmid'});(o.dice||[]).forEach(d=>{const e=dieEl(d.v);if(d.used)e.classList.add('used');mid.append(e);});g.append(mid);
+ const off=h('div',{class:'toff'+(tg.has(0)?' tg':'')},h('span',{class:'pn'},'⤓'),st.off?h('b',{},String(st.off)):null);
+ if(o.onTap)off.append(h('button',{'aria-label':'off',onclick:()=>o.onTap(0)}));g.append(off);
+ wrap.append(g);return g;
+}
+function tvFly(g,src,dst){
+ if(RM()||!g)return;const at=p=>p===25?g.querySelector('.tbar.bot'):p===0?g.querySelector('.toff'):g.querySelector(`[data-p="${p}"]`);
+ const a=at(src),b=at(dst);if(!a||!b)return;const ck=dst===0?b.querySelector('b'):b.querySelector('.stk .ck:last-child');if(!ck)return;
+ const A=a.getBoundingClientRect(),B=ck.getBoundingClientRect();
+ try{ck.animate([{transform:`translate(${A.left+A.width/2-B.left-B.width/2}px,${A.top+A.height/2-B.top-B.height/2}px) scale(1.15)`},{transform:'none'}],{duration:340,easing:'cubic-bezier(.2,.8,.3,1)'});}catch(e){}
+}
+function tvStatic(){const w=h('div',{});drawTv(w,tvInit({}),{dice:[]});return w;}
+
+/* ---------- okey tiles ---------- */
+const OK_COL={r:T("Kırmızı","Red","Rot"),y:T("Sarı","Yellow","Gelb"),b:T("Mavi","Blue","Blau"),k:T("Siyah","Black","Schwarz")};
+const okFromInd=ind=>{const n=+ind.slice(1);return{c:ind[0],n:n===13?1:n+1};};
+function okNorm(x,ok){if(x==='f')return ok?{c:ok.c,n:ok.n,w:false}:{c:'f',n:0,w:false};const c=x[0],n=+x.slice(1);return{c,n,w:!!ok&&c===ok.c&&n===ok.n};}
+function okValid(codes,ok){
+ const T_=codes.map(x=>okNorm(x,ok)),real=T_.filter(x=>!x.w),wild=T_.length-real.length;
+ if(T_.length<3||!real.length||real.some(x=>x.c==='f'))return null;
+ if(T_.length<=4&&real.every(x=>x.n===real[0].n)&&new Set(real.map(x=>x.c)).size===real.length)return{kind:'per',points:real[0].n*T_.length};
+ if(real.every(x=>x.c===real[0].c)){
+  const ns=real.map(x=>x.n).sort((a,b)=>a-b);if(new Set(ns).size!==ns.length)return null;
+  const gaps=ns[ns.length-1]-ns[0]+1-ns.length;if(gaps>wild)return null;
+  let lo=ns[0],hi=ns[ns.length-1],extra=wild-gaps;while(extra>0&&hi<13){hi++;extra--;}while(extra>0&&lo>1){lo--;extra--;}if(extra>0)return null;
+  let pts=0;for(let v=lo;v<=hi;v++)pts+=v;return{kind:'seri',points:pts};
+ }
+ return null;
+}
+const okSort=(codes,ok)=>codes.slice().sort((a,b)=>okNorm(a,ok).n-okNorm(b,ok).n);
+function tileEl(x,o={}){const f=x==='f';const el=h(o.btn?'button':'div',{class:'otile '+(f?'f':x[0])+(o.small?' sm':''),'aria-label':f?'★':`${L(OK_COL[x[0]])} ${x.slice(1)}`},f?'★':x.slice(1));if(o.btn)el.setAttribute('aria-pressed','false');return el;}
+function okStatic(v){
+ if(v.groups)return h('div',{class:'ogroups'},v.groups.map(g=>{const val=okValid(g,null);return h('div',{class:'ogroup'},val?h('span',{class:'lbl'},(val.kind==='per'?t('okPer'):t('okSeri'))+(v.showPts?` · ${val.points}`:'')):null,g.map(c=>tileEl(c,{small:true})));}));
+ return h('div',{class:'rack'},v.tiles.map(c=>tileEl(c)));
+}
+
+/* ---------- memory games ---------- */
+const MM_POOL=['🍎','🐱','🚗','⭐','🎈','🌙','🐟','🌻','⚽','🎵','🍋','🦋','🐢','🍩','🚀','🎁','🔑','☂️'];
 
 /* ---------- checks ---------- */
 const loose=s=>s.replace(/[’‘]/g,"'").toLocaleLowerCase().replace(/[.,!?¡¿、。]/g,'').replace(/\s+/g,' ').trim();
@@ -1414,7 +1673,7 @@ const RENDER={
  info(q,api,body){
   const v=q.visual;
   if(v){if(v.kind==='board')body.append(staticBoard(v));if(v.kind==='ludo')body.append(ludoSVG());if(v.kind==='dice')body.append(dieEl(v.v,true));
-   if(v.kind==='reversi')body.append(rvStatic(v));if(v.kind==='go')body.append(goStatic(v));if(v.kind==='sudoku')body.append(sdStatic(v.n));if(v.kind==='mangala')body.append(mgStatic());}
+   if(v.kind==='reversi')body.append(rvStatic(v));if(v.kind==='go')body.append(goStatic(v));if(v.kind==='sudoku')body.append(sdStatic(v.n));if(v.kind==='mangala')body.append(mgStatic());if(v.kind==='tavla')body.append(tvStatic());if(v.kind==='okey')body.append(okStatic(v));}
   body.append(h('p',{class:'info-text'},L(q.text)));
   if(q.rows){const r=h('div',{class:'rows'});q.rows.forEach(([g,n,val])=>r.append(h('div',{class:'r'},h('span',{class:'g'},g+'︎'),h('span',{},L(n)),h('b',{},val))));body.append(r);}
  },
@@ -1581,7 +1840,162 @@ const RENDER={
    else setTimeout(()=>{SFX.bad();api.flash(q.whyWrong?L(q.whyWrong):t('goWrong'));setTimeout(()=>{B=init.slice();busy=false;draw();},1300);},300);
   }
   draw();api.hint(t('goHint'));
+ },
+ tavla(q,api,body){
+  const expand=d=>d[0]===d[1]?[d[0],d[0],d[0],d[0]]:d.slice();
+  let st=tvInit(q),dice=expand(q.dice).map(v=>({v,used:false})),sel=null,done=false,busy=false,hit=false;
+  const init=JSON.stringify(st);
+  const wrap=h('div',{});body.append(h('h2',{class:'prompt'},L(q.text)),wrap);
+  const left=()=>dice.filter(d=>!d.used).map(d=>d.v);
+  const targetsOf=src=>{const m=new Map();[...new Set(left())].sort((a,b)=>a-b).forEach(d=>{const x=tvTarget(st,src,d);if(x!==null&&!m.has(x))m.set(x,d);});return m;};
+  const draw=()=>drawTv(wrap,st,{dice,sel,targets:sel!==null?[...targetsOf(sel).keys()]:[],onTap});
+  function reset(msg){busy=true;SFX.bad();api.flash(msg);setTimeout(()=>{st=JSON.parse(init);dice=expand(q.dice).map(v=>({v,used:false}));hit=false;busy=false;sel=st.bar?25:null;draw();},1600);}
+  function onTap(p){
+   if(done||busy)return;
+   if(sel!==null){const m=targetsOf(sel);if(m.has(p))return move(sel,p,m.get(p));}
+   if(p===25&&st.bar){sel=25;SFX.tap();return draw();}
+   if(p>=1&&p<=24&&st.pts[p]>0){
+    if(st.bar){SFX.bad();return api.flash(t('tvBarFirst'));}
+    sel=p;SFX.tap();draw();if(!targetsOf(p).size)api.flash(t('tvNoMove'));return;}
+   if(sel!==null){SFX.bad();api.flash(p>=1&&p<=24&&st.pts[p]<-1?t('tvBlocked'):p===0?t('tvNotHome'):t('tvNoDie'));}
+  }
+  function move(src,dst,d){
+   if(src===25)st.bar--;else st.pts[src]--;
+   let didHit=false;
+   if(dst===0)st.off++;else{if(st.pts[dst]===-1){st.pts[dst]=0;st.oppBar++;didHit=hit=true;}st.pts[dst]++;}
+   dice.find(x=>!x.used&&x.v===d).used=true;sel=st.bar?25:null;
+   const g=draw();tvFly(g,src,dst);
+   didHit?SFX.capture():SFX.wood();if(dst===0)setTimeout(SFX.pop,150);if(didHit)api.flash(t('tvHit'),'good');
+   const goal=q.goal;
+   if((goal==='hit'&&hit)||(goal==='enter'&&!st.bar)||(goal==='bearoff'&&st.off>=q.need)||(goal==='useAll'&&!left().length)){done=true;setTimeout(()=>api.complete(true,L(q.success)||''),500);return;}
+   if(!left().length)return reset(q.whyWrong?L(q.whyWrong):t('tvRetry'));
+   if(!tvAnyMove(st,left()))return reset(t('tvStuck'));
+  }
+  if(st.bar)sel=25;
+  draw();api.hint(t('tvHint'));
+ },
+ okey(q,api,body){
+  const ok=q.ind?okFromInd(q.ind):null,fresh=()=>q.rack.map((x,i)=>({x,id:i}));
+  let rack=fresh(),table=(q.table||[]).map(g=>g.slice()),made=[],sel=new Set(),done=false,busy=false;
+  body.append(h('h2',{class:'prompt'},L(q.text)));
+  if(q.ind)body.append(h('div',{class:'ind'},h('span',{},t('okInd')),tileEl(q.ind)));
+  const tableEl=h('div',{class:'ogroups'}),rackEl=h('div',{class:'rack'}),bar=h('div',{class:'row',style:'justify-content:center;flex-wrap:wrap'});
+  body.append(tableEl,rackEl,bar);
+  const pts=()=>made.reduce((a,g)=>a+g.points,0);
+  function draw(fresh){
+   tableEl.innerHTML='';
+   const groups=q.mode==='attach'?table.map(c=>({codes:c})):made;
+   groups.forEach((g,gi)=>{const v=okValid(g.codes,ok);const el=h(q.mode==='attach'?'button':'div',{class:'ogroup'+(fresh===gi&&!RM()?' pop':''),onclick:q.mode==='attach'?()=>attachTo(gi):null},v?h('span',{class:'lbl'},(v.kind==='per'?t('okPer'):t('okSeri'))+(q.showPts?` · ${v.points}`:'')):null,g.codes.map(c=>tileEl(c,{small:true})));tableEl.append(el);});
+   tableEl.hidden=!groups.length;
+   rackEl.innerHTML='';
+   rack.forEach(r=>{const el=tileEl(r.x,{btn:true});if(sel.has(r.id))el.setAttribute('aria-pressed','true');el.onclick=()=>tap(r.id,el);rackEl.append(el);});
+   bar.innerHTML='';
+   if(q.mode==='group'){
+    bar.append(h('button',{class:'btn sm',disabled:sel.size<3,onclick:makeGroup},t('okMake')),h('button',{class:'btn ghost sm',onclick:()=>{rack=fresh();made=[];sel.clear();SFX.tap();draw();}},t('okReset')));
+    if(q.need)bar.append(h('span',{class:'pill'+(pts()>=q.need?' ok':'')},t('okTotal',{n:pts(),g:q.need})));
+   }
+  }
+  function tap(id,el){
+   if(done||busy)return;SFX.tap();
+   if(q.mode==='pick'||q.mode==='discard'){
+    if(q.correct.includes(id)){done=true;el.setAttribute('aria-pressed','true');
+     if(q.mode==='discard'&&!RM())try{el.animate([{transform:'translateY(-10px)'},{transform:'translateY(-90px) rotate(-14deg)',opacity:0}],{duration:480,fill:'forwards'});}catch(e){}
+     setTimeout(()=>api.complete(true,L(q.success)||''),q.mode==='discard'?480:200);}
+    else{SFX.bad();api.flash(q.whyWrong?L(q.whyWrong):t('okNot'));if(!RM())try{el.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'none'}],{duration:300});}catch(e){}}
+    return;}
+   if(q.mode==='attach'){sel=new Set(sel.has(id)?[]:[id]);return draw();}
+   sel.has(id)?sel.delete(id):sel.add(id);draw();
+  }
+  function makeGroup(){
+   const codes=rack.filter(r=>sel.has(r.id)).map(r=>r.x),v=okValid(codes,ok);
+   if(!v){SFX.bad();return api.flash(t('okBad'));}
+   made.push({codes:okSort(codes,ok),points:v.points});rack=rack.filter(r=>!sel.has(r.id));sel.clear();SFX.pop();draw(made.length-1);
+   if((q.goal==='all'&&!rack.length)||(q.goal==='points'&&pts()>=q.need)){done=true;setTimeout(()=>api.complete(true,L(q.success)||(q.need?t('okTotal',{n:pts(),g:q.need}):'')),450);}
+   else if(q.goal==='all'&&rack.length<3){busy=true;SFX.bad();api.flash(q.whyWrong?L(q.whyWrong):t('okLeft'));setTimeout(()=>{rack=fresh();made=[];busy=false;draw();},1800);}
+  }
+  function attachTo(gi){
+   if(done||busy)return;if(!sel.size)return api.flash(t('okAttachHint'));
+   const id=[...sel][0],r=rack.find(x=>x.id===id),cand=[...table[gi],r.x];
+   if(!okValid(cand,ok)){SFX.bad();return api.flash(t('okAttachBad'));}
+   table[gi]=okSort(cand,ok);rack=rack.filter(x=>x.id!==id);sel.clear();SFX.pop();draw(gi);
+   if(!rack.length){done=true;setTimeout(()=>api.complete(true,L(q.success)||''),450);}
+  }
+  draw();api.hint(t(q.mode==='group'?'okHint':q.mode==='attach'?'okAttachHint':'okPickHint'));
+ },
+ memory(q,api,body){
+  const n=q.pairs,cards=shuffle(shuffle(MM_POOL).slice(0,n).flatMap(e=>[e,e])).map((e,i)=>({e,i,up:false,ok:false}));
+  let open=[],moves=0,found=0,busy=!!q.peek;
+  const info=h('p',{class:'hint'},t('mmMoves',{n:0}));
+  const grid=h('div',{class:'mm',style:`grid-template-columns:repeat(${q.cols||4},1fr)`});
+  body.append(h('h2',{class:'prompt'},L(q.text)),grid,info);
+  cards.forEach(c=>{c.el=h('div',{class:'card3d'+(q.peek?' up':'')},h('div',{class:'in'},h('div',{class:'bk'}),h('div',{class:'fr'},c.e)),h('button',{'aria-label':String(c.i+1),onclick:()=>flip(c)}));grid.append(c.el);});
+  if(q.peek)speakLater(()=>{cards.forEach(c=>c.el.classList.remove('up'));SFX.flip();busy=false;},q.peek);
+  function flip(c){
+   if(busy||c.up||c.ok)return;c.up=true;c.el.classList.add('up');SFX.flip();open.push(c);
+   if(open.length<2)return;
+   moves++;info.textContent=t('mmMoves',{n:moves});const[a,b]=open;open=[];
+   if(a.e===b.e){a.ok=b.ok=true;setTimeout(()=>{a.el.classList.add('ok');b.el.classList.add('ok');SFX.pop();},250);if(++found===n)setTimeout(()=>{SFX.win();api.complete(true,t('mmDone',{n:moves}));},700);}
+   else{busy=true;setTimeout(()=>{a.up=b.up=false;a.el.classList.remove('up');b.el.classList.remove('up');busy=false;},900);}
+  }
+  api.hint(t('mmHint'));
+ },
+ simon(q,api,body){
+  const pads=[0,1,2,3].map(i=>h('button',{class:'pad','aria-label':String(i+1),onclick:()=>press(i)}));
+  const msg=h('p',{class:'hint',style:'font-size:16px;min-height:1.5em'}),dots=h('div',{class:'rounds'});
+  body.append(h('h2',{class:'prompt'},L(q.text)),dots,h('div',{class:'simon'},pads),msg);
+  const start=q.start||3,rnd=()=>Math.floor(Math.random()*4);
+  let seq=[...Array(start)].map(rnd),pos=0,busy=true,done=false;
+  const light=(i,ms=420)=>{pads[i].classList.add('on');SFX.note(i);setTimeout(()=>pads[i].classList.remove('on'),ms);};
+  const drawDots=()=>{dots.innerHTML='';for(let l=start;l<=q.len;l++)dots.append(h('i',{class:l<seq.length||done?'on':''}));};
+  function play(){busy=true;pos=0;msg.textContent=t('smWatch');drawDots();seq.forEach((v,k)=>speakLater(()=>light(v),700+k*650));speakLater(()=>{busy=false;msg.textContent=t('smYour');},700+seq.length*650);}
+  function press(i){
+   if(busy||done)return;light(i,220);
+   if(i!==seq[pos]){busy=true;SFX.bad();api.flash(t('smWrong'));return speakLater(play,1300);}
+   if(++pos<seq.length)return;
+   if(seq.length>=q.len){done=true;drawDots();return speakLater(()=>{SFX.win();api.complete(true,t('smDone',{n:seq.length}));},400);}
+   busy=true;msg.textContent='';seq.push(rnd());speakLater(play,800);
+  }
+  speakLater(play,300);
+ },
+ span(q,api,body){
+  let ri=0,cur='',done=false;
+  const num=h('div',{class:'span-num'}),msg=h('p',{class:'hint',style:'font-size:16px'}),dots=h('div',{class:'rounds'});
+  const inp=h('input',{class:'type-in span-in',id:'span-input',type:'text',inputmode:'numeric',autocomplete:'off','aria-label':t('spType'),hidden:true});
+  const btn=h('button',{class:'btn',style:'align-self:center;min-width:180px',hidden:true,onclick:()=>check()},t('check'));
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.stopPropagation();check();}});
+  body.append(h('h2',{class:'prompt'},L(q.text)),dots,num,msg,inp,btn);
+  const drawDots=()=>{dots.innerHTML='';q.lens.forEach((_,k)=>dots.append(h('i',{class:k<ri?'on':''})));};
+  function show(){
+   drawDots();const len=q.lens[ri];cur=String(1+Math.floor(Math.random()*9))+[...Array(len-1)].map(()=>Math.floor(Math.random()*10)).join('');
+   num.textContent=cur.split('').join(' ');inp.hidden=btn.hidden=true;msg.textContent=t('spWatch');SFX.pop();
+   speakLater(()=>{num.textContent=Array(len).fill('•').join(' ');msg.textContent=t('spType');inp.value='';inp.hidden=btn.hidden=false;try{inp.focus();}catch(e){}},1400+len*450);
+  }
+  function check(){
+   if(done||inp.hidden)return;const v=inp.value.replace(/\D/g,'');if(!v)return;
+   if(v===cur){SFX.good();if(++ri>=q.lens.length){done=true;drawDots();return api.complete(true,t('spDone'));}api.flash(t('spOk'),'good');speakLater(show,900);}
+   else{SFX.bad();inp.hidden=btn.hidden=true;api.flash(t('spWrong',{n:cur}));speakLater(show,2000);}
+  }
+  show();
+ },
+ missing(q,api,body){
+  let r=0,done=false,busy=false;
+  const grid=h('div',{class:'ms-grid'}),msg=h('p',{class:'hint',style:'font-size:16px'}),opts=h('div',{class:'opt-grid'}),dots=h('div',{class:'rounds'});
+  body.append(h('h2',{class:'prompt'},L(q.text)),dots,grid,msg,opts);
+  function round(){
+   busy=false;dots.innerHTML='';for(let k=0;k<q.rounds;k++)dots.append(h('i',{class:k<r?'on':''}));
+   const items=shuffle(MM_POOL).slice(0,q.count),gone=Math.floor(Math.random()*items.length);
+   grid.innerHTML='';items.forEach(e=>grid.append(h('div',{},e)));opts.innerHTML='';msg.textContent=t('msWatch');
+   speakLater(()=>{const c=grid.children[gone];c.textContent='?';c.classList.add('q');msg.textContent=t('msPick');SFX.pop();
+    shuffle([items[gone],...shuffle(MM_POOL.filter(e=>!items.includes(e))).slice(0,3)]).forEach(e=>opts.append(h('button',{class:'opt pic',style:'min-height:76px',onclick:()=>pickIt(e,items[gone])},h('span',{class:'emoji'},e))));},q.ms||3500);
+  }
+  function pickIt(e,ans){
+   if(done||busy)return;busy=true;
+   if(e===ans){SFX.good();if(++r>=q.rounds){done=true;return api.complete(true,t('msDone'));}api.flash(t('msOk'),'good');speakLater(round,900);}
+   else{SFX.bad();api.flash(t('msWrong'));speakLater(round,1500);}
+  }
+  round();
  }
+
 };
 
 document.addEventListener('keydown',e=>{if(!PS||player.hidden)return;if(e.key==='Enter'&&!(e.target&&e.target.tagName==='TEXTAREA')){const b=$('#check-btn',player);if(b&&!b.disabled){e.preventDefault();b.click();}}});
