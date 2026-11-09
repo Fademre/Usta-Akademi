@@ -17,7 +17,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="fonts/fonts.css">
 <script>try{var _s=JSON.parse(localStorage.getItem('usta-akademi-v1'));if(_s&&_s.skin&&_s.skin!=='classic')document.documentElement.setAttribute('data-skin',_s.skin);}catch(e){}</script>
-<script>window.APP_VERSION='2.0';</script>
+<script>window.APP_VERSION='2.1';</script>
 <style>
 /* standalone shell: what the artifact host used to provide */
 html{background:var(--bg,#EDF1EC);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;-webkit-text-size-adjust:100%}
@@ -2083,7 +2083,8 @@ function viewProfile(){
    h('h2',{class:'h-m'},t('theme')),h('p',{class:'muted',style:'font-size:14px;margin-top:-8px'},t('themeSub')),skinPicker(draw),
    h('h2',{class:'h-m'},t('settings')),settings,
    h('h2',{class:'h-m'},t('uiLang')),seg,reset,
-   h('p',{class:'muted center',style:'font-size:12px;font-weight:600'},`${t('version')} ${window.APP_VERSION||''}`));
+   h('p',{class:'muted center',style:'font-size:12px;font-weight:600'},`${t('version')} ${window.APP_VERSION||''}`),
+   h('p',{class:'muted center',style:'font-size:11px'},h('a',{href:'chars/CREDITS.txt',target:'_blank',style:'color:inherit'},'3D: MakeHuman (CC0 / CC BY)')));
  };
  draw();return wrap;
 }
@@ -3887,11 +3888,12 @@ function setupScene(){
  const fill=new T3.DirectionalLight('#dfe8ff',.75);fill.position.set(160,90,150);sc.add(fill);
  const rim=new T3.DirectionalLight('#ffffff',1.1);rim.position.set(30,160,-220);sc.add(rim);
  return sc;}
-const VIEW3={close:[0,150,200,20,148],full:[0,95,575,20,91],top:[0,128,220,20,126],bot:[0,46,330,20,48],shoe:[0,10,140,20,6],head:[0,160,110,20,160]};
+const VIEW3={face:[0,158,80,20,157],close:[0,150,200,20,148],full:[0,99,625,20,97],top:[0,128,220,20,126],bot:[0,46,330,20,48],shoe:[0,10,140,20,6],head:[0,160,110,20,160]};
 function poseApply(av,anim,t){
  const {J,rest}=av.userData;for(const k in rest){J[k].rotation.copy(rest[k].r);J[k].position.copy(rest[k].p);}
  if(J.shadow)J.shadow.scale.setScalar(1);
  const a=ANIM_BY[anim]||ANIM_BY.idle;try{a[3](t,J);}catch(e){}
+ if(av.userData.after)av.userData.after();
  // blink
  const hc=J.hc;if(hc&&hc.userData.texOpen&&hc.userData.texBlink){const b=(t%3.7)<.12;const want=b?hc.userData.texBlink:hc.userData.texOpen;const m=hc.userData.headMesh.material;if(m.map!==want){m.map=want;m.needsUpdate=true;}}
 }
@@ -3902,14 +3904,14 @@ function stage3D(el,ch,o={}){
  load3D().then(()=>{if(st.dead)return;const w=o.w||el.clientWidth||200,h=o.h||el.clientHeight||260;
   st.r=makeRenderer(w,h);st.r.domElement.className='st3d';st.r.domElement.style.width=w+'px';st.r.domElement.style.height=h+'px';el.innerHTML='';el.append(st.r.domElement);
   st.sc=setupScene();st.cam=new T3.PerspectiveCamera(20,w/h,1,3000);const v=VIEW3[o.view||'full'];const fit=VIEW3.full[2]*Math.max(1,w/h<.55?.55/(w/h):1);st.cam.position.set(v[0],v[1],o.view?v[2]:fit);st.cam.lookAt(0,v[4],0);
-  st.av=buildAvatar3D(ch);st.sc.add(st.av);LIVE.add(st);
+  LIVE.add(st);st.rot=0;const tok=st.tok=(st.tok||0)+1;buildAny(ch).then(av=>{if(st.dead||tok!==st.tok){disposeObj(av);return;}st.av=av;av.rotation.y=st.rot;st.sc.add(av);});
   // drag to rotate
-  let dx=null,rot=0;st.r.domElement.addEventListener('pointerdown',e=>{dx=e.clientX;e.stopPropagation();});window.addEventListener('pointerup',()=>dx=null);
-  st.r.domElement.addEventListener('pointermove',e=>{if(dx==null)return;rot+=(e.clientX-dx)*.012;dx=e.clientX;st.av.rotation.y=rot;});
+  let dx=null;st.r.domElement.addEventListener('pointerdown',e=>{dx=e.clientX;e.stopPropagation();});window.addEventListener('pointerup',()=>dx=null);
+  st.r.domElement.addEventListener('pointermove',e=>{if(dx==null)return;st.rot+=(e.clientX-dx)*.012;dx=e.clientX;if(st.av)st.av.rotation.y=st.rot;});
   st.r.domElement.classList.add('noswipe');
-  const loop=()=>{if(st.dead)return;if(!document.body.contains(el)){st.dispose();return;}poseApply(st.av,st.anim,(performance.now()-st.t0)/1000);st.r.render(st.sc,st.cam);st.raf=requestAnimationFrame(loop);};loop();
+  const loop=()=>{if(st.dead)return;if(!document.body.contains(el)){st.dispose();return;}if(st.av)poseApply(st.av,st.anim,(performance.now()-st.t0)/1000);st.r.render(st.sc,st.cam);st.raf=requestAnimationFrame(loop);};loop();
  }).catch(()=>{el.innerHTML=charSVG(ch,o.h||250,'full');});
- st.set=ch=>{st.ch=ch;if(!st.sc)return;st.sc.remove(st.av);disposeObj(st.av);st.av=buildAvatar3D(ch);st.sc.add(st.av);};
+ st.set=ch=>{st.ch=ch;if(!st.sc)return;const tok=st.tok=(st.tok||0)+1;buildAny(ch).then(av=>{if(st.dead||tok!==st.tok){disposeObj(av);return;}if(st.av){st.sc.remove(st.av);disposeObj(st.av);}st.av=av;av.rotation.y=st.rot||0;st.sc.add(av);});};
  st.play=a=>{st.anim=a;st.t0=performance.now();};
  st.dispose=()=>{st.dead=true;cancelAnimationFrame(st.raf);LIVE.delete(st);if(st.av)disposeObj(st.av);if(st.r){st.r.dispose();st.r.forceContextLoss&&st.r.forceContextLoss();}};
  return st;
@@ -3917,13 +3919,162 @@ function stage3D(el,ch,o={}){
 function disposeObj(o){o.traverse(x=>{if(x.geometry)x.geometry.dispose();if(x.material&&x.material.map&&x.material.map.userData&&x.material.map.userData.tmp)x.material.map.dispose();});}
 /* snapshots (static images): used when 3D is switched off and for thumbnails */
 let SNAP=null;const SNAPC=new Map();
+let SNAPL=Promise.resolve();
 function snap3D(ch,w,h,view,anim,t){
  const key=JSON.stringify([ch,w,h,view,anim,t]);if(SNAPC.has(key))return Promise.resolve(SNAPC.get(key));
- return load3D().then(()=>{if(!SNAP){SNAP={r:makeRenderer(w,h),sc:setupScene(),cam:new T3.PerspectiveCamera(20,1,1,3000)};}
+ const job=SNAPL.then(()=>load3D()).then(async()=>{if(!SNAP){SNAP={r:makeRenderer(w,h),sc:setupScene(),cam:new T3.PerspectiveCamera(20,1,1,3000)};}
   const {r,sc,cam}=SNAP;r.setPixelRatio(2);r.setSize(w,h,false);cam.aspect=w/h;const v=VIEW3[view||'full'];cam.position.set(v[0],v[1],v[2]);cam.lookAt(0,v[4],0);cam.updateProjectionMatrix();
-  const av=buildAvatar3D(ch);sc.add(av);poseApply(av,anim||'idle',t||0);
-  return Promise.race([av.userData.J.hc.userData.ready||Promise.resolve(),new Promise(res=>setTimeout(res,1500))]).then(()=>{const hc=av.userData.J.hc;if(hc&&hc.userData.texOpen){const m=hc.userData.headMesh.material;m.map=hc.userData.texOpen;}
+  const av=await buildAny(ch);sc.add(av);poseApply(av,anim||'idle',t||0);
+  if(av.userData.real&&['face','close','head'].includes(view)){av.updateMatrixWorld(true);const hp=new T3.Vector3();av.userData.J.hc.getWorldPosition(hp);const d=view==='face'?62:view==='head'?95:190,dy=view==='close'?-13:0;cam.position.set(0,hp.y+dy+1,d);cam.lookAt(0,hp.y+dy,0);}
+  return Promise.resolve().then(()=>{const hc=av.userData.J.hc;if(hc&&hc.userData.texOpen){const m=hc.userData.headMesh.material;m.map=hc.userData.texOpen;}
    r.render(sc,cam);const url=r.domElement.toDataURL('image/png');sc.remove(av);disposeObj(av);if(SNAPC.size>300)SNAPC.clear();SNAPC.set(key,url);return url;});});
+ SNAPL=job.catch(()=>{});return job;
+}
+async function buildAny(ch){try{if(has3D()){await mhIndex();return await buildReal(ch);}}catch(e){console.warn('real avatar failed',e);}const av=buildAvatar3D(ch);try{await Promise.race([av.userData.J.hc.userData.ready||0,new Promise(r=>setTimeout(r,1500))]);}catch(e){}return av;}
+
+/* ================= realistic characters (MakeHuman-based, skinned) ================= */
+const MHR={idx:null,p:null,bin:new Map(),img:new Map(),tex:new Map()};
+const MH_BASE='./chars/';
+function mhIndex(){if(MHR.idx)return Promise.resolve(MHR.idx);if(!MHR.p)MHR.p=fetch(MH_BASE+'index.json').then(r=>{if(!r.ok)throw 0;return r.json();}).then(j=>(MHR.idx=j));return MHR.p;}
+const DT={int16:Int16Array,uint16:Uint16Array,uint8:Uint8Array,float32:Float32Array};
+function mhPack(meta){const f=meta.file;if(!MHR.bin.has(f))MHR.bin.set(f,fetch(MH_BASE+f).then(r=>r.arrayBuffer()).then(buf=>{const o={};for(const [k,[off,dt,sh]] of Object.entries(meta.arrays)){const n=sh.reduce((a,b)=>a*b,1);o[k]=new DT[dt](buf,off,n);}return o;}));return MHR.bin.get(f);}
+function mhImg(u){if(!MHR.img.has(u))MHR.img.set(u,new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>res(null);i.src=MH_BASE+u;}));return MHR.img.get(u);}
+function mhTex(src,srgb=true){const t=new T3.CanvasTexture(src);if(srgb)t.colorSpace=T3.SRGBColorSpace;t.flipY=true;t.anisotropy=4;t.needsUpdate=true;return t;}
+/* paint a region of an image (the given triangles) with a colour or pattern, keeping fabric shading */
+function mhPaint(img,tris,spec){
+ const W=img.width,H=img.height,c=cv(W,H),x=c.getContext('2d');x.drawImage(img,0,0);
+ const mask=cv(W,H),mx=mask.getContext('2d');mx.fillStyle='#fff';mx.strokeStyle='#fff';mx.lineWidth=3;
+ for(const t of tris){mx.beginPath();mx.moveTo(t[0]*W,(1-t[1])*H);mx.lineTo(t[2]*W,(1-t[3])*H);mx.lineTo(t[4]*W,(1-t[5])*H);mx.closePath();mx.fill();mx.stroke();}
+ const pc=cv(W,H),px=pc.getContext('2d');paintPattern(px,W,H,spec.p||'solid',spec.c,spec.c2,1.4);
+ const s=x.getImageData(0,0,W,H),d=s.data,m=mx.getImageData(0,0,W,H).data,pd=px.getImageData(0,0,W,H).data;
+ let sum=0,cnt=0;for(let i=0;i<d.length;i+=4)if(m[i]>128){sum+=d[i]*.3+d[i+1]*.59+d[i+2]*.11;cnt++;}const avg=Math.max(1,sum/Math.max(1,cnt));
+ const lo=spec.detail==='strong'?.62:.95,hi=spec.detail==='strong'?1.25:1.03,amt=spec.detail==='strong'?1:0;
+ for(let i=0;i<d.length;i+=4)if(m[i]>128){const l=(d[i]*.3+d[i+1]*.59+d[i+2]*.11)/avg,k=Math.max(lo,Math.min(hi,1+(l-1)*amt));d[i]=Math.min(255,pd[i]*k);d[i+1]=Math.min(255,pd[i+1]*k);d[i+2]=Math.min(255,pd[i+2]*k);}
+ x.putImageData(s,0,0);return mhTex(c);
+}
+function mhEye(img){const W=img.width,H=img.height,c=cv(W,H),x=c.getContext('2d');x.drawImage(img,0,0);const s=x.getImageData(0,0,W,H),d=s.data;
+ for(let i=0;i<d.length;i+=4){const r=d[i],g=d[i+1],b=d[i+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b),sat=mx?(mx-mn)/mx:0;
+  if(sat<.18&&mx>80){d[i]=d[i]*.4+244*.6;d[i+1]=d[i+1]*.4+240*.6;d[i+2]=d[i+2]*.4+235*.6;}else if(sat>=.18){const l=(r+g+b)/3;for(let k=0;k<3;k++)d[i+k]=Math.max(0,Math.min(255,l+(d[i+k]-l)*1.25+10));}}
+ x.putImageData(s,0,0);return mhTex(c);}
+function mhTint(img,col,{gray=true,keepA=true}={}){ // recolour a whole texture (hair, skin)
+ const W=img.width,H=img.height,c=cv(W,H),x=c.getContext('2d');x.drawImage(img,0,0);const s=x.getImageData(0,0,W,H),d=s.data;const C=new T3.Color(col);
+ let sum=0,n=0;for(let i=0;i<d.length;i+=4)if(d[i+3]>40){sum+=d[i]*.3+d[i+1]*.59+d[i+2]*.11;n++;}const avg=Math.max(1,sum/Math.max(1,n));
+ for(let i=0;i<d.length;i+=4){const l=gray?(d[i]*.3+d[i+1]*.59+d[i+2]*.11)/avg:1;const k=Math.max(.35,Math.min(1.7,l));d[i]=Math.min(255,C.r*255*k);d[i+1]=Math.min(255,C.g*255*k);d[i+2]=Math.min(255,C.b*255*k);}
+ x.putImageData(s,0,0);return mhTex(c);
+}
+/* catalogue -> MakeHuman parts */
+const MH_TOP={w:{tee:'female_casualsuit01_top',vneck:'VNeckTop',longtee:'female_elegantsuit01_top',tank:'Tank_Top_01',crop:'female_sportsuit01_top',croptank:'spaghetti-top',blouse:'Sleeveless',off:'spaghetti-top',polo:'female_casualsuit02_top',shirt:'female_elegantsuit01_top',sweater:'Harvey_Sweater2',turtle:'Harvey_Sweater2',hoodie:'Harvey_Sweater2',zip:'male_casualsuit05_top',denim:'male_casualsuit05_top',leather:'male_casualsuit05_top',blazer:'female_elegantsuit01_top',cardigan:'Harvey_Sweater2',puffer:'male_casualsuit05_top',vest:'Tank_Top_01',jersey:'female_casualsuit01_top'},
+ m:{tee:'male_casualsuit04_top',vneck:'male_casualsuit06_top',longtee:'male_casualsuit02_top',tank:'Tank_Top_01',crop:'male_casualsuit04_top',croptank:'Tank_Top_01',blouse:'male_casualsuit01_top',off:'male_casualsuit06_top',polo:'male_casualsuit06_top',shirt:'male_casualsuit03_top',sweater:'male_casualsuit02_top',turtle:'Harvey_Sweater2',hoodie:'male_casualsuit05_top',zip:'male_casualsuit05_top',denim:'male_casualsuit05_top',leather:'male_casualsuit05_top',blazer:'male_elegantsuit01_top',cardigan:'male_casualsuit01_top',puffer:'male_casualsuit05_top',vest:'male_casualsuit06_top',jersey:'male_casualsuit04_top'}};
+const MH_BOT={jeans:['female_casualsuit01_bot','male_casualsuit04_bot'],skinny:['Tightjeans','Tightjeans'],wide:['male_casualsuit06_bot','male_elegantsuit01_bot'],ripped:['female_casualsuit01_bot','male_casualsuit02_bot'],chino:['male_elegantsuit01_bot','male_elegantsuit01_bot'],cargo:['male_casualsuit05_bot','male_casualsuit05_bot'],
+ jogger:['female_sportsuit01_bot','male_casualsuit03_bot'],track:['female_sportsuit01_bot','male_casualsuit03_bot'],leggings:['female_sportsuit01_bot','female_sportsuit01_bot'],capri:['female_sportsuit01_bot','male_casualsuit03_bot'],bermuda:['ShortJeans','ShortJeans'],shorts:['female_casualsuit02_bot','ShortJeans'],denimshorts:['ShortJeans','ShortJeans'],
+ mini:['miniskirt','miniskirt'],pleated:['female_elegantsuit01_bot','female_elegantsuit01_bot'],midi:['female_elegantsuit01_bot','female_elegantsuit01_bot'],denimskirt:['JeansSkirt','JeansSkirt'],tulle:['miniskirt','miniskirt'],longskirt:['female_elegantsuit01_bot','female_elegantsuit01_bot']};
+const MH_DENIM=new Set(['jeans','skinny','ripped','bermuda','denimshorts','denimskirt']);
+const MH_SHOE={sneaker:'shoes05',high:'shoes06',boot:'WinterBoots',heel:'shoes03',flat:'shoes02',sandal:'shoes01',loafer:'shoes04',rain:'WinterBoots'};
+const MH_HAIR={buzz:'short04',crew:'short02',long:'long01',bob:'bob02',pony:'ponytail01',messy:'short01',quiff:'short03',spiky:'short01',slick:'short04',bowl:'bob01',curtain:'short02',pixie:'short03',shoulder:'bob01',lob:'bob02',wavy:'long_alpha7',bangslong:'long2_alpha7',lowpony:'ponytail01',topbun:'Wig_bun_blonde',buns:'Wig_bun_blonde',braids:'Braid01',braid1:'Braid01',manbun:'ponytail01',mohawk:'Harvey_Hawk1',undercut:'short03',curlyshort:'curly2',afro:'afro01',puff:'afro01',dreads:'junglebookhair',curlylong:'curly',surfer:'junglebookhair',wolf:'short01',princess:'southernbelleringlets'};
+const MH_BROW={soft:'eyebrow001',straight:'eyebrow007',thick:'eyebrow012',arch:'eyebrow006',thin:'eyebrow005'};
+const MH_EYE=['brownlight','brown','blue','green','bluegreen','grey'];
+const MH_SKIN=[[0,'#ffffff'],[0,'#f6e8dc'],[0,'#e9cfb6'],[1,'#f3dcc6'],[1,'#dcb898'],[2,'#f2d7c2'],[2,'#ffffff'],[2,'#bfa08c']];
+const MH_FACE={face:{oval:{'head-oval':.6},round:{'head-round':.7},long:{'head-scale-vert-more':.5,'head-rectangular':.3},heart:{'head-invertedtriangular':.7},square:{'head-square':.7}},
+ eyes:{round:{},almond:{'l-eye-height2-min':.45,'r-eye-height2-min':.45,'l-eye-corner2-up':.4,'r-eye-corner2-up':.4},big:{'l-eye-size-big':.7,'r-eye-size-big':.7},sleepy:{'l-eye-eyefold-down':.8,'r-eye-eyefold-down':.8},happy:{'l-eye-corner1-up':.6,'r-eye-corner1-up':.6,'l-eye-height2-min':.3,'r-eye-height2-min':.3},wide:{'l-eye-height2-max':.7,'r-eye-height2-max':.7}},
+ nose:{button:{'nose-scale-vert-decr':.5,'nose-point-up':.4},line:{'nose-width1-min':.6,'nose-scale-horiz-decr':.4},round:{'nose-volume-potato':.6,'nose-flaring-incr':.4},pointy:{'nose-point-width-less':.6,'nose-greek-moregreek':.5}},
+ mouth:{smile:{'mouth-angles-up':.7},grin:{'mouth-angles-up':1,'mouth-laugh-lines-out':.5},neutral:{},open:{'mouth-lowerlip-middle-down':.6},lips:{'mouth-lowerlip-volume-inflate':.8,'mouth-upperlip-height-max':.5},smirk:{'mouth-angles-up':.4}}};
+async function mhPart(id){const I=await mhIndex();const meta=I.items[id];if(!meta)return null;const [pk,...imgs]=await Promise.all([mhPack(meta),...Object.values(meta.tex).map(mhImg),meta.ntex?mhImg(meta.ntex):null]);const names=Object.keys(meta.tex),tx={};names.forEach((n,i)=>tx[n]=imgs[i]);return{meta,pk,tx,ntex:meta.ntex?imgs[imgs.length-1]:null};}
+const mhKey=o=>JSON.stringify(o);
+async function buildReal(ch){
+ ch=normChar({...ch});const g=ch.g==='w'?'w':'m',I=await mhIndex();
+ const cos=ch.cos&&COS_BY[ch.cos];const top=(cos&&cos.top)||TOP_BY[ch.top],bot=(cos&&cos.bot)||BOT_BY[ch.bot],shoe=(cos&&cos.shoe)||SHOE_BY[ch.shoe];
+ const showHair=!(cos&&cos.hideHair);
+ // which parts
+ const parts=[['eyes','eyes'],['brow','brow_'+(MH_BROW[ch.brows]||'eyebrow001')],['lash','lashes']];
+ if(showHair&&ch.hair!=='bald'&&MH_HAIR[ch.hair])parts.push(['hair','hair_'+MH_HAIR[ch.hair]]);
+ if(ch.beard&&ch.beard!=='none')parts.push(['beard',ch.beard==='mustache'||ch.beard==='goatee'?'hair_Moustache':'hair_Full_beard']);
+ if(top)parts.push(['top',MH_TOP[g][top.t]||MH_TOP[g].tee]);
+ if(bot)parts.push(['bot',(MH_BOT[bot.t]||MH_BOT.jeans)[g==='w'?0:1]]);
+ if(shoe)parts.push(['shoe',MH_SHOE[shoe.t]||'shoes05']);
+ if(!cos&&['glasses','round','sunglasses'].includes(ch.acc))parts.push(['glasses','glasses']);
+ const [body,face,skinImg,...P]=await Promise.all([mhPack(I.bodies[g]),mhPack(I.face),mhImg(I.skins[g][MH_SKIN[ch.skin]?MH_SKIN[ch.skin][0]:0]),...parts.map(p=>mhPart(p[1]))]);
+ // morph (dm)
+ const v=new Float32Array(body.v.length);for(let i=0;i<v.length;i++)v[i]=body.v[i]/1500;
+ const fw={};for(const [cat,val] of [['face',ch.face],['eyes',ch.eyes],['nose',ch.nose],['mouth',ch.mouth]])Object.assign(fw,(MH_FACE[cat][val]||{}));
+ for(const [t,w] of Object.entries(fw)){const ii=face[t+':i'],dd=face[t+':d'];if(!ii)continue;for(let k=0;k<ii.length;k++){const j=ii[k]*3;v[j]+=dd[k*3]*1e-3*w;v[j+1]+=dd[k*3+1]*1e-3*w;v[j+2]+=dd[k*3+2]*1e-3*w;}}
+ const S=10;
+ // skeleton
+ const B=I.bones,JP=I.joints,world=[];const mean=k=>{const ix=JP[k];if(!ix)return null;let x=0,y=0,z=0;for(const i of ix){x+=v[i*3];y+=v[i*3+1];z+=v[i*3+2];}return[x/ix.length*S,y/ix.length*S,z/ix.length*S];};
+ B.forEach(([n,par],i)=>{world[i]=(n.endsWith('____head')?mean(n):mean(n+'____tail'))||(par>=0?world[par]:[0,0,0]);});
+ const bones=B.map(([n,par],i)=>{const o=new T3.Bone();o.name=n;const pw=par>=0?world[par]:[0,0,0];o.position.set(world[i][0]-pw[0],world[i][1]-pw[1],world[i][2]-pw[2]);return o;});
+ B.forEach(([n,par],i)=>{if(par>=0)bones[par].add(bones[i]);});
+ const BN=Object.fromEntries(bones.map(b=>[b.name,b]));
+ const outer=new T3.Group(),inner=new T3.Group();outer.add(inner);inner.add(bones[0]);bones[0].updateMatrixWorld(true);
+ const skeleton=new T3.Skeleton(bones);
+ // hidden body verts
+ const del=new Uint8Array(v.length/3);P.forEach((p,i)=>{if(p&&p.pk.del&&parts[i][0]!=='glasses')for(const d of p.pk.del)del[d]=1;});
+ const mkGeo=(src,uv,idx,pos,si,sw,filt)=>{const n=src.length,P3=new Float32Array(n*3),UV=new Float32Array(n*2),SI=new Uint16Array(n*4),SW=new Float32Array(n*4);
+  for(let i=0;i<n;i++){const s=src[i];P3[i*3]=pos[s*3];P3[i*3+1]=pos[s*3+1];P3[i*3+2]=pos[s*3+2];UV[i*2]=uv[i*2]/65535;UV[i*2+1]=uv[i*2+1]/65535;for(let k=0;k<4;k++){SI[i*4+k]=si[s*4+k];SW[i*4+k]=sw[s*4+k]/255;}const t=SW[i*4]+SW[i*4+1]+SW[i*4+2]+SW[i*4+3];if(t>0)for(let k=0;k<4;k++)SW[i*4+k]/=t;else SW[i*4]=1;}
+  let ix=idx;if(filt){const o=[];for(let i=0;i<idx.length;i+=3){const a=src[idx[i]],b=src[idx[i+1]],c=src[idx[i+2]];if(!(filt[a]&&filt[b]&&filt[c]))o.push(idx[i],idx[i+1],idx[i+2]);}ix=o;}
+  const G=new T3.BufferGeometry();G.setAttribute('position',new T3.BufferAttribute(P3,3));G.setAttribute('uv',new T3.BufferAttribute(UV,2));G.setAttribute('skinIndex',new T3.BufferAttribute(SI,4));G.setAttribute('skinWeight',new T3.BufferAttribute(SW,4));G.setIndex(Array.from(ix));G.computeVertexNormals();return G;};
+ const vS=new Float32Array(v.length);for(let i=0;i<v.length;i++)vS[i]=v[i]*S;
+ const meshes=[];
+ const skinKey='skin'+g+ch.skin;if(!MHR.tex.has(skinKey)&&skinImg)MHR.tex.set(skinKey,(MH_SKIN[ch.skin]||[0,'#fff'])[1]==='#ffffff'?mhTex(skinImg):mhTint(skinImg,(MH_SKIN[ch.skin])[1],{gray:false}));
+ const skinT=MHR.tex.get(skinKey);
+ const bodyM=new T3.MeshStandardMaterial({map:skinT||null,color:skinT?'#ffffff':(B_SKIN[ch.skin]||'#e0b090'),roughness:.58});
+ const bm=new T3.SkinnedMesh(mkGeo(body.src,body.uv,body.idx,vS,body.si,body.sw,del),bodyM);meshes.push(bm);
+ const hcol=(B_HAIRC[ch.hc]||B_HAIRC.brown)[0];
+ P.forEach((p,i)=>{if(!p)return;const role=parts[i][0],pk=p.pk,meta=p.meta;
+  const n=pk.ref.length/3,pos=new Float32Array(n*3);for(let k=0;k<n;k++)for(let a=0;a<3;a++){let s=pk.o[k*3+a];for(let j=0;j<3;j++)s+=pk.w[k*3+j]*v[pk.ref[k*3+j]*3+a];pos[k*3+a]=s*S;}
+  const G=mkGeo(pk.src,pk.uv,pk.idx,pos,pk.si,pk.sw,null);
+  let img=Object.values(p.tx)[0],map=null;
+  if(role==='eyes'){img=p.tx[MH_EYE[ch.ec]||'brown']||img;}
+  const tk=parts[i][1]+'|'+role+(role==='hair'||role==='beard'?hcol:role==='top'?mhKey(top):role==='bot'?mhKey(bot):role==='shoe'?mhKey(shoe):role==='eyes'?ch.ec:'');
+  if(img){if(!MHR.tex.has(tk)){let t;
+    if(role==='hair'||role==='beard')t=mhTint(img,hcol);
+    else if(role==='brow')t=mhTint(img,shade(hcol,-.12));
+    else if(role==='eyes')t=mhEye(img);
+    else if(['top','bot','shoe'].includes(role)){const it=role==='top'?top:role==='bot'?bot:shoe;const tris=[];for(let q=0;q<pk.idx.length;q+=3){const a=pk.idx[q],b=pk.idx[q+1],c=pk.idx[q+2];tris.push([pk.uv[a*2]/65535,pk.uv[a*2+1]/65535,pk.uv[b*2]/65535,pk.uv[b*2+1]/65535,pk.uv[c*2]/65535,pk.uv[c*2+1]/65535]);}
+     t=mhPaint(img,tris,{p:EMB[it.p]?'solid':(it.p||'solid'),c:it.c,c2:it.c2,detail:(role==='bot'&&MH_DENIM.has(it.t))||role==='shoe'?'strong':'soft'});}
+    else t=mhTex(img);MHR.tex.set(tk,t);}map=MHR.tex.get(tk);}
+  let M;
+  if(role==='eyes')M=new T3.MeshPhysicalMaterial({map,roughness:.08,clearcoat:1,clearcoatRoughness:.04,alphaTest:.05,side:T3.DoubleSide});
+  else M=new T3.MeshStandardMaterial({map,roughness:role==='hair'||role==='beard'?.5:role==='shoe'?.55:.85,alphaTest:role==='brow'||role==='lash'||role==='hair'||role==='beard'?.45:.5,side:T3.DoubleSide});
+  if(role==='lash')M.color.set('#3a2a22');
+  if(role==='eyes'){const pos=G.attributes.position,n=pos.count,col=new Float32Array(n*3);const cen={};for(const sgn of[1,-1]){let x=0,y=0,z=0,c=0,ymax=-1e9,ymin=1e9;for(let i=0;i<n;i++)if(Math.sign(pos.getX(i))===sgn){x+=pos.getX(i);y+=pos.getY(i);z+=pos.getZ(i);c++;ymax=Math.max(ymax,pos.getY(i));ymin=Math.min(ymin,pos.getY(i));}cen[sgn]=[y/c,(ymax-ymin)/2];}
+   for(let i=0;i<n;i++){const [cy,r]=cen[Math.sign(pos.getX(i))||1],u=(pos.getY(i)-cy)/r;const k=1-.5*Math.max(0,Math.min(1,(u+.05)/.75))-.15*Math.max(0,-u-.6);col[i*3]=col[i*3+1]=col[i*3+2]=k;}G.setAttribute('color',new T3.BufferAttribute(col,3));M.vertexColors=true;}
+  if(ch.beard==='stubble'&&role==='beard'){M.transparent=true;M.opacity=.35;M.alphaTest=.2;}
+  if(p.ntex&&role!=='eyes'){const nt=MHR.tex.get(meta.ntex)||(MHR.tex.set(meta.ntex,mhTex(p.ntex,false)),MHR.tex.get(meta.ntex));M.normalMap=nt;M.normalScale.set(.7,.7);}
+  const sm=new T3.SkinnedMesh(G,M);sm.renderOrder=meta.z||0;meshes.push(sm);});
+ for(const m of meshes){inner.add(m);m.bind(skeleton,new T3.Matrix4());m.frustumCulled=false;}
+ // eye shine: tiny bright highlights that follow the head
+ // --- rig adapter: joint proxies driven by the existing animations ---
+ const hipY=world[B.findIndex(b=>b[0]==='upperleg01.L____head')][1];
+ outer.position.set(0,hipY,0);inner.position.set(0,-hipY,0);
+ const J={};const jp=()=>({rotation:new T3.Euler(),position:new T3.Vector3()});
+ for(const k of['spine','neck','head','shL','shR','elL','elR','wrL','wrR','hpL','hpR','knL','knR','anL','anR'])J[k]=jp();
+ J.root=outer;
+ const MAP={neck:'neck01____head',head:'head____head',elL:'lowerarm01.L____head',elR:'lowerarm01.R____head',wrL:'wrist.L____head',wrR:'wrist.R____head',hpL:'upperleg01.L____head',hpR:'upperleg01.R____head',knL:'lowerleg01.L____head',knR:'lowerleg01.R____head',anL:'foot.L____head',anR:'foot.R____head'};
+ const corr={};const WI=n=>world[B.findIndex(b=>b[0]===n)];for(const L of['L','R']){const a0=WI('upperarm01.'+L+'____head'),a1=WI('lowerarm01.'+L+'____head');const dir=new T3.Vector3(a1[0]-a0[0],a1[1]-a0[1],a1[2]-a0[2]).normalize();const want=new T3.Vector3(L==='L'?.1:-.1,-1,0).normalize();corr[L]=new T3.Quaternion().setFromUnitVectors(dir,want);}
+ J.shL.rotation.z=.07;J.shR.rotation.z=-.07;J.elL.rotation.x=-.08;J.elR.rotation.x=-.08;
+ const tq=new T3.Quaternion(),half=new T3.Quaternion(),id=new T3.Quaternion(),sp4=BN['spine04____head'],sp2=BN['spine02____head'],sp1=BN['spine01____head'],sp1p=sp1.position.clone();
+ const apply=()=>{for(const [k,bn] of Object.entries(MAP)){const b=BN[bn];if(b)b.quaternion.setFromEuler(J[k].rotation);}
+  for(const L of['L','R']){tq.setFromEuler(J['sh'+L].rotation);BN['upperarm01.'+L+'____head'].quaternion.copy(tq).multiply(corr[L]);}
+  tq.setFromEuler(J.spine.rotation);half.copy(id).slerp(tq,.5);sp4.quaternion.copy(half);sp2.quaternion.copy(half);sp1.position.copy(sp1p).add(J.spine.position);};
+ // attachment groups for costumes / accessories (old procedural pieces)
+ const D=BODY3[g];const att=(bn,p)=>{const gg=new T3.Group();const b=BN[bn];const wp=new T3.Vector3();b.getWorldPosition(wp);inner.updateMatrixWorld(true);b.updateMatrixWorld(true);const inv=new T3.Matrix4().copy(b.matrixWorld).invert();const lp=new T3.Vector3(...p).applyMatrix4(inv);gg.position.copy(lp);b.add(gg);return gg;};
+ outer.updateMatrixWorld(true);
+ let hb=new T3.Box3();{const pos=bm.geometry.attributes.position;const hy0=world[B.findIndex(b=>b[0]==='head____head')][1];for(let i=0;i<pos.count;i++){const y=pos.getY(i);if(y>hy0){hb.expandByPoint(new T3.Vector3(pos.getX(i),y,pos.getZ(i)));}}}
+ const hcC=hb.getCenter(new T3.Vector3()),hs=hb.getSize(new T3.Vector3());
+ const hc=att('head____head',[hcC.x,hcC.y,hcC.z]);hc.userData.R=[hs.x/2,hs.y/2,hs.z/2];
+ const CJ={hc,spine:att('spine05____head',[0,hipY,0]),root:att('root____head',[0,hipY,0]),
+  shL:att('upperarm01.L____head',world[B.findIndex(b=>b[0]==='upperarm01.L____head')]),shR:att('upperarm01.R____head',world[B.findIndex(b=>b[0]==='upperarm01.R____head')]),
+  knL:att('lowerleg01.L____head',world[B.findIndex(b=>b[0]==='lowerleg01.L____head')]),knR:att('lowerleg01.R____head',world[B.findIndex(b=>b[0]==='lowerleg01.R____head')])};
+ if(cos){const keep=cos.top;try{buildCostume3D(ch.cos,cos,{J:CJ,root:CJ.root,spine:CJ.spine,hc,D,g,sk:B_SKIN[ch.skin],hcol});}catch(e){}}
+ if(ch.acc&&!(cos&&cos.noAcc)&&!['glasses','round','sunglasses'].includes(ch.acc)){try{buildAcc3D(ch.acc,hc,D,{spine:CJ.spine});}catch(e){}}
+ if(['round','sunglasses'].includes(ch.acc)&&!cos){const gl=meshes[meshes.length-1];gl.material.color.set(ch.acc==='sunglasses'?'#222':'#B8862B');}
+ // blob shadow
+ const sc=cv(128,128),sx=sc.getContext('2d'),gr=sx.createRadialGradient(64,64,4,64,64,64);gr.addColorStop(0,'rgba(0,0,0,.42)');gr.addColorStop(1,'rgba(0,0,0,0)');sx.fillStyle=gr;sx.fillRect(0,0,128,128);
+ const shadow=mesh(new T3.PlaneGeometry(70,30),new T3.MeshBasicMaterial({map:new T3.CanvasTexture(sc),transparent:true,depthWrite:false}),[0,.2,2],[-Math.PI/2,0,0]);
+ const all=new T3.Group();all.add(outer,shadow);J.shadow=shadow;J.hc=hc;
+ const rest={};for(const k in J)if(J[k].rotation)rest[k]={r:J[k].rotation.clone(),p:J[k].position.clone()};
+ all.userData={J,rest,ch,after:apply,real:true,height:Math.max(...world.map(w=>w[1]))};apply();
+ return all;
 }
 
 /* ================= backgrounds, animation catalogue, mounting ================= */

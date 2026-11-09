@@ -1,0 +1,16 @@
+Usta Akademi - 3B karakter parçaları / 3D character assets
+
+Kaynak / Source: MakeHuman (http://www.makehumancommunity.org), makehuman-data npm paketi üzerinden.
+MakeHuman sistem varlıkları (vücut, hedefler, ten, göz, saç, temel kıyafetler) MakeHuman tarafından CC0 olarak yayınlanmıştır.
+Aşağıdaki parçalar Creative Commons Attribution (CC BY) lisanslıdır; telif sahipleri MakeHuman topluluğu katkıcılarıdır:
+
+- clothes/JeansSkirt/JeansSkirt.json  (CC BY 3.0)
+- clothes/ShortJeans/ShortJeans.json  (CC BY 3.0 (see also https://creativecommons.org/licenses/by/3.0/ ))
+- clothes/Sleeveless/Sleeveless.json  (CC BY 3.0)
+- clothes/Tank_Top_01/Tank_Top_01.json  (CC BY 4.0)
+- clothes/Tightjeans/Tightjeans.json  (CC BY 3.0 (see also https://creativecommons.org/licenses/by/3.0/))
+- clothes/VNeckTop/VNeckTop.json  (CC BY 3.0)
+- clothes/WinterBoots/WinterBoots.json  (CC BY 3.0)
+- clothes/glasses/glasses.json  (CC BY 3.0)
+- clothes/miniskirt/miniskirt.json  (CC BY 3.0)
+- clothes/spaghetti-top/spaghetti-top.json  (CC BY 3.0)
