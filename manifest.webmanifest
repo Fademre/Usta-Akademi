@@ -1,0 +1,31 @@
+{
+ "name": "Usta Akademi",
+ "short_name": "Usta",
+ "id": "./",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#EDF1EC",
+ "theme_color": "#EDF1EC",
+ "lang": "tr",
+ "description": "Dil öğren ve zekâ oyunlarıyla pratik zekânı geliştir.",
+ "icons": [
+  {
+   "src": "icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
