@@ -1,5 +1,5 @@
-/* Usta Akademi service worker — 1.5 (d789a2f0b0) */
-const CACHE='usta-d789a2f0b0';
+/* Usta Akademi service worker — 1.6 (1e3b31ab12) */
+const CACHE='usta-1e3b31ab12';
 const FILES=["./", "index.html", "manifest.webmanifest", "fonts/fonts.css", "fonts/10d6a582947e.woff2", "fonts/16db5cbe6178.woff2", "fonts/3b58e8bdf772.woff2", "fonts/7471c0c20c13.woff2", "fonts/f96cbbc03519.woff2", "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png"];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES.map(f=>new Request(f,{cache:'reload'})))));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
