@@ -18,7 +18,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="fonts/fonts.css">
 <script>try{var _s=JSON.parse(localStorage.getItem('usta-akademi-v1'));if(_s&&_s.skin&&_s.skin!=='classic')document.documentElement.setAttribute('data-skin',_s.skin);}catch(e){}</script>
-<script>window.APP_VERSION='3.8';</script>
+<script>window.APP_VERSION='3.9';</script>
 <style>
 /* standalone shell: what the artifact host used to provide */
 html{background:var(--bg,#EDF1EC);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;-webkit-text-size-adjust:100%}
@@ -5594,15 +5594,15 @@ function strEl(o={}){
  const bowTo=s=>{const b=svg.querySelector('.bow');if(!b)return;b._dir=-(b._dir||1);b.style.transform=`translate(${b._dir*8}px,${sy(s)}px)`;};
  const pluck=(s,f,silent)=>{const x=f>0?posX(f):xOpen;const m=silent?tun[s-1]+f:sound(s,f);vib(s,Math.max(xOpen,x),bowed?1.6:3.4,bowed?.9:1.4);if(bowed)bowTo(s);
   const r=svg.getBoundingClientRect(),k=r.width/W;bubble(el,nName(m),(f>0?x:xOpen*.6)*k,sy(s)*k-6);return m;};
- const strum=(dir)=>{const list=[];for(let s=nS;s>=1;s--){const f=held[s];if(f===-1)continue;list.push([s,f||0]);}if(dir==='up')list.reverse();
-  list.forEach(([s,f],i)=>setTimeout(()=>{sound(s,f,{vol:.6});vib(s,f>0?posX(f):xOpen,3,1.6);},i*16));o.onStrum&&o.onStrum(dir,list);};
- let sy0=null;
+ const strum=(dir,ts)=>{const list=[];for(let s=nS;s>=1;s--){const f=held[s];if(f===-1)continue;list.push([s,f||0]);}if(dir==='up')list.reverse();
+  list.forEach(([s,f],i)=>setTimeout(()=>{sound(s,f,{vol:.6});vib(s,f>0?posX(f):xOpen,3,1.6);},i*16));o.onStrum&&o.onStrum(dir,list,ts);};
+ let sy0=null,st0=null;
  svg.addEventListener('pointerdown',e=>{e.preventDefault();const r=svg.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
-  if(!bowed&&x>xEnd+4){sy0=y;return;}
+  if(!bowed&&x>xEnd+4){sy0=y;st0=evT(e);return;}
   const s=Math.max(1,Math.min(nS,Math.round((y-top)/sp)+1));let f=0;if(x>xOpen){for(let i=0;i<nF;i++)if(x>=fx[i]&&x<fx[i+1])f=start+i;if(x>=fx[nF])f=start+nF-1;}
   const m=pluck(s,f);o.onNote&&o.onNote({s,f,m});});
- svg.addEventListener('pointerup',e=>{if(sy0==null)return;const r=svg.getBoundingClientRect(),y=(e.clientY-r.top)/r.height*H;strum(y<sy0-6?'up':'down');sy0=null;});
- svg.addEventListener('pointerleave',()=>{if(sy0!=null){strum('down');sy0=null;}});
+ svg.addEventListener('pointerup',e=>{if(sy0==null)return;const r=svg.getBoundingClientRect(),y=(e.clientY-r.top)/r.height*H;strum(y<sy0-6?'up':'down',st0);sy0=null;});
+ svg.addEventListener('pointerleave',()=>{if(sy0!=null){strum('down',st0);sy0=null;}});
  const dotSvg=(s,f,cls,txt)=>{const x=f>0?posX(f):xOpen*.5,y=sy(s);if(f>0&&!(x>0))return'';return `<g class="fd ${cls}" data-k="${s}:${f}" transform="translate(${x} ${y})"><circle r="${f>0?9.5:8}"/>${txt!=null&&txt!==''?`<text y="4" text-anchor="middle">${txt}</text>`:''}</g>`;};
  el.mark=(s,f,cls,txt)=>{dots.querySelector(`[data-k="${s}:${f}"]`)?.remove();if(cls)dots.insertAdjacentHTML('beforeend',dotSvg(s,f,cls,txt));};
  el.clear=()=>{dots.innerHTML='';};el.hold=(s,f)=>{held[s]=f;};el.release=()=>{for(const k in held)delete held[k];};
@@ -5640,13 +5640,14 @@ function kitEl(o={}){
  return el;
 }
 /* big drum pads for rhythm exercises: well apart, any number of fingers at once */
+const evT=e=>{const t=e&&e.timeStamp,n=performance.now();return t>0&&Math.abs(t-n)<2000?t:n;};
 function padsEl(pieces,onHit){const el=h('div',{class:'pads',style:`--c:${pieces.length>4?3:2}`});const pads={};
  const icon=p=>{const t=KIT[p][2];return t==='cym'||t==='hat'?'<svg viewBox="0 0 60 30"><ellipse cx="30" cy="15" rx="28" ry="7" fill="#E2B64A" stroke="#9C7414"/><ellipse cx="30" cy="14" rx="4" ry="1.6" fill="#B8891E"/></svg>':t==='kick'?'<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="27" fill="#C33A4E"/><circle cx="30" cy="30" r="22" fill="#F4F1E8"/></svg>':'<svg viewBox="0 0 60 40"><rect x="4" y="12" width="52" height="22" fill="#C33A4E"/><ellipse cx="30" cy="12" rx="26" ry="8" fill="#F4F1E8" stroke="#AAA"/></svg>';};
  pieces.forEach(p=>{const b=h('div',{class:'dpad','data-p':p,role:'button','aria-label':L(KIT[p][3])},h('span',{class:'pi',html:icon(p)}),h('b',{},L(KIT[p][3])));pads[p]=b;el.append(b);});
  const hit=(p,silent)=>{const b=pads[p];if(!b)return;if(!silent)MA.drum(p);b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit');};
- const at=(x,y)=>{const t=document.elementFromPoint(x,y),b=t&&t.closest&&t.closest('.dpad');if(!b||!el.contains(b))return;hit(b.dataset.p);onHit&&onHit(b.dataset.p);};
- el.addEventListener('touchstart',e=>{e.preventDefault();for(const t of e.changedTouches)at(t.clientX,t.clientY);},{passive:false});
- el.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;e.preventDefault();at(e.clientX,e.clientY);});
+ const at=(x,y,ts)=>{const t=document.elementFromPoint(x,y),b=t&&t.closest&&t.closest('.dpad');if(!b||!el.contains(b))return;onHit&&onHit(b.dataset.p,ts);hit(b.dataset.p);};
+ el.addEventListener('touchstart',e=>{e.preventDefault();const ts=evT(e);for(const t of e.changedTouches)at(t.clientX,t.clientY,ts);},{passive:false});
+ el.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;e.preventDefault();at(e.clientX,e.clientY,evT(e));});
  el.hit=hit;return el;}
 /* step grid for rhythm patterns */
 function seqEl(pat,steps){const rows=Object.keys(pat);const el=h('div',{class:'seq',style:`--n:${steps}`});const cells={};
@@ -6116,7 +6117,7 @@ function m_beat(q,api,body){const steps=q.steps||8,drums=Object.keys(q.pat).ever
  const grid=seqEl(q.pat,steps),msg=h('p',{class:'hint mmsg'},L(drums?MT.tapPads:MT.tapStrum));let run=null,hits=[],done=false;
  const inst=q.inst||'guitar',cn=drums?null:chordNotes(inst,q.chord||'Em');
  const wall=()=>performance.now()/1000;
- const pad=drums?padsEl(Object.keys(q.pat),p=>{if(run)hits.push([p,wall()]);}):strEl({inst,onStrum:dir=>{if(run)hits.push(['strum',wall()]);}});
+ const pad=drums?padsEl(Object.keys(q.pat),(p,ts)=>{if(run)hits.push([p,ts!=null?ts/1000:wall()]);}):strEl({inst,onStrum:(dir,list,ts)=>{if(run)hits.push(['strum',ts!=null?ts/1000:wall()]);}});
  const bars=q.bars||2,startBtn=h('button',{class:'btn block mstart'},L(MT.start));
  let waiting=false;
  const go=again=>{if(run||done||waiting)return;const c=MA.ac();
@@ -6128,10 +6129,20 @@ function m_beat(q,api,body){const steps=q.steps||8,drums=Object.keys(q.pat).ever
   for(let i=0;i<steps*bars;i++)if(i%(steps/4)===0)MA.tick(i%steps===0,lead+count*60/q.bpm+i*spb);
   const exp=[];for(let i=0;i<steps*bars;i++){const j=i%steps;for(const [r,line] of Object.entries(q.pat)){const ch=line[j];if(ch&&ch!=='.')exp.push({r:drums?r:'strum',t:t0+i*spb,j,row:r});}}
   run={t0,spb,exp,a0};let raf;const loop=()=>{if(!body.isConnected)return;const t=wall()-t0;if(t>=0&&msg.textContent===L(MT.count))msg.textContent=L(MT.playNow);if(t>steps*bars*spb+.25){grid.at(null);judge();return;}if(t>=0)grid.at(Math.floor(t/spb)%steps);raf=requestAnimationFrame(loop);};raf=requestAnimationFrame(loop);};
- const judge=()=>{const {exp}=run,used=new Set(),win=Math.min(.16,run.spb*.45);let ok=0;
-  for(const e of exp){let best=-1,bd=9;hits.forEach(([r,t],k)=>{if(used.has(k)||r!==e.r)return;const d=Math.abs(t-e.t);if(d<bd){bd=d;best=k;}});if(best>=0&&bd<=win){used.add(best);ok++;grid.mark(e.row,e.j,'good');}else grid.mark(e.row,e.j,'bad');}
-  const extra=hits.length-used.size,score=Math.max(0,(ok-extra*.5)/exp.length),pct=Math.round(score*100)+'%',ac2=MA.ac(),mute=ac2&&ac2.currentTime-run.a0<.5;run=null;startBtn.disabled=false;
-  if(score>=(q.need||.6)){done=true;msg.textContent=fmt(MT.beatOk,pct);FX.win(grid);setTimeout(()=>api.complete(true,fmt(MT.beatOk,pct)),600);}
+ const judge=()=>{const {exp,t0,spb}=run,end=exp.length?exp[exp.length-1].t:t0;
+  // the taps of this try: from half a step before the first beat to half a step after the last; a double touch counts once
+  const H=[];hits.filter(([,t])=>t>=t0-spb*.5&&t<=end+spb*.6).sort((a,b)=>a[1]-b[1]).forEach(x=>{const last=H.filter(y=>y[0]===x[0]).pop();if(!last||x[1]-last[1]>.07)H.push(x);});
+  // a steady delay between beat and tap (sound delay of the phone or earphones, reaction time) is taken out: the median of the
+  // nearest-beat differences, measured from no delay and from the delay learnt on earlier good tries; the better fit is used
+  const lim=Math.min(.3,spb*.5),win=Math.max(.12,Math.min(.17,spb*.4));
+  const fit=base=>{const ds=[];for(const [r,t] of H){let bd=9;for(const e of exp)if(e.r===r){const d=t-base-e.t;if(Math.abs(d)<Math.abs(bd))bd=d;}if(Math.abs(bd)<lim)ds.push(bd);}
+   ds.sort((a,b)=>a-b);const off=Math.max(-.12,Math.min(.3,base+(ds.length>=3?ds[ds.length>>1]:0))),used=new Set(),marks=[];let ok=0;
+   for(const e of exp){let best=-1,bd=9;H.forEach(([r,t],k)=>{if(used.has(k)||r!==e.r)return;const d=Math.abs(t-off-e.t);if(d<bd){bd=d;best=k;}});const g=best>=0&&bd<=win;if(g){used.add(best);ok++;}marks.push(g);}
+   return{off,ok,used,marks,n:ds.length};};
+  const prior=+(S.beatOff||0),A=fit(0),B=prior?fit(prior):A,F=B.ok>A.ok?B:A;
+  exp.forEach((e,i)=>grid.mark(e.row,e.j,F.marks[i]?'good':'bad'));
+  const extra=H.length-F.used.size,score=Math.max(0,(F.ok-extra*.34)/exp.length),pct=Math.round(score*100)+'%',ac2=MA.ac(),mute=ac2&&ac2.currentTime-run.a0<.5;run=null;startBtn.disabled=false;
+  if(score>=(q.need||.6)){if(F.n>=3){S.beatOff=+(prior*.4+F.off*.6).toFixed(3);save();}done=true;msg.textContent=fmt(MT.beatOk,pct);FX.win(grid);setTimeout(()=>api.complete(true,fmt(MT.beatOk,pct)),600);}
   else{msg.textContent=fmt(MT.beatLow,pct)+(mute?' '+L(MT.noSound):'');startBtn.textContent=L(MT.retry);SFX.bad();api.miss();}};
  startBtn.onclick=()=>go();
  body.append(grid,pad,msg,h('div',{class:'row',style:'gap:10px;flex-wrap:wrap'},listenBtn(()=>{const pp=playPattern(q,grid,{bars:1,click:true,strum:(ch,at)=>MA.chord(inst==='uke'?'uke':inst,cn,{at,dir:ch==='u'?'up':'down',vol:.5})});
