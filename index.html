@@ -18,7 +18,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="fonts/fonts.css">
 <script>try{var _s=JSON.parse(localStorage.getItem('usta-akademi-v1'));if(_s&&_s.skin&&_s.skin!=='classic')document.documentElement.setAttribute('data-skin',_s.skin);}catch(e){}</script>
-<script>window.APP_VERSION='3.1';</script>
+<script>window.APP_VERSION='3.2';</script>
 <style>
 /* standalone shell: what the artifact host used to provide */
 html{background:var(--bg,#EDF1EC);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;-webkit-text-size-adjust:100%}
@@ -5285,10 +5285,11 @@ function pianoEl(o={}){
 }
 /* fretted / bowed string instrument seen from the player: string 1 on top */
 function strEl(o={}){
- const inst=o.inst||'guitar',tun=TUNE[inst],nS=tun.length,bowed=inst==='violin',start=o.start||1,nF=o.frets||(bowed?7:5);
+ const inst=o.inst||'guitar',tun=TUNE[inst],nS=tun.length,bowed=inst==='violin',fit=(o.fit||[]).filter(f=>f>0);let start=o.start||1,nF=o.frets||(bowed?7:5);
+ if(fit.length){const mx=Math.max(...fit),mn=Math.min(...fit);if(mn<start)start=Math.max(1,mn);if(mx>start+nF-1)nF=Math.min(bowed?12:8,mx-start+1);if(mx>start+nF-1)start=mx-nF+1;}
  const W=360,sp=nS===4?28:23,top=14,H=top*2+sp*(nS-1)+(o.nums===false?0:12),xOpen=36,xEnd=W-(bowed?70:62);
  const fx=[xOpen];{let w=(xEnd-xOpen)*(1-.95)/(1-Math.pow(.95,nF));for(let i=0;i<nF;i++){fx.push(fx[i]+w);w*=.95;}}
- const posX=f=>f===0?xOpen*.5:f<start?-1:(fx[f-start]+fx[f-start+1])/2,sy=s=>top+(s-1)*sp;
+ const posX=f=>f===0?xOpen*.5:(f<start||f>start+nF-1)?-1:(fx[f-start]+fx[f-start+1])/2,sy=s=>top+(s-1)*sp;
  let g=`<defs><linearGradient id="nk${inst}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${bowed?'#26201C':'#6B4423'}"/><stop offset="1" stop-color="${bowed?'#0E0B09':'#3E2512'}"/></linearGradient></defs>`;
  g+=`<rect x="${xOpen-4}" y="${top-10}" width="${xEnd-xOpen+4}" height="${sp*(nS-1)+20}" rx="3" fill="url(#nk${inst})"/>`;
  if(start===1)g+=`<rect x="${xOpen-5}" y="${top-10}" width="5" height="${sp*(nS-1)+20}" fill="#EFE6CF"/>`;
@@ -5319,7 +5320,7 @@ function strEl(o={}){
   const m=pluck(s,f);o.onNote&&o.onNote({s,f,m});});
  svg.addEventListener('pointerup',e=>{if(sy0==null)return;const r=svg.getBoundingClientRect(),y=(e.clientY-r.top)/r.height*H;strum(y<sy0-6?'up':'down');sy0=null;});
  svg.addEventListener('pointerleave',()=>{if(sy0!=null){strum('down');sy0=null;}});
- const dotSvg=(s,f,cls,txt)=>{const x=f>0?posX(f):xOpen*.5,y=sy(s);if(f>0&&x<0)return'';return `<g class="fd ${cls}" data-k="${s}:${f}" transform="translate(${x} ${y})"><circle r="${f>0?9.5:8}"/>${txt!=null&&txt!==''?`<text y="4" text-anchor="middle">${txt}</text>`:''}</g>`;};
+ const dotSvg=(s,f,cls,txt)=>{const x=f>0?posX(f):xOpen*.5,y=sy(s);if(f>0&&!(x>0))return'';return `<g class="fd ${cls}" data-k="${s}:${f}" transform="translate(${x} ${y})"><circle r="${f>0?9.5:8}"/>${txt!=null&&txt!==''?`<text y="4" text-anchor="middle">${txt}</text>`:''}</g>`;};
  el.mark=(s,f,cls,txt)=>{dots.querySelector(`[data-k="${s}:${f}"]`)?.remove();if(cls)dots.insertAdjacentHTML('beforeend',dotSvg(s,f,cls,txt));};
  el.clear=()=>{dots.innerHTML='';};el.hold=(s,f)=>{held[s]=f;};el.release=()=>{for(const k in held)delete held[k];};
  el.pluck=pluck;el.strum=strum;el.inst=inst;el.nS=nS;el.posX=posX;el.sy=sy;
@@ -5780,7 +5781,7 @@ function musVisual(v){const box=h('div',{class:'mvis'});const inst=v.inst;
   box.append(listenBtn(()=>names.forEach((n,i)=>MA.chord(inst==='uke'?'uke':inst,chordNotes(inst,n),{at:i*1.1}))));return box;}
  if(v.show==='keys'){const p=pianoEl({from:v.from||'C4',to:v.to||'C5'});const ns=(v.notes||[]).map(midi);ns.forEach((m,i)=>p.mark(m,'on',v.fingers?String(v.fingers[i]):''));box.append(p);
   if(ns.length)box.append(listenBtn(()=>{if(v.together){ns.forEach(m=>p.press(m,true));MA.chord('piano',ns,{gap:0});}else ns.forEach((m,i)=>setTimeout(()=>p.press(m),i*(v.gap||380)));}));return box;}
- if(v.show==='frets'||v.show==='tune'||v.show==='violin'){const inst2=v.show==='violin'?'violin':inst;const st=strEl({inst:inst2,start:v.start||1,frets:v.frets});const tg=v.show==='tune'?TUNE[inst2].map((_,i)=>(i+1)+':0'):(v.notes||[]);
+ if(v.show==='frets'||v.show==='tune'||v.show==='violin'){const inst2=v.show==='violin'?'violin':inst;const st=strEl({inst:inst2,start:v.start||1,frets:v.frets,fit:(v.show==='tune'?[]:(v.notes||[])).map(t=>strOf(t).f)});const tg=v.show==='tune'?TUNE[inst2].map((_,i)=>(i+1)+':0'):(v.notes||[]);
   tg.forEach((t,i)=>{const {s,f}=strOf(t);st.mark(s,f,'on',v.labels?L(v.labels[i]):v.show==='tune'?SNAME[inst2][s-1]:(v.fingers?String(v.fingers[i]):''));});box.append(st);
   if(tg.length)box.append(listenBtn(()=>tg.forEach((t,i)=>setTimeout(()=>{const {s,f}=strOf(t);st.pluck(s,f);},i*(v.gap||(inst2==='violin'?650:420))))));return box;}
  if(v.show==='kit'){box.append(kitEl({labels:true}));return box;}
@@ -5796,7 +5797,7 @@ function m_play(q,api,body){const inst=q.inst;body.append(h('h2',{class:'prompt'
   const upd=()=>{[...strip.children].forEach((c,j)=>{c.className=j<i?'ok':j===i?'cur':'';});Object.keys(KIT).forEach(p=>k.mark(p,p===tg[i]));};
   k.addEventListener('pointerdown',e=>{const g=e.target.closest('.kp');if(!g||done)return;setTimeout(()=>{if(g.dataset.p===tg[i]){i++;upd();if(i>=tg.length)finish();}else api.flash(L(MT.wrong));},0);});
   body.append(strip,k,msg);upd();if(q.demo)body.append(listenBtn(()=>tg.forEach((p,j)=>setTimeout(()=>k.hit(p),j*420))));return;}
- if(inst==='piano'){const ns=q.notes.map(midi),lo=Math.min(...ns),hi=Math.max(...ns);const from=q.from||(isBlack(lo-1)?lo-2:lo-(lo%12===0||lo%12===5?0:1)),to=q.to||Math.max(hi+1,from+12);
+ if(inst==='piano'){const ns=q.notes.map(midi),lo=Math.min(...ns),hi=Math.max(...ns);let from=q.from?midi(q.from):(lo%12===0||lo%12===5?lo:lo-1),to=q.to?midi(q.to):Math.max(hi+1,from+12);if(isBlack(from))from--;if(from>lo)from=lo-(isBlack(lo-1)?2:1);if(to<hi)to=hi+1;
   const p=pianoEl({from:Math.max(36,from),to:Math.min(96,isBlack(to)?to+1:to)});let i=0;const strip=h('div',{class:'mstrip'},...ns.map(m=>h('span',{},nName(m))));
   if(q.set){const need=new Set(ns);ns.forEach(m=>p.mark(m,'tgt',''));p.addEventListener('pointerdown',e=>{const kk=e.target.closest('.pk');if(!kk||done)return;const m=+kk.dataset.m;if(need.has(m)){need.delete(m);p.mark(m,'on','✓');[...strip.children][ns.indexOf(m)].className='ok';if(!need.size){setTimeout(()=>{ns.forEach(m2=>p.press(m2,true));MA.chord('piano',ns,{gap:0});},250);finish();}}else api.flash(L(MT.wrong));});}
   else{const upd=()=>{p.clear();if(i<ns.length)p.mark(ns[i],'tgt',q.fingers?String(q.fingers[i]):'');[...strip.children].forEach((c,j)=>{c.className=j<i?'ok':j===i?'cur':'';});};
@@ -5806,13 +5807,13 @@ function m_play(q,api,body){const inst=q.inst;body.append(h('h2',{class:'prompt'
  if(q.chord){const dots=chordDots(inst,q.chord),need=new Set();body.append(chordBox(inst,q.chord));
   dots.forEach(d=>{if(d.f>0)need.add(d.s+':'+d.f);});
   const onNote=({s,f})=>{const k=s+':'+f;if(need.has(k)){need.delete(k);st2.hold(s,f);st2.mark(s,f,'on',String(dots.find(d=>d.s===s).fg||''));if(!need.size){msg.textContent=L(MT.strumNow);st2.classList.add('strum-now');}}else if(f>0)api.flash(L(MT.wrong));};
-  const st2=strEl({inst,start:q.start||1,frets:q.frets,onNote,onStrum:()=>{if(!need.size&&!done)finish();}});
+  const st2=strEl({inst,start:q.start||1,frets:q.frets,fit:dots.map(d=>d.f),onNote,onStrum:()=>{if(!need.size&&!done)finish();}});
   dots.forEach(d=>{if(d.f>0)st2.mark(d.s,d.f,'tgt',String(d.fg||''));else if(d.f<0){st2.mark(d.s,0,'mute','×');st2.hold(d.s,-1);}else st2.mark(d.s,0,'on','○');});
   body.append(st2,msg);msg.textContent=L(need.size?MT.placeAll:MT.strumNow);if(!need.size)st2.classList.add('strum-now');
   body.append(listenBtn(()=>MA.chord(inst==='uke'?'uke':inst,chordNotes(inst,q.chord))));return;}
  const tg=q.notes.map(strOf);let i=0;const strip=h('div',{class:'mstrip'},...tg.map(t=>h('span',{},nName(TUNE[inst][t.s-1]+t.f))));
  const upd=s2=>{s2.clear();if(i<tg.length)s2.mark(tg[i].s,tg[i].f,'tgt',q.fingers?String(q.fingers[i]):'');[...strip.children].forEach((c,j)=>{c.className=j<i?'ok':j===i?'cur':'';});};
- const s3=strEl({inst,start:q.start||1,frets:q.frets,onNote:({s,f})=>{if(done)return;if(s===tg[i].s&&f===tg[i].f){i++;upd(s3);if(i>=tg.length)finish();}else api.flash(L(MT.wrong));}});
+ const s3=strEl({inst,start:q.start||1,frets:q.frets,fit:tg.map(t=>t.f),onNote:({s,f})=>{if(done)return;if(s===tg[i].s&&f===tg[i].f){i++;upd(s3);if(i>=tg.length)finish();}else api.flash(L(MT.wrong));}});
  body.append(strip,s3,msg);upd(s3);msg.textContent=L(MT.tapPlay);
  if(q.demo!==false)body.append(listenBtn(()=>tg.forEach((t,j)=>setTimeout(()=>s3.pluck(t.s,t.f),j*(q.gap||(inst==='violin'?650:420))))));}
 /* keep a rhythm: drums (tap the parts) or strumming */
