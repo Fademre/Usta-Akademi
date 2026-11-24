@@ -18,7 +18,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="fonts/fonts.css">
 <script>try{var _s=JSON.parse(localStorage.getItem('usta-akademi-v1'));if(_s&&_s.skin&&_s.skin!=='classic')document.documentElement.setAttribute('data-skin',_s.skin);}catch(e){}</script>
-<script>window.APP_VERSION='3.2';</script>
+<script>window.APP_VERSION='3.3';</script>
 <style>
 /* standalone shell: what the artifact host used to provide */
 html{background:var(--bg,#EDF1EC);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;-webkit-text-size-adjust:100%}
@@ -921,6 +921,12 @@ button.ogroup:active{border-color:var(--acc)}
 .stick.go line{animation:muStickR .3s ease-out}
 @keyframes muStickR{0%{transform:rotate(-22deg)}35%{transform:rotate(4deg)}100%{transform:rotate(-16deg)}}
 /* rhythm grid */
+.pads{display:grid;grid-template-columns:repeat(var(--c),1fr);gap:14px;user-select:none;-webkit-user-select:none;touch-action:none}
+.dpad{position:relative;min-height:104px;font-weight:800;color:var(--ink);border-radius:22px;background:var(--surface);border:2px solid var(--line);box-shadow:0 5px 0 var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dpad .pi svg{width:58px;height:36px;display:block}
+.dpad.hit{animation:padHit .22s ease-out}
+@keyframes padHit{0%{transform:translateY(4px) scale(.96);background:var(--mus-soft);border-color:var(--mus);box-shadow:0 1px 0 var(--mus)}100%{transform:none}}
+.kit svg{touch-action:none}
 .seq{display:flex;flex-direction:column;gap:4px;padding:10px;border-radius:16px;background:var(--surface);border:1.5px solid var(--line)}
 .sq-row{display:grid;grid-template-columns:62px repeat(var(--n),1fr);gap:3px;align-items:center}
 .sq-l{font-size:11px;font-weight:800;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -5328,12 +5334,12 @@ function strEl(o={}){
  return el;
 }
 /* drum kit */
-const KIT={crash:[62,46,'cym',T("Crash zil","Crash","Crash-Becken")],ride:[298,52,'cym',T("Ride zil","Ride","Ride-Becken")],hat:[40,108,'hat',T("Hi-hat","Hi-hat","Hi-Hat")],tom1:[148,92,'tom',T("Tom 1","Tom 1","Tom 1")],tom2:[214,92,'tom',T("Tom 2","Tom 2","Tom 2")],
- snare:[96,150,'snare',T("Trampet","Snare","Snare")],floor:[284,150,'floor',T("Yer tomu","Floor tom","Standtom")],kick:[181,178,'kick',T("Kick (bas davul)","Kick (bass drum)","Bassdrum")]};
+const KIT={crash:[58,40,'cym',T("Crash zil","Crash","Crash-Becken")],ride:[304,46,'cym',T("Ride zil","Ride","Ride-Becken")],hat:[42,128,'hat',T("Hi-hat","Hi-hat","Hi-Hat")],tom1:[140,98,'tom',T("Tom 1","Tom 1","Tom 1")],tom2:[224,98,'tom',T("Tom 2","Tom 2","Tom 2")],
+ snare:[90,198,'snare',T("Trampet","Snare","Snare")],floor:[294,190,'floor',T("Yer tomu","Floor tom","Standtom")],kick:[190,214,'kick',T("Kick (bas davul)","Kick (bass drum)","Bassdrum")]};
 function kitEl(o={}){
  const P=o.only?Object.fromEntries(Object.entries(KIT).filter(([k])=>o.only.includes(k))):KIT;
  let g=`<defs><radialGradient id="kd1" cx=".5" cy=".4" r=".65"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D8D3C5"/></radialGradient><linearGradient id="kd2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7B1F2E"/><stop offset=".5" stop-color="#C33A4E"/><stop offset="1" stop-color="#6A1726"/></linearGradient><linearGradient id="kd3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBE59A"/><stop offset=".6" stop-color="#D9A93A"/><stop offset="1" stop-color="#A97A14"/></linearGradient></defs>`;
- const stand=(x,y)=>`<line x1="${x}" y1="${y}" x2="${x}" y2="226" stroke="#9A9AA2" stroke-width="2"/><path d="M${x-14} 228L${x} 214L${x+14} 228" fill="none" stroke="#9A9AA2" stroke-width="2"/>`;
+ const stand=(x,y)=>`<line x1="${x}" y1="${y}" x2="${x}" y2="276" stroke="#9A9AA2" stroke-width="2"/><path d="M${x-14} 278L${x} 264L${x+14} 278" fill="none" stroke="#9A9AA2" stroke-width="2"/>`;
  const piece=(k,[x,y,type])=>{let s='';
   if(type==='cym')s=`<g class="kz cym"><ellipse cx="0" cy="0" rx="50" ry="9" fill="url(#kd3)" stroke="#8E6A10" stroke-width=".8"/><ellipse cx="0" cy="-1" rx="6" ry="2" fill="#B8891E"/></g>`;
   if(type==='hat')s=`<ellipse cx="0" cy="5" rx="34" ry="6" fill="url(#kd3)" stroke="#8E6A10" stroke-width=".7"/><g class="kz hatT"><ellipse cx="0" cy="0" rx="34" ry="6" fill="url(#kd3)" stroke="#8E6A10" stroke-width=".7"/></g>`;
@@ -5341,18 +5347,30 @@ function kitEl(o={}){
   if(type==='snare')s=`<rect x="-40" y="0" width="80" height="22" fill="#D9DCE2"/>${[-30,-15,0,15,30].map(x=>`<rect x="${x-2}" y="3" width="4" height="16" fill="#9EA3AD"/>`).join('')}<g class="kz skin"><ellipse cx="0" cy="0" rx="40" ry="11" fill="url(#kd1)" stroke="#9C9C9C"/></g>`;
   if(type==='floor')s=`<rect x="-42" y="0" width="84" height="52" fill="url(#kd2)"/><g class="kz skin"><ellipse cx="0" cy="0" rx="42" ry="13" fill="url(#kd1)" stroke="#9C9C9C"/></g>`;
   if(type==='kick')s=`<circle r="52" fill="url(#kd2)"/><g class="kz kskin"><circle r="45" fill="url(#kd1)"/><circle r="45" fill="none" stroke="#C9C9C9" stroke-width="2"/><text y="6" text-anchor="middle" font-size="17" font-weight="800" fill="#B0283C" font-family="system-ui">USTA</text></g>`;
-  return `<g class="kp" data-p="${k}" transform="translate(${x} ${y})">${s}<circle class="kring" r="10" fill="none"/>${o.labels?`<text class="kl" y="${type==='kick'?66:type==='cym'?-14:type==='hat'?-10:type==='floor'?68:type==='tom'?-14:40}" text-anchor="middle">${L(KIT[k][3])}</text>`:''}</g>`;};
+  const hr={cym:[0,0,48,14],hat:[0,2,36,16],tom:[0,10,32,22],snare:[0,8,42,20],floor:[0,22,44,34],kick:[0,0,52,52]}[type];
+  return `<g class="kp" data-p="${k}" transform="translate(${x} ${y})"><ellipse class="khit" cx="${hr[0]}" cy="${hr[1]}" rx="${hr[2]}" ry="${hr[3]}" fill="transparent"/>${s}<circle class="kring" r="10" fill="none"/>${o.labels?`<text class="kl" y="${type==='kick'?66:type==='cym'?-14:type==='hat'?-10:type==='floor'?68:type==='tom'?-14:40}" text-anchor="middle">${L(KIT[k][3])}</text>`:''}</g>`;};
  for(const [k,v] of Object.entries(P))if(v[2]==='cym'||v[2]==='hat')g+=stand(v[0],v[1]);
  const order=['kick','tom1','tom2','floor','snare','hat','crash','ride'];
  for(const k of order)if(P[k])g+=piece(k,P[k]);
  g+=`<g class="stick s1"><line x1="0" y1="0" x2="34" y2="-30" stroke="#E6C68E" stroke-width="5" stroke-linecap="round"/></g><g class="stick s2"><line x1="0" y1="0" x2="-34" y2="-30" stroke="#E6C68E" stroke-width="5" stroke-linecap="round"/></g>`;
- const el=h('div',{class:'kit',html:`<svg viewBox="0 0 360 234" role="img" aria-label="drums">${g}</svg>`}),svg=el.firstChild;let side=0;
+ const el=h('div',{class:'kit',html:`<svg viewBox="0 0 360 290" role="img" aria-label="drums">${g}</svg>`}),svg=el.firstChild;let side=0;
  const hit=(p,silent)=>{const g2=svg.querySelector(`.kp[data-p="${p}"]`);if(!g2)return;if(!silent)MA.drum(p==='hat'&&o.open?'open':p);g2.classList.remove('hit');void g2.getBBox();g2.classList.add('hit');
   if(p!=='kick'){const st=svg.querySelector('.stick.s'+(1+(side++%2)));const [x,y]=KIT[p];st.style.transform=`translate(${x+(side%2?-6:6)}px,${y-4}px)`;st.classList.remove('go');void st.getBBox();st.classList.add('go');}};
- svg.addEventListener('pointerdown',e=>{const g2=e.target.closest('.kp');if(!g2)return;e.preventDefault();const p=g2.dataset.p;hit(p);o.onHit&&o.onHit(p);});
+ const tapAt=(x,y)=>{const t=document.elementFromPoint(x,y),g2=t&&t.closest&&t.closest('.kp');if(!g2||!svg.contains(g2))return;const p=g2.dataset.p;hit(p);o.onHit&&o.onHit(p);};
+ svg.addEventListener('touchstart',e=>{e.preventDefault();for(const t of e.changedTouches)tapAt(t.clientX,t.clientY);},{passive:false});
+ svg.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;const g2=e.target.closest('.kp');if(!g2)return;e.preventDefault();const p=g2.dataset.p;hit(p);o.onHit&&o.onHit(p);});
  el.hit=hit;el.mark=(p,on)=>svg.querySelector(`.kp[data-p="${p}"]`)?.classList.toggle('tgt',!!on);
  return el;
 }
+/* big drum pads for rhythm exercises: well apart, any number of fingers at once */
+function padsEl(pieces,onHit){const el=h('div',{class:'pads',style:`--c:${pieces.length>4?3:2}`});const pads={};
+ const icon=p=>{const t=KIT[p][2];return t==='cym'||t==='hat'?'<svg viewBox="0 0 60 30"><ellipse cx="30" cy="15" rx="28" ry="7" fill="#E2B64A" stroke="#9C7414"/><ellipse cx="30" cy="14" rx="4" ry="1.6" fill="#B8891E"/></svg>':t==='kick'?'<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="27" fill="#C33A4E"/><circle cx="30" cy="30" r="22" fill="#F4F1E8"/></svg>':'<svg viewBox="0 0 60 40"><rect x="4" y="12" width="52" height="22" fill="#C33A4E"/><ellipse cx="30" cy="12" rx="26" ry="8" fill="#F4F1E8" stroke="#AAA"/></svg>';};
+ pieces.forEach(p=>{const b=h('div',{class:'dpad','data-p':p,role:'button','aria-label':L(KIT[p][3])},h('span',{class:'pi',html:icon(p)}),h('b',{},L(KIT[p][3])));pads[p]=b;el.append(b);});
+ const hit=(p,silent)=>{const b=pads[p];if(!b)return;if(!silent)MA.drum(p);b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit');};
+ const at=(x,y)=>{const t=document.elementFromPoint(x,y),b=t&&t.closest&&t.closest('.dpad');if(!b||!el.contains(b))return;hit(b.dataset.p);onHit&&onHit(b.dataset.p);};
+ el.addEventListener('touchstart',e=>{e.preventDefault();for(const t of e.changedTouches)at(t.clientX,t.clientY);},{passive:false});
+ el.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;e.preventDefault();at(e.clientX,e.clientY);});
+ el.hit=hit;return el;}
 /* step grid for rhythm patterns */
 function seqEl(pat,steps){const rows=Object.keys(pat);const el=h('div',{class:'seq',style:`--n:${steps}`});const cells={};
  rows.forEach(r=>{const row=h('div',{class:'sq-row'},h('span',{class:'sq-l'},L(KIT[r]?KIT[r][3]:T("Vuruş","Strum","Anschlag"))));cells[r]=[];
@@ -5820,7 +5838,7 @@ function m_play(q,api,body){const inst=q.inst;body.append(h('h2',{class:'prompt'
 function m_beat(q,api,body){const steps=q.steps||8,drums=Object.keys(q.pat).every(r=>KIT[r]);body.append(h('h2',{class:'prompt'},L(q.text)));
  const grid=seqEl(q.pat,steps),msg=h('p',{class:'hint mmsg'},L(drums?MT.tapPads:MT.tapStrum));let run=null,hits=[],done=false;
  const inst=q.inst||'guitar',cn=drums?null:chordNotes(inst,q.chord||'Em');
- const pad=drums?kitEl({only:Object.keys(q.pat),labels:true,onHit:p=>{if(run)hits.push([p,MA.now()]);}}):strEl({inst,onStrum:dir=>{if(run)hits.push(['strum',MA.now()]);}});
+ const pad=drums?padsEl(Object.keys(q.pat),p=>{if(run)hits.push([p,MA.now()]);}):strEl({inst,onStrum:dir=>{if(run)hits.push(['strum',MA.now()]);}});
  const bars=q.bars||2,startBtn=h('button',{class:'btn block mstart'},L(MT.start));
  const go=()=>{if(run||done)return;MA.ac();hits=[];grid.querySelectorAll('.good,.bad').forEach(x=>x.classList.remove('good','bad'));const spb=60/q.bpm/(steps/4),lead=.3,count=4;
   for(let b=0;b<count;b++)MA.tick(b===0,lead+b*(60/q.bpm));const t0=MA.now()+lead+count*60/q.bpm;msg.textContent=L(MT.count);startBtn.disabled=true;
