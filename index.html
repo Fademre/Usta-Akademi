@@ -18,7 +18,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="fonts/fonts.css">
 <script>try{var _s=JSON.parse(localStorage.getItem('usta-akademi-v1'));if(_s&&_s.skin&&_s.skin!=='classic')document.documentElement.setAttribute('data-skin',_s.skin);}catch(e){}</script>
-<script>window.APP_VERSION='3.3';</script>
+<script>window.APP_VERSION='3.4';</script>
 <style>
 /* standalone shell: what the artifact host used to provide */
 html{background:var(--bg,#EDF1EC);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;-webkit-text-size-adjust:100%}
@@ -2124,13 +2124,22 @@ function ludoSVG(){
  return h('div',{html:`<svg class="ludo-svg" viewBox="0 0 11 11" role="img" aria-label="Ludo">${s}</svg>`});
 }
 
+/* small round portraits (top bar, home, profile, match header): the same realistic 3D character as in the studio */
+const FACEU=new Map(),FACEID=new Map(),FACEP=new Set();
+function faceHTML(ch,size){if(!ch)return avatarSVG(ch,size);const c=normChar({...ch,anim:'idle',bg:'b01'}),k=JSON.stringify([c,size]);
+ const img=u=>`<img class="face3d" alt="" src="${u}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;object-fit:cover;display:block;border-radius:50%">`;
+ if(FACEU.has(k))return img(FACEU.get(k));
+ if(!FACEID.has(k))FACEID.set(k,'fc'+FACEID.size);const id=FACEID.get(k);
+ if(has3D()&&!FACEP.has(k)){FACEP.add(k);const px=size<40?112:220;
+  snap3D(c,px,px,'portrait','idle',0).then(u=>{FACEU.set(k,u);document.querySelectorAll(`[data-fk="${id}"]`).forEach(e=>{e.outerHTML=img(u);});}).catch(()=>{});}
+ return `<span data-fk="${id}" style="display:contents">${avatarSVG(ch,size)}</span>`;}
 /* ---------- topbar / tabs / router ---------- */
 const topbar=$('#topbar'),screen=$('#screen'),tabbar=$('#tabbar'),player=$('#player'),app=$('#app');
 const TABS=['home','langs','games','music','shop','profile'];
 function renderTop(){
  topbar.innerHTML='';
  topbar.append(
-  h('button',{class:'logo',onclick:()=>{DRAFT=null;S.shopView='dresser';goTab('shop');},'aria-label':t('editChar')},h('span',{class:'logo-av',html:avatarSVG(S.char,32)}),'Usta'),
+  h('button',{class:'logo',onclick:()=>{DRAFT=null;S.shopView='dresser';goTab('shop');},'aria-label':t('editChar')},h('span',{class:'logo-av',html:faceHTML(S.char,32)}),'Usta'),
   h('span',{class:'chip streak',title:t('streak')},iconEl('flame'),h('span',{class:'num'},String(streakNow()))),
   h('button',{class:'chip gold',title:t('gold'),onclick:()=>goTab('shop')},coin(),h('span',{class:'num'},String(S.gold||0))),
   h('button',{class:'chip ui','aria-label':t('uiLang'),onclick:openUiSheet},iconEl('globe'),S.ui.toUpperCase())
@@ -2251,7 +2260,7 @@ function viewHome(){
  const gl=h('div',{class:'hscroll t-game'});
  Object.entries(GAMES).forEach(([k,g])=>gl.append(h('button',{class:'card mini-game',onclick:()=>{S.tab='games';S.gameView=k;save();render('r');SFX.swipe();}},gameArt(k),h('div',{class:'h-m'},L(g.name)),h('div',{class:'meter'},h('i',{style:`width:${gAllDone(k)/gTotal(k)*100}%`})))));
  return h('div',{class:'stack'},
-  h('div',{class:'hero',style:'flex-direction:row;align-items:center;gap:14px'},h('button',{class:'avatar-btn','aria-label':t('editChar'),html:avatarSVG(S.char,64),onclick:()=>{DRAFT=null;S.shopView='dresser';goTab('shop');}}),h('div',{style:'min-width:0'},h('h1',{class:'h-xl'},t('hi')),h('p',{class:'sub'},t('homeSub')))),
+  h('div',{class:'hero',style:'flex-direction:row;align-items:center;gap:14px'},h('button',{class:'avatar-btn','aria-label':t('editChar'),html:faceHTML(S.char,64),onclick:()=>{DRAFT=null;S.shopView='dresser';goTab('shop');}}),h('div',{style:'min-width:0'},h('h1',{class:'h-xl'},t('hi')),h('p',{class:'sub'},t('homeSub')))),
   cont,goal,pz,
   h('div',{class:'spread'},h('h2',{class:'h-m'},t('yourGames')),h('button',{class:'muted',style:'font-weight:700',onclick:()=>goTab('games')},t('seeAll'))),
   gl,...homeMusic());
@@ -2398,7 +2407,7 @@ function viewProfile(){
    :h('button',{class:'btn ghost block',onclick:()=>{confirming=true;draw();}},t('reset'));
   const done=Object.keys(LANGS).reduce((a,k)=>a+totalDone(k),0);
   wrap.append(
-   h('div',{class:'row'},h('button',{class:'avatar-btn','aria-label':t('editChar'),html:avatarSVG(S.char,72),onclick:()=>{DRAFT=null;S.shopView='dresser';goTab('shop');}}),h('div',{},h('h1',{class:'h-l'},t('learner')),h('p',{class:'muted',style:'font-size:14px'},t('profileSub')))),
+   h('div',{class:'row'},h('button',{class:'avatar-btn','aria-label':t('editChar'),html:faceHTML(S.char,72),onclick:()=>{DRAFT=null;S.shopView='dresser';goTab('shop');}}),h('div',{},h('h1',{class:'h-l'},t('learner')),h('p',{class:'muted',style:'font-size:14px'},t('profileSub')))),
    (()=>{const e=h('div',{class:'me-stage'});requestAnimationFrame(()=>mountChar(e,S.char,{w:e.clientWidth||330,h:280}));return h('div',{class:'card me-card'},e,h('div',{class:'row',style:'justify-content:space-between'},h('b',{},t('myChar')),h('button',{class:'btn sm',onclick:()=>{DRAFT=null;S.shopView='dresser';goTab('shop');}},t('editChar'))));})(),
    h('h2',{class:'h-m'},t('stats')),
    h('div',{class:'stat-grid'},
@@ -4346,7 +4355,7 @@ function setupScene(){
  const fill=new T3.DirectionalLight('#dfe8ff',.75);fill.position.set(160,90,150);sc.add(fill);
  const rim=new T3.DirectionalLight('#ffffff',1.1);rim.position.set(30,160,-220);sc.add(rim);
  return sc;}
-const VIEW3={face:[0,158,80,20,157],close:[0,150,200,20,148],full:[0,99,625,20,97],top:[0,128,220,20,126],bot:[0,46,330,20,48],shoe:[0,10,140,20,6],head:[0,160,110,20,160]};
+const VIEW3={face:[0,158,80,20,157],portrait:[0,154,95,20,153],close:[0,150,200,20,148],full:[0,99,625,20,97],top:[0,128,220,20,126],bot:[0,46,330,20,48],shoe:[0,10,140,20,6],head:[0,160,110,20,160]};
 function makeRenderer(w,h,alpha=true){const r=new T3.WebGLRenderer({antialias:true,alpha,preserveDrawingBuffer:false});r.setPixelRatio(Math.min(2,window.devicePixelRatio||1));r.setSize(w,h,false);r.outputColorSpace=T3.SRGBColorSpace;r.toneMapping=T3.ACESFilmicToneMapping;r.toneMappingExposure=1.05;return r;}
 const LIVE=new Set();
 function stage3D(el,ch,o={}){
@@ -4375,7 +4384,7 @@ function snap3D(ch,w,h,view,anim,t){
  const job=SNAPL.then(()=>load3D()).then(async()=>{if(!SNAP){SNAP={r:makeRenderer(w,h),sc:setupScene(),cam:new T3.PerspectiveCamera(20,1,1,3000)};}
   const {r,sc,cam}=SNAP;r.setPixelRatio(2);r.setSize(w,h,false);cam.aspect=w/h;const v=VIEW3[view||'full'];cam.position.set(v[0],v[1],v[2]);cam.lookAt(0,v[4],0);cam.updateProjectionMatrix();
   const av=await buildAny(ch);sc.add(av);poseApply(av,anim||'idle',t||0,true);
-  if(av.userData.real&&['face','close','head'].includes(view)){av.updateMatrixWorld(true);const hp=new T3.Vector3();av.userData.J.hc.getWorldPosition(hp);const d=view==='face'?62:view==='head'?95:190,dy=view==='close'?-13:0;cam.position.set(0,hp.y+dy+1,d);cam.lookAt(0,hp.y+dy,0);}
+  if(av.userData.real&&['face','close','head','portrait'].includes(view)){av.updateMatrixWorld(true);const hp=new T3.Vector3();av.userData.J.hc.getWorldPosition(hp);const d=view==='face'?62:view==='head'?95:view==='portrait'?82:190,dy=view==='close'?-13:view==='portrait'?-4:0;cam.position.set(0,hp.y+dy+1,d);cam.lookAt(0,hp.y+dy,0);}
   return Promise.resolve().then(()=>{const hc=av.userData.J.hc;if(hc&&hc.userData.texOpen){const m=hc.userData.headMesh.material;m.map=hc.userData.texOpen;}
    r.render(sc,cam);const url=r.domElement.toDataURL('image/png');sc.remove(av);disposeObj(av);if(SNAPC.size>300)SNAPC.clear();SNAPC.set(key,url);return url;});});
  SNAPL=job.catch(()=>{});return job;
@@ -4885,7 +4894,7 @@ function tourSection(k){
 }
 function matchHead(body,q){
  const o=OPP[q.round],status=h('p',{class:'mh-status'});
- body.append(h('div',{class:'mh'},h('span',{class:'mh-av',html:avatarSVG(S.char,30)}),h('b',{},t('mgYou')),h('span',{class:'mh-vs'},t('tRound')[q.round]),h('b',{},L(o.n)),h('span',{class:'mh-av'},o.e)),status);
+ body.append(h('div',{class:'mh'},h('span',{class:'mh-av',html:faceHTML(S.char,30)}),h('b',{},t('mgYou')),h('span',{class:'mh-vs'},t('tRound')[q.round]),h('b',{},L(o.n)),h('span',{class:'mh-av'},o.e)),status);
  return{status};
 }
 const tFinish=(api,win,msg,delay=700)=>setTimeout(()=>{if(win)SFX.win();api.complete(win,msg);},delay);
