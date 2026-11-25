@@ -18,7 +18,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="fonts/fonts.css">
 <script>try{var _s=JSON.parse(localStorage.getItem('usta-akademi-v1'));if(_s&&_s.skin&&_s.skin!=='classic')document.documentElement.setAttribute('data-skin',_s.skin);}catch(e){}</script>
-<script>window.APP_VERSION='3.9';</script>
+<script>window.APP_VERSION='4.0';</script>
 <style>
 /* standalone shell: what the artifact host used to provide */
 html{background:var(--bg,#EDF1EC);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;-webkit-text-size-adjust:100%}
@@ -952,6 +952,21 @@ button.ogroup:active{border-color:var(--acc)}
 .mstrip span.ok{background:var(--good-soft);border-color:var(--good);color:var(--good)}
 /* piano */
 .pscroll{overflow-x:auto;padding-bottom:4px}
+.sg-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sg-card{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:14px}
+.sg-card b{font-size:16px}.sg-card .muted{font-size:12.5px;line-height:1.3}
+.sg-ic{font-size:26px}
+.sg-gold{display:inline-flex;align-items:center;gap:4px;font-weight:800;color:var(--sun-2)}
+.sg-gold .coin{width:18px;height:18px}
+.sg-sub{font-weight:700;color:var(--muted);margin-top:-10px}
+.sg-bar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.sg-bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
+.sg-strip{flex-wrap:nowrap;overflow:hidden}
+.sg-strip span{white-space:nowrap;flex:none}
+.sg-chords{display:flex;flex-wrap:wrap;gap:6px}
+.sg-chords .chip{cursor:pointer}
+.sg-metro{align-items:center;gap:8px}
+
 .pno{position:relative;height:170px;min-width:100%;user-select:none;-webkit-user-select:none;touch-action:manipulation;border-radius:12px;background:#121216;padding:0;box-shadow:inset 0 6px 0 #26262E;overflow:hidden}
 .pk{position:absolute;top:6px;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .pk.w{height:calc(100% - 6px);background:linear-gradient(#FFFFFF,#F1EFEA 85%,#E2DFD6);border-right:1px solid #C8C4BA;border-radius:0 0 7px 7px;z-index:1;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px}
@@ -2249,7 +2264,7 @@ function renderTabs(){
 }
 function goTab(k){
  // the tab you are on: back to its first page (leaving the studio asks about unsaved changes), or back to the top
- if(k===S.tab){if(k==='games'&&S.gameView){S.gameView=null;save();render('l');return;}if(k==='music'&&S.musView){S.musView=null;save();render('l');return;}
+ if(k===S.tab){if(k==='games'&&S.gameView){S.gameView=null;save();render('l');return;}if(k==='music'&&S.musView){if(S.musSub){S.musSub=null;}else S.musView=null;save();render('l');return;}
   if(k==='shop'&&S.shopView==='dresser'){stLeave();return;}if(screen.scrollTop>0)screen.scrollTo({top:0,behavior:RM()?'auto':'smooth'});return;}
  if(S.tab==='shop'&&S.shopView==='dresser'&&dirty())return stLeave(()=>goTab(k));
  const dir=TABS.indexOf(k)>TABS.indexOf(S.tab)?'r':'l';
@@ -2611,14 +2626,14 @@ function showFeedback(ok,detail,selfDone){
  
 }
 function finishSession(){
- const right=PS.graded-PS.mistakes,wrong=PS.mistakes+(PS.slips||0),acc=right+wrong?Math.round(100*right/(right+wrong)):100;
+ const right=PS.graded-PS.mistakes,wrong=PS.mistakes+(PS.slips||0),acc=PS.accOverride!=null?PS.accOverride:right+wrong?Math.round(100*right/(right+wrong)):100;
  const xp=PS.onFinish(PS.mistakes);
  const lesson=PS.lesson,tour=PS.tourney;
  player.innerHTML='';
  const res=h('div',{class:'result gut'},
   h('canvas',{class:'confetti'}),
   h('div',{class:'medal',html:icon('trophy')}),
-  h('h1',{class:'h-xl'},tour?(tour.r===2?t('tChampTitle'):t('tWonRound')):lesson?t('lessonDone'):t('done')),
+  h('h1',{class:'h-xl'},PS.doneTitle?PS.doneTitle:tour?(tour.r===2?t('tChampTitle'):t('tWonRound')):lesson?t('lessonDone'):t('done')),
   h('div',{class:'res-stats'+(PS.gold?' three':'')},h('div',{class:'stat'},h('b',{},'+'+xp),h('span',{},t('xpEarned'))),PS.gold?h('div',{class:'stat gold'},h('b',{},coin(),'+'+PS.gold),h('span',{},t('gold'))):null,h('div',{class:'stat'},h('b',{},acc+'%'),h('span',{},t('accuracy')))));
  const foot=h('div',{class:'p-foot gut'},h('button',{class:'btn block',id:'check-btn',onclick:closePlayer},t('cont')));
  player.append(res,foot);confetti($('canvas',res));SFX.win();
@@ -6167,12 +6182,149 @@ const mTotal=k=>MUS[k].levels.reduce((a,x)=>a+x.length,0),mAll=k=>MUS[k].levels.
 const mNext=k=>{for(let l=0;l<MUS[k].levels.length;l++){const d=mDone(k,l);if(d<MUS[k].levels[l].length&&mOpen(k,l))return{l,i:d};}return null;};
 function startMLesson(k,l,i){S.music=S.music||{};startSession({theme:'t-mus',hearts:false,build:()=>MUS[k].levels[l][i].steps,lesson:true,
  onFinish:()=>{const first=mDone(k,l)===i;if(first)S.music[mKey(k,l)]=i+1;S.lastMus=k;S.lessons++;const xp=15+5*l;addXP(xp);addGold(5+3*l+(first&&i===MUS[k].levels[l].length-1?40:0));return xp;}});}
-const openInst=k=>{S.tab='music';S.musView=k;save();render('r');screen.scrollTop=0;SFX.swipe();};
+const openInst=k=>{S.tab='music';S.musView=k;S.musSub=null;save();render('r');screen.scrollTop=0;SFX.swipe();};
 function mContinue(){const k=MUS[S.lastMus]?S.lastMus:Object.keys(MUS)[0],nx=mNext(k),I=MUS[k];
  return h('div',{class:'card mcont t-mus'},musArt(k),h('div',{class:'stack',style:'gap:6px;min-width:0'},h('div',{class:'eyebrow'},`${L(I.name)} · ${nx?L(MLV[nx.l]):'🏆'}`),
   h('div',{class:'h-m'},nx?L(I.levels[nx.l][nx.i].title):L(MSTR.done)),h('div',{class:'meter'},h('i',{style:`width:${mAll(k)/mTotal(k)*100}%`})),
   nx?h('button',{class:'btn sm',style:'align-self:flex-start',onclick:()=>startMLesson(k,nx.l,nx.i)},t('start')):h('button',{class:'btn sm ghost',style:'align-self:flex-start',onclick:()=>openInst(k)},L(MSTR.all))));}
+/* ================= free play and songs ================= */
+// songs: public-domain / traditional tunes. [id, title, difficulty 0-2, metre (4,3,2), tempo, notes] — note = pitch[:beats], R = rest
+const SONGS=[
+ ['twinkle',T("Daha Dün Annemizin","Twinkle Twinkle Little Star","Morgen kommt der Weihnachtsmann"),0,4,100,"C4 C4 G4 G4 A4 A4 G4:2 F4 F4 E4 E4 D4 D4 C4:2 G4 G4 F4 F4 E4 E4 D4:2 G4 G4 F4 F4 E4 E4 D4:2 C4 C4 G4 G4 A4 A4 G4:2 F4 F4 E4 E4 D4 D4 C4:2"],
+ ['mary',T("Mary'nin Kuzusu","Mary Had a Little Lamb","Mary hat ein kleines Lamm"),0,4,108,"E4 D4 C4 D4 E4 E4 E4:2 D4 D4 D4:2 E4 G4 G4:2 E4 D4 C4 D4 E4 E4 E4 E4 D4 D4 E4 D4 C4:4"],
+ ['frere',T("Tembel Çocuk","Frère Jacques","Bruder Jakob"),0,4,104,"C4 D4 E4 C4 C4 D4 E4 C4 E4 F4 G4:2 E4 F4 G4:2 G4:.5 A4:.5 G4:.5 F4:.5 E4 C4 G4:.5 A4:.5 G4:.5 F4:.5 E4 C4 C4 G3 C4:2 C4 G3 C4:2"],
+ ['oldmac',T("Ali Babanın Çiftliği","Old MacDonald Had a Farm","Old MacDonald hat 'ne Farm"),0,4,112,"C4 C4 C4 G3 A3 A3 G3:2 E4 E4 D4 D4 C4:3 G3 C4 C4 C4 G3 A3 A3 G3:2 E4 E4 D4 D4 C4:3"],
+ ['row',T("Fış Fış Kayıkçı","Row, Row, Row Your Boat","Ruderboot"),0,3,96,"C4:1.5 C4:1.5 C4 D4:.5 E4:1.5 E4 D4:.5 E4 F4:.5 G4:3 C5:.5 C5:.5 C5:.5 G4:.5 G4:.5 G4:.5 E4:.5 E4:.5 E4:.5 C4:.5 C4:.5 C4:.5 G4 F4:.5 E4 D4:.5 C4:3"],
+ ['hotcross',T("Sıcak Çörekler","Hot Cross Buns","Hot Cross Buns"),0,4,100,"E4 D4 C4:2 E4 D4 C4:2 C4:.5 C4:.5 C4:.5 C4:.5 D4:.5 D4:.5 D4:.5 D4:.5 E4 D4 C4:2"],
+ ['london',T("Londra Köprüsü","London Bridge Is Falling Down","London Bridge"),0,4,108,"G4:1.5 A4:.5 G4 F4 E4 F4 G4:2 D4 E4 F4:2 E4 F4 G4:2 G4:1.5 A4:.5 G4 F4 E4 F4 G4:2 D4:2 G4 E4 C4:4"],
+ ['oldman',T("Yaşlı Adam","This Old Man","This Old Man"),0,4,112,"G4 E4 G4:2 G4 E4 G4:2 A4 G4 F4 E4 D4 E4 F4:2 E4 F4 G4 C4 C4 C4:.5 C4:.5 C4 D4 E4 F4 G4:2 G4 D4 D4 F4 E4 D4 C4:4"],
+ ['kumbaya',T("Kumbaya","Kumbaya","Kumbaya"),0,4,84,"C4 E4 G4 G4:3 G4 A4 A4 G4:3 C4 E4 G4 G4:3 F4 E4 D4:4 C4 E4 G4 G4:3 G4 A4 A4 G4:3 F4 E4 F4 E4 D4 D4 C4:4"],
+ ['bday',T("İyi ki Doğdun","Happy Birthday","Zum Geburtstag viel Glück"),0,3,96,"G3:.75 G3:.25 A3 G3 C4 B3:2 G3:.75 G3:.25 A3 G3 D4 C4:2 G3:.75 G3:.25 G4 E4 C4 B3 A3 F4:.75 F4:.25 E4 C4 D4 C4:3"],
+ ['lightly',T("Hafif Kürek","Lightly Row","Hänschen klein"),0,4,108,"G4 E4 E4:2 F4 D4 D4:2 C4 D4 E4 F4 G4 G4 G4:2 G4 E4 E4:2 F4 D4 D4:2 C4 E4 G4 G4 C4:4"],
+ ['clair',T("Ay Işığında","Au Clair de la Lune","Au Clair de la Lune"),0,4,96,"C4 C4 C4 D4 E4:2 D4:2 C4 E4 D4 D4 C4:4 C4 C4 C4 D4 E4:2 D4:2 C4 E4 D4 D4 C4:4"],
+ ['rain',T("Yağmur Yağmur","Rain, Rain, Go Away","Regen, Regen"),0,4,108,"G4 E4:2 G4 G4 E4:2 G4 G4 E4 A4 G4 G4 E4:2 F4 F4 D4 D4 F4 F4 D4:2 F4 F4 D4 G4 F4 F4 D4:2"],
+ ['ode',T("Neşeye Övgü","Ode to Joy","Ode an die Freude"),0,4,100,"E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 E4:1.5 D4:.5 D4:2 E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 D4:1.5 C4:.5 C4:2"],
+ ['itsy',T("Minik Örümcek","Itsy Bitsy Spider","Die kleine Spinne"),0,3,100,"G3 C4 C4 C4 D4 E4:1.5 E4:.5 E4 D4 C4 D4 E4 C4:3 E4 E4 F4 G4:2 G4 F4 E4 F4 G4 E4:3"],
+ ['weasel',T("Gelincik Kaçtı","Pop Goes the Weasel","Pop Goes the Weasel"),0,3,110,"C4 C4:.5 D4 D4:.5 E4:.5 G4:.5 E4:.5 C4 G3:.5 C4 C4:.5 D4 D4:.5 E4:1.5 C4:1.5 C4 C4:.5 D4 D4:.5 E4:.5 G4:.5 E4:.5 C4:1.5 A4:1.5 D4 F4:.5 E4:1.5 C4:1.5"],
+ ['yankee',T("Yankee Doodle","Yankee Doodle","Yankee Doodle"),1,2,120,"C4 C4 D4 E4 C4 E4 D4 G3 C4 C4 D4 E4 C4:2 B3:2 C4 C4 D4 E4 F4 E4 D4 C4 B3 G3 A3 B3 C4:2 C4:2"],
+ ['jingle',T("Jingle Bells","Jingle Bells","Jingle Bells"),1,4,120,"E4 E4 E4:2 E4 E4 E4:2 E4 G4 C4:1.5 D4:.5 E4:4 F4 F4 F4:1.5 F4:.5 F4 E4 E4 E4:.5 E4:.5 E4 D4 D4 E4 D4:2 G4:2"],
+ ['susanna',T("Oh! Susanna","Oh! Susanna","Oh! Susanna"),1,4,112,"C4:.5 D4:.5 E4 G4 G4:1.5 A4:.5 G4 E4 C4:1.5 D4:.5 E4 E4 D4 C4 D4:3 C4:.5 D4:.5 E4 G4 G4:1.5 A4:.5 G4 E4 C4:1.5 D4:.5 E4 E4 D4 D4 C4:4"],
+ ['saints',T("When the Saints","When the Saints Go Marching In","When the Saints"),1,4,120,"C4 E4 F4 G4:4 C4 E4 F4 G4:4 C4 E4 F4 G4:2 E4:2 C4:2 E4:2 D4:4 E4 E4 D4 C4:3 C4 E4 G4:2 G4 F4:3 E4 F4 G4:2 E4:2 C4:2 D4:2 C4:4"],
+ ['grace',T("Amazing Grace","Amazing Grace","Amazing Grace"),1,3,84,"G3 C4:2 E4:.5 C4:.5 E4:2 D4 C4:2 A3 G3:2 G3 C4:2 E4:.5 C4:.5 E4:2 D4 G4:3 E4 G4:1.5 E4:.5 G4 E4:.5 C4:.5 E4:2 D4 C4:2 A3 G3:2 G3 C4:2 E4:.5 C4:.5 E4:2 D4 C4:3"],
+ ['auld',T("Ayrılık Şarkısı (Auld Lang Syne)","Auld Lang Syne","Nehmt Abschied, Brüder"),1,4,90,"G3 C4:1.5 C4:.5 C4 E4 D4:1.5 C4:.5 D4 E4:.5 D4:.5 C4:1.5 C4:.5 E4 G4 A4:3 A4 G4:1.5 E4:.5 E4 C4 D4:1.5 C4:.5 D4 E4:.5 D4:.5 C4:1.5 A3:.5 A3 G3 C4:3"],
+ ['clementine',T("Clementine","Oh My Darling, Clementine","Clementine"),1,3,104,"C4:1.5 C4:.5 C4 G3 E4:1.5 E4:.5 E4 C4 C4:1.5 E4:.5 G4:1.5 G4:.5 F4 E4 D4:3 D4 E4 F4 F4 E4 D4 E4:2 C4 C4:1.5 E4:.5 D4:1.5 G3:.5 B3 D4 C4:3"],
+ ['cucaracha',T("La Cucaracha","La Cucaracha","La Cucaracha"),1,4,120,"C4:.5 C4:.5 C4:.5 F4:1.5 A4 C4:.5 C4:.5 C4:.5 F4:1.5 A4:2 F4 F4 E4 E4 D4 D4 C4:3 C4:.5 C4:.5 C4:.5 E4:1.5 G4 C4:.5 C4:.5 C4:.5 E4:1.5 G4:2 C5 D5 C5 Bb4 A4 G4 F4:3"],
+ ['silent',T("Sessiz Gece","Silent Night","Stille Nacht"),1,3,72,"G4:1.5 A4:.5 G4 E4:3 G4:1.5 A4:.5 G4 E4:3 D5:2 D5 B4:3 C5:2 C5 G4:3 A4:2 A4 C5:1.5 B4:.5 A4 G4:1.5 A4:.5 G4 E4:3"],
+ ['wish',T("Mutlu Noeller Dileriz","We Wish You a Merry Christmas","We Wish You a Merry Christmas"),1,3,112,"G4 C5 C5:.5 D5:.5 C5:.5 B4:.5 A4 A4 A4 D5 D5:.5 E5:.5 D5:.5 C5:.5 B4 G4 G4 E5 E5:.5 F5:.5 E5:.5 D5:.5 C5 A4 G4:.5 G4:.5 A4 D5 B4 C5:2"],
+ ['deck',T("Salonları Süsleyin","Deck the Halls","Deck the Halls"),1,4,112,"G4:1.5 F4:.5 E4 D4 C4 D4 E4 C4 D4:.5 E4:.5 F4:.5 D4:.5 E4:1.5 D4:.5 C4 B3 C4:2 G4:1.5 F4:.5 E4 D4 C4 D4 E4 C4 D4:.5 E4:.5 F4:.5 D4:.5 E4:1.5 D4:.5 C4 B3 C4:2"],
+ ['joyworld',T("Dünyaya Neşe","Joy to the World","Freue dich, Welt"),1,4,96,"C5:2 B4:1.5 A4:.5 G4:3 F4 E4:2 D4:2 C4:3 G4 A4:3 A4 B4:3 B4 C5:3"],
+ ['canon',T("Kanon (Pachelbel)","Canon in D","Kanon in D"),1,4,72,"F#5:2 E5:2 D5:2 C#5:2 B4:2 A4:2 B4:2 C#5:2 D5 C#5 B4 A4 G4 F#4 G4 E4 D4 F#4 A4 G4 F#4 D4 F#4 E4"],
+ ['nacht',T("Küçük Bir Gece Müziği","Eine kleine Nachtmusik","Eine kleine Nachtmusik"),1,4,120,"G4 D4:.5 G4 D4:.5 G4 D4 G4 B4 D5:2 C5 A4:.5 C5 A4:.5 C5 A4 F#4 A4 D4:2"],
+ ['brahms',T("Brahms Ninnisi","Brahms' Lullaby","Guten Abend, gut' Nacht"),1,3,80,"E4:.5 E4:.5 G4:2 E4:.5 E4:.5 G4:2 E4:.5 G4:.5 C5 B4:1.5 A4:.5 A4 G4 D4:.5 E4:.5 F4 D4 D4:.5 E4:.5 F4:2 D4:.5 F4:.5 B4 A4 G4 B4 C5:2"],
+ ['morning',T("Sabah (Grieg)","Morning Mood","Morgenstimmung"),1,3,90,"G5:.5 E5:.5 D5:.5 C5:.5 D5:.5 E5:.5 G5:.5 E5:.5 D5:.5 C5:.5 D5:.5 E5:.5 D5:.5 E5:.5 G5:.5 E5:.5 G5:.5 A5:.5 E5:.5 A5:.5 G5:.5 E5:.5 D5:.5 C5:2"],
+ ['largo',T("Yeni Dünya Senfonisi (Largo)","New World Symphony (Largo)","Aus der Neuen Welt (Largo)"),1,4,66,"E4:1.5 G4:.5 G4:2 E4:1.5 D4:.5 C4:2 D4 E4 G4 E4 D4:4 E4:1.5 G4:.5 G4:2 E4:1.5 D4:.5 C4:2 D4 E4 D4:1.5 C4:.5 C4:4"],
+ ['bridal',T("Gelin Marşı","Bridal Chorus","Treulich geführt"),1,4,80,"G4 C5:1.5 C5:.5 C5:2 G4 D5 B4 C5:2 G4 C5 F5:1.5 F5:.5 E5 D5 C5 B4 C5 D5:3"],
+ ['mountain',T("Dağın Ardından","She'll Be Coming Round the Mountain","She'll Be Coming Round the Mountain"),1,4,120,"G3:.5 A3:.5 C4 C4 C4 C4 A3 G3 E3 G3 C4:3 C4:.5 D4:.5 E4 E4 E4 E4 G4 E4 D4 C4 D4:3"],
+ ['swanee',T("Swanee Nehri","Old Folks at Home","Swanee River"),1,4,84,"E4:1.5 D4:.5 C4 E4 D4 C4 C5:2 A4 C5 G4:3 E4 C4 D4:4 E4:1.5 D4:.5 C4 E4 D4 C4 C5:2 A4 C5 G4:3 E4 D4:.5 C4:.5 D4 E4 D4 C4:3"],
+ ['camptown',T("Camptown Yarışları","Camptown Races","Camptown Races"),1,2,120,"G4 G4 E4 G4 A4 G4 E4:2 E4 D4:3 E4 D4:3 G4 G4 E4 G4 A4 G4 E4:2 D4:2 E4 D4 C4:4"],
+ ['greensleeves',T("Greensleeves","Greensleeves","Greensleeves"),2,3,96,"A3 C4:2 D4 E4:1.5 F4:.5 E4 D4:2 B3 G3:1.5 A3:.5 B3 C4:2 A3 A3:1.5 G#3:.5 A3 B3:2 G#3 E3:2 A3 C4:2 D4 E4:1.5 F4:.5 E4 D4:2 B3 G3:1.5 A3:.5 B3 C4:1.5 B3:.5 A3 G#3:1.5 F#3:.5 G#3 A3:3"],
+ ['elise',T("Für Elise","Für Elise","Für Elise"),2,3,120,"E5:.5 D#5:.5 E5:.5 D#5:.5 E5:.5 B4:.5 D5:.5 C5:.5 A4 C4:.5 E4:.5 A4:.5 B4 E4:.5 G#4:.5 B4:.5 C5 E4:.5 E5:.5 D#5:.5 E5:.5 D#5:.5 E5:.5 B4:.5 D5:.5 C5:.5 A4 C4:.5 E4:.5 A4:.5 B4 E4:.5 C5:.5 B4:.5 A4:2"],
+ ['turkish',T("Türk Marşı (Mozart)","Rondo alla Turca","Rondo alla Turca"),2,2,120,"B4:.5 A4:.5 G#4:.5 A4:.5 C5:2 D5:.5 C5:.5 B4:.5 C5:.5 E5:2 F5:.5 E5:.5 D#5:.5 E5:.5 B5:.5 A5:.5 G#5:.5 A5:.5 B5:.5 A5:.5 G#5:.5 A5:.5 C6:2 A5 C6 B5 A5 G5 A5 B5 A5 G5 A5 B5 A5 G5 F#5 E5:2"],
+ ['hall',T("Dağ Kralının Sarayında","In the Hall of the Mountain King","In der Halle des Bergkönigs"),2,4,132,"A3:.5 B3:.5 C4:.5 D4:.5 E4:.5 C4:.5 E4 D#4:.5 B3:.5 D#4 D4:.5 Bb3:.5 D4 A3:.5 B3:.5 C4:.5 D4:.5 E4:.5 C4:.5 E4:.5 A4:.5 G4:.5 E4:.5 C4:.5 E4:.5 G4:2"],
+ ['cancan',T("Kankan","Can-Can","Cancan"),2,2,132,"C4:2 D4:.5 F4:.5 E4:.5 D4:.5 G4 G4 G4:.5 A4:.5 E4:.5 F4:.5 D4 D4 D4:.5 F4:.5 E4:.5 D4:.5 C4:.5 C5:.5 B4:.5 A4:.5 G4:.5 F4:.5 E4:.5 D4:.5 C4:2"],
+ ['tell',T("Wilhelm Tell Uvertürü","William Tell Overture","Wilhelm Tell"),2,2,132,"G4:.5 G4:.5 G4 G4:.5 G4:.5 G4 G4:.5 G4:.5 C5 D5 E5 G4:.5 G4:.5 G4 G4:.5 G4:.5 G4 G4:.5 G4:.5 E5 D5 C5:2"],
+ ['minuet',T("Sol Minör Minuet (Petzold)","Minuet in G","Menuett in G"),2,3,112,"D5 G4:.5 A4:.5 B4:.5 C5:.5 D5 G4 G4 E5 C5:.5 D5:.5 E5:.5 F#5:.5 G5 G4 G4 C5 D5:.5 C5:.5 B4:.5 A4:.5 B4 C5:.5 B4:.5 A4:.5 G4:.5 F#4 G4:.5 A4:.5 B4:.5 G4:.5 A4:3"],
+ ['habanera',T("Habanera (Carmen)","Habanera","Habanera"),2,2,80,"D5:1.5 C#5:.5 C5 C5:.5 B4:.5 Bb4:1.5 A4:.5 A4 A4:.5 G#4:.5 G4 F4:.5 F4:.5 E4:2"],
+ ['spring',T("İlkbahar (Vivaldi)","Spring (Vivaldi)","Frühling (Vivaldi)"),2,4,104,"C5 E5 E5 E5 D5:.5 C5:.5 G5:3 G5:.5 F5:.5 E5 E5 E5 D5:.5 C5:.5 G5:3 G5:.5 F5:.5 E5 F5:.5 G5:.5 F5 E5 D5:2"],
+ ['donna',T("La donna è mobile","La donna è mobile","La donna è mobile"),2,3,120,"F4 F4 F4 A4:.5 G4:.5 F4 D5:2 C5 C5 C5 E5:.5 D5:.5 C5 Bb4:2"],
+ ['danube',T("Mavi Tuna","The Blue Danube","An der schönen blauen Donau"),2,3,132,"C4 C4 E4 G4 G4:2 G5:.5 G5:1.5 E5:.5 E5:1.5 C4 C4 E4 G4 G4:2 G5:.5 G5:1.5 F5:.5 F5:1.5 B3 B3 D4 A4 A4:2 A5:.5 A5:1.5 F5:.5 F5:1.5 B3 B3 D4 A4 A4:2 A5:.5 A5:1.5 E5:.5 E5:1.5"],
+ ['fifth',T("5. Senfoni (Beethoven)","Symphony No. 5","5. Sinfonie"),2,2,108,"G4:.5 G4:.5 G4:.5 Eb4:4 F4:.5 F4:.5 F4:.5 D4:4 G4:.5 G4:.5 G4:.5 Eb4 Ab4:.5 Ab4:.5 Ab4:.5 G4 Eb5:.5 Eb5:.5 Eb5:.5 C5:4"],
+ ['prelude',T("Do Majör Prelüd (Bach)","Prelude in C (Bach)","Präludium in C (Bach)"),2,4,96,"C4:.5 E4:.5 G4:.5 C5:.5 E5:.5 G4:.5 C5:.5 E5:.5 C4:.5 E4:.5 G4:.5 C5:.5 E5:.5 G4:.5 C5:.5 E5:.5 C4:.5 D4:.5 A4:.5 D5:.5 F5:.5 A4:.5 D5:.5 F5:.5 C4:.5 D4:.5 A4:.5 D5:.5 F5:.5 A4:.5 D5:.5 F5:.5 B3:.5 D4:.5 G4:.5 D5:.5 F5:.5 G4:.5 D5:.5 F5:.5 C4:.5 E4:.5 G4:.5 C5:.5 E5:.5 G4:.5 C5:.5 E5:2"]
+];
+const SONG_BY=Object.fromEntries(SONGS.map(s=>[s[0],s]));
+const SG={free:T("Serbest çal","Free play","Frei spielen"),freeSub:T("Ders yok, kural yok: istediğin gibi çal.","No lesson, no rules: just play.","Keine Lektion, keine Regeln: spiel einfach."),
+ songs:T("Şarkılar","Songs","Lieder"),songsSub:T("Çal, isabetine göre altın kazan.","Play and earn gold for your accuracy.","Spiele und verdiene Gold nach Treffsicherheit."),
+ diff:[T("Kolay","Easy","Leicht"),T("Orta","Medium","Mittel"),T("Zor","Hard","Schwer")],best:T("En iyi","Best","Bestwert"),notes:T("nota","notes","Noten"),beats:T("vuruş","hits","Schläge"),
+ tapNext:T("Parlayan yere dokun.","Tap the glowing spot.","Tippe auf die leuchtende Stelle."),done:T("Şarkı bitti!","Song complete!","Lied geschafft!"),acc:T("İsabet","Accuracy","Treffer"),
+ metro:T("Metronom","Metronome","Metronom"),chords:T("Akorlar","Chords","Akkorde"),firstGold:T("İlk çalışta isabetine göre altın, sonra her rekorda ek altın.","Gold for your accuracy the first time, then extra gold for every new best.","Gold für deine Treffsicherheit beim ersten Mal, danach Extra-Gold für jeden neuen Bestwert."),
+ drumNote:T("Davul eşliği","Drum part","Schlagzeug-Begleitung")};
+const SONG_GOLD=[8,12,18];
+const songNotes=str=>str.trim().split(/\s+/).map(tk=>{const [p,d]=tk.split(':');return{m:p==='R'?null:midi(p),d:d?+d:1};});
+// lowest / highest comfortable note per instrument; a song is moved by octaves to fit
+const INST_RANGE={piano:[48,88],guitar:[52,76],electric:[52,76],violin:[55,88],uke:[60,81]};
+function songFor(k,sg){const ns=songNotes(sg[5]);if(k==='drums')return ns;const [lo,hi]=INST_RANGE[k]||[48,88],ms=ns.filter(x=>x.m!=null).map(x=>x.m);let sh=0;
+ while(Math.min(...ms)+sh<lo)sh+=12;while(Math.max(...ms)+sh>hi&&Math.min(...ms)+sh-12>=lo)sh-=12;
+ // a few notes still out of reach (wide tunes on guitar / ukulele) are moved by an octave
+ return ns.map(x=>{if(x.m==null)return{m:null,d:x.d};let m=x.m+sh;while(m>hi)m-=12;while(m<lo)m+=12;return{m,d:x.d};});}
+// where to play a note on a string instrument: the lowest fret
+function strPos(k,m){const tun=TUNE[k];let best=null;tun.forEach((o,i)=>{const f=m-o;if(f>=0&&f<=12&&(!best||f<best.f))best={s:i+1,f};});return best;}
+// drum part for a song: a groove for its metre, longer and busier for harder songs, a tom fill at the end
+function drumSeq(sg,idx){const [id,,diff,metre]=sg,bars=[4,6,8][diff],v=idx%3,seq=[];
+ const G={4:{n:8,kick:[[0,4],[0,4,6],[0,3,4]][v],snare:[2,6],hat:diff===2?[0,1,2,3,4,5,6,7]:[0,2,4,6]},3:{n:6,kick:[0],snare:[2,4],hat:[0,2,4]},2:{n:4,kick:[0],snare:[2],hat:diff===2?[0,1,2,3]:[0,2]}}[metre]||{n:8,kick:[0,4],snare:[2,6],hat:[0,2,4,6]};
+ for(let b=0;b<bars;b++){const fill=diff>0&&b===bars-1;for(let j=0;j<G.n;j++){const set=[];
+   if(fill&&j>=G.n/2){set.push(['tom1','tom1','tom2','floor'][Math.min(3,Math.floor((j-G.n/2)/(G.n/8)))]||'floor');}
+   else{if(G.kick.includes(j))set.push('kick');if(G.snare.includes(j))set.push('snare');if(diff>0&&G.hat.includes(j)&&!set.includes('snare'))set.push(b===0&&j===0&&diff===2?'crash':'hat');}
+   if(set.length)seq.push({set:[...new Set(set)],j,b});}}
+ return seq;}
+const songKey=(k,id)=>k+':'+id;
+const songBest=(k,id)=>(S.songs||{})[songKey(k,id)];
+function startSong(k,id){const sg=SONG_BY[id];if(!sg)return;
+ startSession({theme:'t-mus',hearts:false,build:()=>[{type:'msong',inst:k,id}],lesson:true,doneTitle:L(SG.done),
+  onFinish:()=>{const r=PS.songRate||0,prev=songBest(k,id),base=SONG_GOLD[sg[2]];S.songs=S.songs||{};
+   const gold=prev==null?Math.max(1,Math.round(base*r)):Math.max(1,Math.round(base*(r-prev)));if(prev==null||r>prev)S.songs[songKey(k,id)]=r;
+   S.lastMus=k;const xp=5+3*sg[2];addXP(xp);addGold(gold);return xp;}});}
+function startFree(k){startSession({theme:'t-mus',hearts:false,build:()=>[{type:'mfree',inst:k}],lesson:true});}
+// the next notes / hits as small chips
+function songStrip(items,i,lab){const el=h('div',{class:'mstrip sg-strip'});for(let j=Math.max(0,i-1);j<Math.min(items.length,i+7);j++)el.append(h('span',{class:j<i?'ok':j===i?'cur':''},lab(items[j])));return el;}
+function m_song(q,api,body){const k=q.inst,sg=SONG_BY[q.id],drums=k==='drums',idx=SONGS.indexOf(sg);let i=0,wrong=0,done=false;
+ const ns=songFor(k,sg),notes=ns.filter(x=>x.m!=null),seq=drums?drumSeq(sg,idx):null,total=drums?seq.reduce((a,s)=>a+s.set.length,0):notes.length;let hitN=0;
+ const bar=h('div',{class:'sg-bar'},h('i')),info=h('p',{class:'hint mmsg'},L(SG.tapNext)),stripBox=h('div',{});
+ body.append(h('h2',{class:'prompt'},L(sg[1])),h('div',{class:'sg-sub'},L(SG.diff[sg[2]])+(drums?' · '+L(SG.drumNote):'')),bar,stripBox);
+ const upd=()=>{bar.firstChild.style.width=(hitN/total*100)+'%';const acc=hitN+wrong?Math.round(100*hitN/(hitN+wrong)):100;info.textContent=hitN?`${L(SG.acc)}: %${acc} · ${hitN}/${total}`:L(SG.tapNext);};
+ const finish=()=>{if(done)return;done=true;const r=total/(total+wrong);PS.songRate=r;PS.accOverride=Math.round(r*100);FX.win(stripBox);setTimeout(()=>api.complete(true,`${L(SG.acc)}: %${Math.round(r*100)}`),450);};
+ const miss=()=>{wrong++;api.miss();upd();};
+ if(drums){let need=new Set(seq[0].set);const lab=s=>s.set.map(p=>L(KIT[p][3]).split(/[ (]/)[0]).join('+');
+  const kit=kitEl({labels:true,onHit:p=>{if(done)return;if(need.has(p)){need.delete(p);hitN++;if(!need.size){i++;if(i>=seq.length)return finish(),draw();need=new Set(seq[i].set);}draw();}else miss();}});
+  const draw=()=>{stripBox.innerHTML='';stripBox.append(songStrip(seq,i,lab));Object.keys(KIT).forEach(p=>kit.mark(p,!done&&need.has(p)));upd();};
+  body.append(kit,info,h('div',{class:'row',style:'gap:10px'},listenBtn(()=>{const spb=60/sg[4]/2;seq.slice(i,i+16).forEach((s,n)=>s.set.forEach(p=>MA.drum(p,{at:n*spb})));})));draw();return;}
+ const lab=x=>nName(x.m);
+ let ui,mark;
+ if(k==='piano'){const ms=notes.map(x=>x.m);let from=Math.min(...ms),to=Math.max(...ms);from-=((from%12)+12)%12;to=Math.max(to+1,from+12);if(isBlack(to))to++;
+  const pi=pianoEl({from,to,onNote:m=>onNote(m)});pi.style.minWidth=[...pi.querySelectorAll('.pk.w')].length*34+'px';ui=h('div',{class:'pscroll'},pi);
+  mark=()=>{pi.clear();if(!done&&notes[i]){pi.mark(notes[i].m,'tgt','');const kk=pi.keys[notes[i].m];if(kk&&ui.scrollWidth>ui.clientWidth)ui.scrollLeft=Math.max(0,kk.offsetLeft-ui.clientWidth/2);}};}
+ else{const pos=notes.map(x=>strPos(k,x.m)),mx=Math.max(5,...pos.map(p=>p?p.f:0));
+  const st=strEl({inst:k,start:1,frets:Math.min(12,mx),onNote:({m})=>onNote(m)});ui=st;mark=()=>{st.clear();if(!done&&pos[i])st.mark(pos[i].s,pos[i].f,'tgt','');};}
+ function onNote(m){if(done)return;if(m===notes[i].m){i++;hitN++;if(i>=notes.length){draw();return finish();}draw();}else miss();}
+ const draw=()=>{stripBox.innerHTML='';stripBox.append(songStrip(notes,i,lab));mark();upd();};
+ body.append(ui,info,h('div',{class:'row',style:'gap:10px'},listenBtn(()=>{const spb=60/sg[4];let t=0;const ins=k==='electric'?'electric':k;for(const x of ns.slice(0,40)){if(x.m!=null)MA.note(ins,x.m,{at:t,dur:Math.max(.25,x.d*spb*.9)});t+=x.d*spb;}})));draw();}
+function m_free(q,api,body){const k=q.inst,I=MUS[k];body.append(h('h2',{class:'prompt'},L(SG.free)+' · '+L(I.name)),h('p',{class:'muted',style:'font-size:14px;margin-top:-8px'},L(SG.freeSub)));
+ if(k==='drums')body.append(kitEl({labels:true}));
+ else if(k==='piano'){const p=pianoEl({from:'C3',to:'C6'});p.style.minWidth='880px';const sc=h('div',{class:'pscroll'},p);body.append(sc);setTimeout(()=>{sc.scrollLeft=(sc.scrollWidth-sc.clientWidth)/2;},30);}
+ else{const st=strEl({inst:k,start:1,frets:k==='violin'?9:10});body.append(st);
+  if(CH[k]){const row=h('div',{class:'sg-chords'});Object.keys(CH[k]).filter(n=>!/5$/.test(n)).forEach(n=>row.append(h('button',{class:'chip',onclick:()=>{MA.ac();st.clear();chordDots(k,n).forEach(d=>{if(d.f>0)st.mark(d.s,d.f,'on',String(d.fg||''));else if(d.f===0)st.mark(d.s,0,'on','○');});MA.chord(k==='uke'?'uke':k,chordNotes(k,n));}},n)));
+   body.append(h('b',{class:'st-lbl'},L(SG.chords)),row);}}
+ // metronome
+ let bpm=90,tm=null;const lbl=h('b',{},bpm+' bpm'),tog=h('button',{class:'btn sm ghost'},'▶ '+L(SG.metro));
+ const tick=()=>{if(!body.isConnected){clearInterval(tm);tm=null;return;}MA.tick(false,0);};
+ const restart=()=>{if(tm){clearInterval(tm);tm=setInterval(tick,60000/bpm);}};
+ tog.onclick=()=>{MA.ac();if(tm){clearInterval(tm);tm=null;tog.textContent='▶ '+L(SG.metro);}else{tick();tm=setInterval(tick,60000/bpm);tog.textContent='■ '+L(SG.metro);}};
+ body.append(h('div',{class:'row sg-metro'},tog,h('button',{class:'chip',onclick:()=>{bpm=Math.max(40,bpm-10);lbl.textContent=bpm+' bpm';restart();}},'−'),lbl,h('button',{class:'chip',onclick:()=>{bpm=Math.min(200,bpm+10);lbl.textContent=bpm+' bpm';restart();}},'+')));}
+Object.assign(RENDER,{msong:m_song,mfree:m_free});SELF.add('msong');SELF.add('mfree');
+function viewSongs(k){const I=MUS[k];const groups=[0,1,2].map(d=>{const list=h('div',{class:'lesson-list'});
+  SONGS.filter(s=>s[2]===d).forEach((s,n)=>{const b=songBest(k,s[0]);list.append(h('button',{class:'lesson '+(b!=null?'done':'cur'),onclick:()=>startSong(k,s[0])},
+   h('span',{class:'dot',html:b!=null?icon('check'):'♪'}),h('div',{style:'min-width:0'},h('div',{class:'ttl'},L(s[1])),h('div',{class:'muted',style:'font-size:13px'},b!=null?`${L(SG.best)}: %${Math.round(b*100)}`:L(SG.diff[d]))),
+   h('span',{class:'sg-gold'},coin(),'+'+SONG_GOLD[d])));});
+  return h('div',{class:'stack',style:'gap:8px'},h('h2',{class:'h-m'},L(SG.diff[d])),list);});
+ const played=SONGS.filter(s=>songBest(k,s[0])!=null).length;
+ return h('div',{class:'stack t-mus'},h('button',{class:'back',onclick:()=>{S.musSub=null;save();render('l');SFX.swipe();},html:icon('back')+t('back')}),
+  h('div',{class:'mhead'},musArt(k,'big'),h('div',{style:'min-width:0'},h('h1',{class:'h-l'},L(SG.songs)+' · '+L(I.name)),h('p',{class:'muted',style:'font-size:14px'},`${played}/${SONGS.length} · `+L(SG.firstGold)))),...groups);}
+function instCards(k){const played=SONGS.filter(s=>songBest(k,s[0])!=null).length;
+ return h('div',{class:'sg-cards'},
+  h('button',{class:'card sg-card',onclick:()=>startFree(k)},h('span',{class:'sg-ic'},'🎶'),h('b',{},L(SG.free)),h('span',{class:'muted'},L(SG.freeSub))),
+  h('button',{class:'card sg-card',onclick:()=>{S.musSub='songs';save();render('r');screen.scrollTop=0;SFX.swipe();}},h('span',{class:'sg-ic'},'🎵'),h('b',{},`${L(SG.songs)} · ${SONGS.length}`),h('span',{class:'muted'},`${played}/${SONGS.length} · `+L(SG.songsSub))));}
+
 function viewMusic(){
+ if(S.musView&&MUS[S.musView]&&S.musSub==='songs')return viewSongs(S.musView);
  if(S.musView&&MUS[S.musView])return viewInstrument(S.musView);
  const grid=h('div',{class:'mgrid'});
  Object.entries(MUS).forEach(([k,I])=>{const d=mAll(k),n=mTotal(k);grid.append(h('button',{class:'card minst',onclick:()=>openInst(k)},musArt(k),h('div',{class:'h-m'},L(I.name)),h('p',{class:'muted',style:'font-size:13px'},L(I.short)),
@@ -6188,7 +6340,7 @@ function viewInstrument(k){const I=MUS[k];S.lastMus=k;
   return h('div',{class:'stack',style:'gap:10px'},h('div',{class:'level-head'},h('div',{class:'lvl-badge'+(open?'':' off')},String(l+1)),h('div',{style:'flex:1;min-width:0'},h('div',{class:'h-m'},L(MLV[l])),I.topics&&I.topics[l]?h('div',{class:'topics'},L(I.topics[l])):null,h('div',{class:'meter',style:'margin-top:8px'},h('i',{style:`width:${Math.min(d,lessons.length)/lessons.length*100}%`})))),
    open?null:h('p',{class:'muted',style:'font-size:14px;font-weight:600'},fmt(MSTR.locked,L(MLV[l-1]))),list);});
  return h('div',{class:'stack t-mus'},h('button',{class:'back',onclick:()=>{S.musView=null;save();render('l');SFX.swipe();},html:icon('back')+t('back')}),
-  h('div',{class:'mhead'},musArt(k,'big'),h('div',{style:'min-width:0'},h('h1',{class:'h-l'},L(I.name)),h('p',{class:'muted',style:'font-size:15px'},L(I.desc)))),...levels);}
+  h('div',{class:'mhead'},musArt(k,'big'),h('div',{style:'min-width:0'},h('h1',{class:'h-l'},L(I.name)),h('p',{class:'muted',style:'font-size:15px'},L(I.desc)))),instCards(k),...levels);}
 function homeMusic(){const row=h('div',{class:'hscroll t-mus'});Object.entries(MUS).forEach(([k,I])=>row.append(h('button',{class:'card mini-game mmini',onclick:()=>openInst(k)},musArt(k),h('div',{class:'h-m'},L(I.name)),h('div',{class:'meter'},h('i',{style:`width:${mAll(k)/mTotal(k)*100}%`})))));
  return[h('div',{class:'spread'},h('h2',{class:'h-m'},'🎵 '+L(MSTR.title)),h('button',{class:'muted',style:'font-weight:700',onclick:()=>goTab('music')},t('seeAll'))),mContinue(),row];}
 
