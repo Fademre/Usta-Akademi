@@ -18,7 +18,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="fonts/fonts.css">
 <script>try{var _s=JSON.parse(localStorage.getItem('usta-akademi-v1'));if(_s&&_s.skin&&_s.skin!=='classic')document.documentElement.setAttribute('data-skin',_s.skin);}catch(e){}</script>
-<script>window.APP_VERSION='4.1';</script>
+<script>window.APP_VERSION='4.1.1';</script>
 <style>
 /* standalone shell: what the artifact host used to provide */
 html{background:var(--bg,#EDF1EC);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;-webkit-text-size-adjust:100%}
@@ -5830,14 +5830,13 @@ function strEl(o={}){
  const pluck=(s,f,silent)=>{const x=f>0?posX(f):xOpen;const m=silent?tun[s-1]+f:sound(s,f);vib(s,Math.max(xOpen,x),bowed?1.6:3.4,bowed?.9:1.4);if(bowed)bowTo(s);
   const r=svg.getBoundingClientRect(),k=r.width/W;bubble(el,nName(m),(f>0?x:xOpen*.6)*k,sy(s)*k-6);return m;};
  const strum=(dir,ts)=>{const list=[];for(let s=nS;s>=1;s--){const f=held[s];if(f===-1)continue;list.push([s,f||0]);}if(dir==='up')list.reverse();
-  list.forEach(([s,f],i)=>setTimeout(()=>{sound(s,f,{vol:.6});vib(s,f>0?posX(f):xOpen,3,1.6);},i*16));o.onStrum&&o.onStrum(dir,list,ts);};
+  list.forEach(([s,f],i)=>{sound(s,f,{vol:.6,at:i*.014});vib(s,f>0?posX(f):xOpen,3,1.6);});o.onStrum&&o.onStrum(dir,list,ts);};
  let sy0=null,st0=null;
  svg.addEventListener('pointerdown',e=>{e.preventDefault();const r=svg.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
-  if(!bowed&&x>xEnd+4){sy0=y;st0=evT(e);return;}
+  if(!bowed&&x>xEnd+4){const zt=top-12,zh=sp*(nS-1)+24;strum(y>zt+zh*.62?'up':'down',evT(e));return;}
   const s=Math.max(1,Math.min(nS,Math.round((y-top)/sp)+1));let f=0;if(x>xOpen){for(let i=0;i<nF;i++)if(x>=fx[i]&&x<fx[i+1])f=start+i;if(x>=fx[nF])f=start+nF-1;}
   const m=pluck(s,f);o.onNote&&o.onNote({s,f,m});});
- svg.addEventListener('pointerup',e=>{if(sy0==null)return;const r=svg.getBoundingClientRect(),y=(e.clientY-r.top)/r.height*H;strum(y<sy0-6?'up':'down',st0);sy0=null;});
- svg.addEventListener('pointerleave',()=>{if(sy0!=null){strum('down',st0);sy0=null;}});
+
  const dotSvg=(s,f,cls,txt)=>{const x=f>0?posX(f):xOpen*.5,y=sy(s);if(f>0&&!(x>0))return'';return `<g class="fd ${cls}" data-k="${s}:${f}" transform="translate(${x} ${y})"><circle r="${f>0?9.5:8}"/>${txt!=null&&txt!==''?`<text y="4" text-anchor="middle">${txt}</text>`:''}</g>`;};
  el.mark=(s,f,cls,txt)=>{dots.querySelector(`[data-k="${s}:${f}"]`)?.remove();if(cls)dots.insertAdjacentHTML('beforeend',dotSvg(s,f,cls,txt));};
  el.clear=()=>{dots.innerHTML='';};el.hold=(s,f)=>{held[s]=f;};el.release=()=>{for(const k in held)delete held[k];};
@@ -6367,7 +6366,7 @@ function m_beat(q,api,body){const steps=q.steps||8,drums=Object.keys(q.pat).ever
  const pad=drums?padsEl(Object.keys(q.pat),(p,ts)=>{if(run)hits.push([p,ts!=null?ts/1000:wall()]);}):strEl({inst,onStrum:(dir,list,ts)=>{if(run)hits.push(['strum',ts!=null?ts/1000:wall()]);}});
  const bars=q.bars||2,startBtn=h('button',{class:'btn block mstart'},L(MT.start));
  let waiting=false;
- const go=again=>{if(run||done||waiting)return;const c=MA.ac();
+ const go=again=>{if(run||done||waiting)return;const c=MA.ac();if(cn&&!again){MA.warm(inst==='uke'?'uke':inst,[...cn,...TUNE[inst]]);}
   // a sleeping audio engine (iPhone) wakes up first, so the clicks are in time with the count; it never waits more than half a second
   if(c&&c.state!=='running'&&!again){waiting=true;startBtn.disabled=true;let f=false;const fire=()=>{if(f)return;f=true;waiting=false;go(true);};try{c.resume().then(fire,fire);}catch(e){fire();}setTimeout(fire,450);return;}
   hits=[];grid.querySelectorAll('.good,.bad').forEach(x=>x.classList.remove('good','bad'));const spb=60/q.bpm/(steps/4),lead=.3,count=4;
@@ -6650,20 +6649,18 @@ function lsStrings(k,box,o){const C=LS_CFG[k],tun=TUNE[k],nS=C.nS,W=Math.max(320
    const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',d);p.setAttribute('fill','none');p.setAttribute('stroke',k==='electric'?'#7FE8FF':'#9CC8FF');p.setAttribute('stroke-width','2.5');p.setAttribute('filter',`url(#${u}glow)`);wave.append(p);
    try{p.animate([{opacity:1},{opacity:0}],{duration:420}).finished.then(()=>p.remove(),()=>p.remove());}catch(e){p.remove();}}
   else{const hole=svg.querySelector('.lsx-hole');if(hole)try{hole.animate([{opacity:.9},{opacity:0}],{duration:420});}catch(e){}}};
- const sound=(s,f,o2={})=>{const m=tun[s-1]+f;MA.note(C.sound,m,{dur:k==='violin'?.9:undefined,clean:k==='electric'?!LSOPT.dist:undefined,vol:o2.vol});shake(s);burst();return m;};
+ const sound=(s,f,o2={})=>{const m=tun[s-1]+f;MA.note(C.sound,m,{dur:k==='violin'?.9:undefined,clean:k==='electric'?!LSOPT.dist:undefined,vol:o2.vol,at:o2.at});shake(s);burst();return m;};
  // taps: string from the height, fret from the position; left of the nut = open string
  let held={},sy0=null;
  const at=(cx,cy,ts)=>{const r=svg.getBoundingClientRect(),x=(cx-r.left)/r.width*W,y=(cy-r.top)/r.height*H;
-  if(strum&&Math.hypot(x-(W-H*.17),y-(yc+H*.22))<H*.16){sy0=y;return;}
+  if(strum&&Math.hypot(x-(W-H*.17),y-(yc+H*.22))<H*.16){strumAll(y>yc+H*.24?'up':'down');return;}
   if(y<yT-sp*.6||y>yT+nh+sp*.6||x>xF+W*.06||x<hx0)return;
   const s=Math.max(1,Math.min(nS,Math.floor((y-yT)/sp)+1));let f=0;if(x>xNut)for(let n=1;n<=12;n++)if(x<=fx(n)){f=n;break;}if(x>fx(12))f=12;
   const m=sound(s,f);lsRip(svg,posX(f),sy(s),pcc(m));o.onNote&&o.onNote({s,f,m,ts});};
- const strumAll=dir=>{const list=[];for(let s=nS;s>=1;s--){if(held[s]===-1)continue;list.push([s,held[s]||0]);}if(dir==='up')list.reverse();list.forEach(([s,f],i)=>setTimeout(()=>sound(s,f,{vol:.6}),i*18));
+ const strumAll=dir=>{const list=[];for(let s=nS;s>=1;s--){if(held[s]===-1)continue;list.push([s,held[s]||0]);}if(dir==='up')list.reverse();list.forEach(([s,f],i)=>sound(s,f,{vol:.6,at:i*.014}));
   const sb=svg.querySelector('.lsx-strum');if(sb)try{sb.animate([{transform:sb.getAttribute('transform')+' scale(.9)'},{transform:sb.getAttribute('transform')}],{duration:200});}catch(e){}o.onStrum&&o.onStrum(dir);};
  svg.addEventListener('touchstart',e=>{e.preventDefault();const ts=evT(e);for(const t_ of e.changedTouches)at(t_.clientX,t_.clientY,ts);},{passive:false});
- svg.addEventListener('touchend',e=>{if(sy0==null)return;const t_=e.changedTouches[0],r=svg.getBoundingClientRect(),y=(t_.clientY-r.top)/r.height*H;strumAll(y<sy0-12?'up':'down');sy0=null;});
- svg.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;e.preventDefault();at(e.clientX,e.clientY,evT(e));});
- svg.addEventListener('pointerup',e=>{if(e.pointerType==='touch'||sy0==null)return;const r=svg.getBoundingClientRect(),y=(e.clientY-r.top)/r.height*H;strumAll(y<sy0-12?'up':'down');sy0=null;});
+  svg.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;e.preventDefault();at(e.clientX,e.clientY,evT(e));});
  return{el,svg,W,H,posX,sy,
   // dots: [{s,f,m,kind:'cur'|'next'|'held',txt}]
   mark:list=>{dots.innerHTML=list.map(d=>{const x=posX(d.f),y=sy(d.s),r=sp*(d.kind==='next'?.3:.42),col=d.kind==='held'?'#FFB347':pcc(d.m);const txt=d.txt!=null?d.txt:LSOPT.names?nName(d.m):'';
