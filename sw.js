@@ -1,7 +1,7 @@
-/* Usta Akademi service worker — v4.1.1 */
+/* Usta Akademi service worker — v4.2 */
 const CHARS='usta-chars-1';
-const CACHE='usta-ba294525';
-const FILES=["./", "vendor/three-min.js", "index.html", "manifest.webmanifest", "fonts/fonts.css", "fonts/10d6a582947e.woff2", "fonts/16db5cbe6178.woff2", "fonts/3b58e8bdf772.woff2", "fonts/7471c0c20c13.woff2", "fonts/f96cbbc03519.woff2", "icons/apple-touch-icon.png", "icons/favicon-32.png", "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png"];
+const CACHE='usta-9066d839';
+const FILES=["./", "vendor/three-min.js", "index.html", "manifest.webmanifest", "fonts/fonts.css", "fonts/10d6a582947e.woff2", "fonts/16db5cbe6178.woff2", "fonts/3b58e8bdf772.woff2", "fonts/7471c0c20c13.woff2", "fonts/f96cbbc03519.woff2", "icons/apple-touch-icon.png", "icons/favicon-32.png", "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png", "img/games/chess.webp", "img/games/dama.webp", "img/games/tavla.webp", "img/games/okey.webp", "img/games/okey101.webp", "img/games/mangala.webp", "img/games/ludo.webp", "img/games/sudoku.webp", "img/games/reversi.webp", "img/games/go.webp", "img/games/memory.webp"];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES.map(f=>new Request(f,{cache:'reload'})))));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE&&k!==CHARS).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',e=>{

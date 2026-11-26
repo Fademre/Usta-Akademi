@@ -18,7 +18,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="fonts/fonts.css">
 <script>try{var _s=JSON.parse(localStorage.getItem('usta-akademi-v1'));if(_s&&_s.skin&&_s.skin!=='classic')document.documentElement.setAttribute('data-skin',_s.skin);}catch(e){}</script>
-<script>window.APP_VERSION='4.1.1';</script>
+<script>window.APP_VERSION='4.2';</script>
 <style>
 /* standalone shell: what the artifact host used to provide */
 html{background:var(--bg,#EDF1EC);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;-webkit-text-size-adjust:100%}
@@ -270,6 +270,7 @@ p{margin:0}
 .game-card{display:flex;flex-direction:column;gap:10px;text-align:left;padding:12px}
 .game-card.wide{grid-column:1/-1;display:grid;grid-template-columns:130px 1fr;align-items:center}
 .game-card .art{aspect-ratio:1.25}
+.art.art-img{background:#0B1226;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}.art.art-img img{width:100%;height:100%;object-fit:cover;display:block}
 .soon-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .soon{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:16px;background:var(--surface);border:1px dashed var(--line);font-size:12.5px;font-weight:700;color:var(--muted);text-align:center}
 .soon .glyph{font:400 26px/1 var(--f-glyph);color:var(--muted);height:28px;display:grid;place-items:center}
@@ -2593,8 +2594,10 @@ function viewHome(){
   h('div',{class:'spread'},h('h2',{class:'h-m'},t('yourGames')),h('button',{class:'muted',style:'font-weight:700',onclick:()=>goTab('games')},t('seeAll'))),
   gl,...homeMusic());
 }
+const GART=new Set(['chess','dama','tavla','okey','okey101','mangala','ludo','sudoku','reversi','go','memory']);
 function gameArt(k){
  const a=h('div',{class:'art'});
+ if(GART.has(k)){a.classList.add('art-img');a.append(h('img',{src:`img/games/${k}.webp`,alt:'',loading:'lazy',decoding:'async'}));return a;}
  if(k==='chess')a.append(h('span',{class:'glyph'},'♞︎'));
  if(k==='dama'){const w=h('div',{style:'display:flex;gap:6px;width:62%;'});w.append(h('span',{class:'disc w',style:'width:48%;height:auto;aspect-ratio:1'}),h('span',{class:'disc b k',style:'width:48%;height:auto;aspect-ratio:1'}));a.append(w);}
  if(k==='ludo')a.append(dieEl(5));
